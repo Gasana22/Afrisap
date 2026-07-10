@@ -47,9 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $stmt = db()->prepare('INSERT INTO destinations (country_id, name, overview, why_consider, additional_info) VALUES (?, ?, ?, ?, ?)');
             $stmt->execute([$destination['country_id'], $destination['name'], $destination['overview'], $destination['why_consider'], $destination['additional_info']]);
+            $id = (int) db()->lastInsertId();
         }
         flash_set('success', 'Destination saved.');
-        redirect('/admin/destinations/index.php');
+        redirect('/admin/destinations/manage.php?id=' . $id);
     }
 }
 

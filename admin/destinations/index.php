@@ -47,6 +47,7 @@ require __DIR__ . '/../includes/header.php';
             <td class="table__meta"><?= h($destination['country_name']) ?></td>
             <td>
               <div class="table__actions">
+                <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/destinations/manage.php?id=' . $destination['id'])) ?>">Manage</a>
                 <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/destinations/form.php?id=' . $destination['id'])) ?>">Edit</a>
                 <form method="post" action="<?= h(url('/admin/destinations/delete.php')) ?>" onsubmit="return confirm('Delete this destination? This can\'t be undone.');">
                   <?= csrf_field() ?>

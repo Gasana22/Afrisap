@@ -7,7 +7,9 @@ $admin = current_admin();
 $counts = [
     'countries' => (int) db()->query('SELECT COUNT(*) FROM countries')->fetchColumn(),
     'categories' => (int) db()->query('SELECT COUNT(*) FROM tour_categories')->fetchColumn(),
+    'operators' => (int) db()->query('SELECT COUNT(*) FROM tour_operators')->fetchColumn(),
     'destinations' => (int) db()->query('SELECT COUNT(*) FROM destinations')->fetchColumn(),
+    'tours' => (int) db()->query('SELECT COUNT(*) FROM tours')->fetchColumn(),
 ];
 $active_nav = $active_nav ?? '';
 ?>
@@ -45,11 +47,17 @@ $active_nav = $active_nav ?? '';
         <a class="nav-link<?= $active_nav === 'categories' ? ' is-active' : '' ?>" href="<?= h(url('/admin/categories/index.php')) ?>">
           Tour Categories <span class="nav-link__count"><?= $counts['categories'] ?></span>
         </a>
+        <a class="nav-link<?= $active_nav === 'operators' ? ' is-active' : '' ?>" href="<?= h(url('/admin/operators/index.php')) ?>">
+          Tour Operators <span class="nav-link__count"><?= $counts['operators'] ?></span>
+        </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Safari</div>
         <a class="nav-link<?= $active_nav === 'destinations' ? ' is-active' : '' ?>" href="<?= h(url('/admin/destinations/index.php')) ?>">
           Destinations <span class="nav-link__count"><?= $counts['destinations'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/tours/index.php')) ?>">
+          Tours <span class="nav-link__count"><?= $counts['tours'] ?></span>
         </a>
       </div>
     </nav>

@@ -1,0 +1,92 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../includes/bootstrap.php';
+require_login();
+
+$tourId = (int) ($_GET['tour_id'] ?? 0);
+$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+
+$tStmt = db()->prepare('SELECT * FROM tours WHERE id = ?');
+$tStmt->execute([$tourId]);
+$tour = $tStmt->fetch();
+
+if (!$tour) {
+    flash_set('error', 'That tour no longer exists.');
+    redirect('/admin/tours/index.php');
+}
+
+$activity = ['title' => '', 'description' => ''];
+$errors = [];
+
+if ($id) {
+    $stmt = db()->prepare('SELECT * FROM tour_activities WHERE id = ? AND tour_id = ?');
+    $stmt->execute([$id, $tourId]);
+    $activity = $stmt->fetch();
+    if (!$activity) {
+        flash_set('error', 'That activity no longer exists.');
+        redirect('/admin/tours/manage.php?id=' . $tourId);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
+    $activity['title'] = trim($_POST['title'] ?? '');
+    $activity['description'] = trim($_POST['description'] ?? '');
+
+    if ($activity['title'] === '') {
+        $errors['title'] = 'Enter an activity title.';
+    }
+
+    if (!$errors) {
+        if ($id) {
+            db()->prepare('UPDATE tour_activities SET title = ?, description = ? WHERE id = ?')
+                ->execute([$activity['title'], $activity['description'], $id]);
+        } else {
+            $stmt = db()->prepare('SELECT COALESCE(MAX(sort_order), -1) + 1 FROM tour_activities WHERE tour_id = ?');
+            $stmt->execute([$tourId]);
+            $nextOrder = (int) $stmt->fetchColumn();
+            db()->prepare('INSERT INTO tour_activities (tour_id, title, description, sort_order) VALUES (?, ?, ?, ?)')
+                ->execute([$tourId, $activity['title'], $activity['description'], $nextOrder]);
+        }
+        flash_set('success', 'Activity saved.');
+        redirect('/admin/tours/manage.php?id=' . $tourId);
+    }
+}
+
+$page_title = ($id ? 'Edit' : 'Add') . ' activity · ' . $tour['title'];
+$page_eyebrow = 'Safari';
+$active_nav = 'tours';
+
+require __DIR__ . '/../../includes/header.php';
+?>
+
+<div class="panel">
+  <div class="panel__body">
+    <form method="post" novalidate>
+      <?= csrf_field() ?>
+      <div class="form-grid">
+        <div class="form-field form-field--full<?= isset($errors['title']) ? ' has-error' : '' ?>">
+          <label for="title">Activity title</label>
+          <input type="text" id="title" name="title" value="<?= h($activity['title']) ?>" autofocus required>
+          <?php if (isset($errors['title'])): ?><span class="error-text"><?= h($errors['title']) ?></span><?php endif; ?>
+        </div>
+        <div class="form-field form-field--full">
+          <label for="description">Description</label>
+          <textarea id="description" name="description"><?= h($activity['description']) ?></textarea>
+        </div>
+        <?php if ($id): ?>
+        <div class="form-field form-field--full">
+          <span class="hint">Save first, then use the Gallery button on the tour page to add images for this activity.</span>
+        </div>
+        <?php endif; ?>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Save activity</button>
+        <a class="btn btn--ghost" href="<?= h(url('/admin/tours/manage.php?id=' . $tourId)) ?>">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<?php require __DIR__ . '/../../includes/footer.php'; ?>
