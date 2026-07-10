@@ -1,0 +1,13 @@
+ErrorDocument 404 /404.php
+
+# Never serve uploaded files as executable scripts.
+<IfModule mod_php.c>
+  <Directory "uploads">
+    php_flag engine off
+  </Directory>
+</IfModule>
+<FilesMatch "\.(?:php\d*|phtml)$">
+  <If "%{REQUEST_URI} =~ m#^/uploads/#">
+    Require all denied
+  </If>
+</FilesMatch>

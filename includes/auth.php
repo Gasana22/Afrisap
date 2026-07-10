@@ -15,6 +15,15 @@ function require_login(): void
     }
 }
 
+function require_super_admin(): void
+{
+    require_login();
+    if ((current_admin()['role'] ?? '') !== 'super_admin') {
+        http_response_code(403);
+        exit('Only super admins can access this page.');
+    }
+}
+
 function attempt_login(string $email, string $password): bool
 {
     $stmt = db()->prepare('SELECT id, name, email, password_hash, role FROM admin_users WHERE email = ? LIMIT 1');

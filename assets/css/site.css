@@ -38,7 +38,13 @@ body.site {
   -webkit-font-smoothing: antialiased;
 }
 
-.site a { color: inherit; text-decoration: none; }
+/* Bare element selector (not `.site a`) is deliberate: specificity 0,0,1 means
+   any component's own `color` rule (0,1,0+) wins automatically, so a plain
+   link falls back to inherited text color while a `.btn--primary` or similar
+   keeps its own. `.site a` (0,1,1) was higher than many single-class button
+   rules and silently overrode them -- this bit us for real on the "doors",
+   experience tiles, nav CTA, and every `.btn` variant used as a link. */
+a { color: inherit; text-decoration: none; }
 .site img { max-width: 100%; display: block; }
 .site :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
@@ -349,7 +355,7 @@ body.site {
   gap: 24px;
 }
 
-a.door {
+.door {
   position: relative;
   border-radius: 10px;
   padding: 40px 32px;
@@ -402,11 +408,16 @@ a.door {
 
 .tour-card__media {
   height: 150px;
-  background: linear-gradient(135deg, var(--canopy), var(--canopy-dark));
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Cg fill='none' stroke='%23c99a3e' stroke-width='1' opacity='0.22'%3E%3Ccircle cx='18' cy='132' r='22'/%3E%3Ccircle cx='18' cy='132' r='40'/%3E%3Ccircle cx='18' cy='132' r='58'/%3E%3Ccircle cx='132' cy='14' r='22'/%3E%3Ccircle cx='132' cy='14' r='40'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(135deg, var(--canopy), var(--canopy-dark));
+  background-repeat: no-repeat, no-repeat;
+  background-size: cover, cover;
   position: relative;
   display: flex;
   align-items: flex-end;
   padding: 12px;
+  overflow: hidden;
 }
 
 .tour-card__badge {
@@ -481,7 +492,7 @@ a.door {
   gap: 16px;
 }
 
-a.experience-tile {
+.experience-tile {
   background: var(--canopy);
   color: var(--white);
   border-radius: var(--radius);
@@ -514,6 +525,40 @@ a.experience-tile {
 }
 
 .why-item__body { opacity: 0.72; margin: 0; font-size: 14.5px; }
+
+/* Stat band (About page, etc.) */
+
+.stat-band {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--savanna-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.stat-band__item {
+  padding: 24px 20px;
+  text-align: center;
+  border-left: 1px solid var(--savanna-line);
+}
+
+.stat-band__item:first-child { border-left: none; }
+
+.stat-band__value {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--canopy);
+}
+
+.stat-band__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-top: 6px;
+}
 
 /* CTA band */
 
@@ -933,4 +978,6 @@ a.list-row:hover { border-color: var(--murram); }
   .footer-grid { grid-template-columns: 1fr; }
   .filter-bar { grid-template-columns: 1fr; }
   .gallery-strip--hero { grid-template-columns: 1fr; grid-auto-rows: 200px; }
+  .stat-band { grid-template-columns: 1fr 1fr; }
+  .stat-band__item:nth-child(3) { border-left: none; }
 }

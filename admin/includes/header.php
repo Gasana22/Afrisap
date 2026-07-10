@@ -120,6 +120,12 @@ $active_nav = $active_nav ?? '';
           Messages <span class="nav-link__count"><?= $counts['messages'] ?></span>
         </a>
       </div>
+      <?php if (($admin['role'] ?? '') === 'super_admin'): ?>
+      <div class="nav-group">
+        <div class="nav-group__label">Settings</div>
+        <a class="nav-link<?= $active_nav === 'users' ? ' is-active' : '' ?>" href="<?= h(url('/admin/users/index.php')) ?>">Admin Users</a>
+      </div>
+      <?php endif; ?>
     </nav>
     <div class="sidebar__footer">
       <span class="sidebar__user"><?= h($admin['name'] ?? '') ?></span>

@@ -22,7 +22,7 @@ require __DIR__ . '/includes/site_header.php';
 <header class="page-header">
   <div class="wrap">
     <p class="page-header__eyebrow">Experiential Tours</p>
-    <h1 class="page-header__title"><?= h($type ? $type['name'] : 'All Experiential Tours') ?></h1>
+    <h1 class="page-header__title"><?= h($type ? $type['name'] : 'Experiential Tours') ?></h1>
     <p class="page-header__lead">Not wildlife -- everyday Uganda. Culture by tribe, working farms, local sport, manufacturing, and neighbourhood life.</p>
   </div>
 </header>
@@ -37,6 +37,29 @@ require __DIR__ . '/includes/site_header.php';
           <div class="experience-tile__title"><?= h(str_replace(' Experience', '', $t['name'])) ?></div>
         </a>
       <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<section class="section section--savanna">
+  <div class="wrap">
+    <div class="section__header" style="margin-bottom:44px;">
+      <p class="section__eyebrow">How It Works</p>
+      <h2 class="section__title">Three steps into everyday Uganda</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <h3 class="why-item__title">01. Pick a type</h3>
+        <p class="why-item__body">Choose the world you want in: a tribe's culture, a working farm, local sport, a factory floor, or a neighbourhood.</p>
+      </div>
+      <div class="why-item">
+        <h3 class="why-item__title">02. Choose a destination</h3>
+        <p class="why-item__body">Each type has its own set of real places and communities -- browse them and see what they offer.</p>
+      </div>
+      <div class="why-item">
+        <h3 class="why-item__title">03. Book with a local provider</h3>
+        <p class="why-item__body">Every experience is run by a named service provider on the ground, not a call centre.</p>
+      </div>
     </div>
   </div>
 </section>

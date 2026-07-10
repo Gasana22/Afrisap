@@ -75,9 +75,11 @@ require __DIR__ . '/includes/site_header.php';
 <header class="page-header">
   <div class="wrap">
     <p class="page-header__eyebrow">Safari Tours</p>
-    <h1 class="page-header__title"><?= h($category ? $category['name'] : 'All Safari Tours') ?></h1>
+    <h1 class="page-header__title"><?= h($category ? $category['name'] : 'Safari Tours') ?></h1>
     <?php if ($categoryPage && $categoryPage['brief_overview']): ?>
       <p class="page-header__lead"><?= h($categoryPage['brief_overview']) ?></p>
+    <?php elseif (!$category): ?>
+      <p class="page-header__lead">Gorilla and chimpanzee trekking, wildlife drives, birding and combined East Africa itineraries -- browse every published safari, or filter by budget, country, length and destination below.</p>
     <?php endif; ?>
   </div>
 </header>
