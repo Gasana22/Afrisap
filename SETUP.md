@@ -36,3 +36,13 @@ Visit `http://127.0.0.1:8000/admin/login.php`.
 ## Build order
 
 Countries → Tour Categories → Destinations, then Tours/Activities/Experiential content on top. See `database/DATA_MODEL.md` for the full schema walkthrough and open questions.
+
+## Testing
+
+```
+php tests/smoke.php
+```
+
+Requires a MySQL/MariaDB server the current user can create databases on (same requirement as the app itself). This spins up an isolated `safarisap_test` database, seeds fixture data, starts a temporary PHP dev server on port 8098, and exercises the public site and admin panel end-to-end — page loads, form submissions (booking/quote/contact, verified by checking the database, not just the HTTP response), CSRF rejection, admin login/CRUD, and role-based access control. Everything is torn down automatically when it finishes, pass or fail.
+
+Run this after making changes to catch regressions before they reach a client-facing branch.
