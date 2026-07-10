@@ -117,13 +117,13 @@ require __DIR__ . '/includes/site_header.php';
       <aside class="detail-side">
         <?php if ($categoryPage['when_to_visit']): ?>
           <div class="side-card">
-            <h3 class="side-card__title">When to visit</h3>
+            <p class="side-card__title">When to visit</p>
             <p class="side-card__body"><?= nl2br(h($categoryPage['when_to_visit'])) ?></p>
           </div>
         <?php endif; ?>
         <?php if ($categoryParks): ?>
           <div class="side-card">
-            <h3 class="side-card__title">National parks</h3>
+            <p class="side-card__title">National parks</p>
             <?php foreach ($categoryParks as $park): ?>
               <a href="<?= h(url('/destination.php?id=' . $park['id'])) ?>" class="side-card__link"><?= h($park['name']) ?></a>
             <?php endforeach; ?>
@@ -131,7 +131,7 @@ require __DIR__ . '/includes/site_header.php';
         <?php endif; ?>
         <?php if ($categoryPage['more_activities']): ?>
           <div class="side-card">
-            <h3 class="side-card__title">More activities available</h3>
+            <p class="side-card__title">More activities available</p>
             <p class="side-card__body"><?= nl2br(h($categoryPage['more_activities'])) ?></p>
           </div>
         <?php endif; ?>

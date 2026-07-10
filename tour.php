@@ -78,7 +78,7 @@ require __DIR__ . '/includes/site_header.php';
           <h2 class="detail-heading">Full overview</h2>
           <p class="detail-text"><?= nl2br(h($tour['full_overview'])) ?></p>
           <?php if ($overviewGallery): ?>
-            <div class="gallery-strip"><?php foreach ($overviewGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div>
+            <div class="gallery-strip"><?php foreach ($overviewGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
           <?php endif; ?>
         <?php endif; ?>
 
@@ -97,7 +97,7 @@ require __DIR__ . '/includes/site_header.php';
                 <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
                 <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
                 <?php if ($activityGallery): ?>
-                  <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div>
+                  <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
                 <?php endif; ?>
               </div>
             <?php endforeach; ?>
@@ -107,19 +107,19 @@ require __DIR__ . '/includes/site_header.php';
         <?php if ($tour['hotel_info']): ?>
           <h2 class="detail-heading">Hotel</h2>
           <p class="detail-text"><?= nl2br(h($tour['hotel_info'])) ?></p>
-          <?php if ($hotelGallery): ?><div class="gallery-strip"><?php foreach ($hotelGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div><?php endif; ?>
+          <?php if ($hotelGallery): ?><div class="gallery-strip"><?php foreach ($hotelGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div><?php endif; ?>
         <?php endif; ?>
 
         <?php if ($tour['vehicle_info']): ?>
           <h2 class="detail-heading">Vehicle</h2>
           <p class="detail-text"><?= nl2br(h($tour['vehicle_info'])) ?></p>
-          <?php if ($vehicleGallery): ?><div class="gallery-strip"><?php foreach ($vehicleGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div><?php endif; ?>
+          <?php if ($vehicleGallery): ?><div class="gallery-strip"><?php foreach ($vehicleGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div><?php endif; ?>
         <?php endif; ?>
 
         <?php if ($tour['flight_info']): ?>
           <h2 class="detail-heading">Flights</h2>
           <p class="detail-text"><?= nl2br(h($tour['flight_info'])) ?></p>
-          <?php if ($flightGallery): ?><div class="gallery-strip"><?php foreach ($flightGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div><?php endif; ?>
+          <?php if ($flightGallery): ?><div class="gallery-strip"><?php foreach ($flightGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div><?php endif; ?>
         <?php endif; ?>
 
         <?php if ($tour['includes'] || $tour['excludes']): ?>
@@ -163,7 +163,7 @@ require __DIR__ . '/includes/site_header.php';
 
         <?php if ($tour['operator_name']): ?>
           <div class="side-card">
-            <h3 class="side-card__title">Tour operator</h3>
+            <p class="side-card__title">Tour operator</p>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
               <?php if ($tour['operator_logo']): ?><img src="<?= h(url('/' . $tour['operator_logo'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><?php endif; ?>
               <strong><?= h($tour['operator_name']) ?></strong>

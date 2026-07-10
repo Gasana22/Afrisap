@@ -68,7 +68,7 @@ require __DIR__ . '/includes/site_header.php';
           <h2 class="detail-heading">Full overview</h2>
           <p class="detail-text"><?= nl2br(h($tour['full_overview'])) ?></p>
           <?php if ($overviewGallery): ?>
-            <div class="gallery-strip"><?php foreach ($overviewGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div>
+            <div class="gallery-strip"><?php foreach ($overviewGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
           <?php endif; ?>
         <?php endif; ?>
 

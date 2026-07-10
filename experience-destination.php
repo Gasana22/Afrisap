@@ -69,7 +69,7 @@ require __DIR__ . '/includes/site_header.php';
             <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
             <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
             <?php if ($activityGallery): ?>
-              <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="" loading="lazy"><?php endforeach; ?></div>
+              <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
             <?php endif; ?>
           </div>
         <?php endforeach; ?>

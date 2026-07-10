@@ -51,11 +51,11 @@ require __DIR__ . '/includes/site_header.php';
     </div>
     <aside class="detail-side">
       <div class="side-card">
-        <h3 class="side-card__title">Branches</h3>
+        <p class="side-card__title">Branches</p>
         <p class="side-card__body">Kampala &middot; Nairobi &middot; Addis Ababa &middot; London</p>
       </div>
       <div class="side-card">
-        <h3 class="side-card__title">Email</h3>
+        <p class="side-card__title">Email</p>
         <p class="side-card__body"><a href="mailto:info@safarisap.com" style="color:inherit;">info@safarisap.com</a></p>
       </div>
     </aside>
