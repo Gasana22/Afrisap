@@ -13,7 +13,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">About Us</p>
+    <p class="page-header__eyebrow">Travel Tips</p>
     <h1 class="page-header__title"><?= h($page['title'] ?? 'Uganda Travel Tips') ?></h1>
   </div>
 </header>
@@ -23,7 +23,7 @@ require __DIR__ . '/includes/site_header.php';
     <?php if ($page && $page['body']): ?>
       <p class="detail-text" style="font-size:16px;"><?= nl2br(h($page['body'])) ?></p>
     <?php else: ?>
-      <p class="empty-note">This page is being written — check back soon.</p>
+      <p class="empty-note">Travel tips are being written — check back soon, or <a href="<?= h(url('/contact.php')) ?>">ask us</a> directly.</p>
     <?php endif; ?>
   </div>
 </section>

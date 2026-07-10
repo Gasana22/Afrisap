@@ -420,7 +420,16 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
 }
 
+.tour-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .tour-card__badge {
+  position: relative;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;

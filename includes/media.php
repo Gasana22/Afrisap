@@ -28,6 +28,14 @@ function get_media(string $entityType, int $entityId): array
     return $stmt->fetchAll();
 }
 
+function get_cover_image(string $entityType, int $entityId): ?string
+{
+    $stmt = db()->prepare('SELECT file_path FROM media WHERE entity_type = ? AND entity_id = ? ORDER BY sort_order, id LIMIT 1');
+    $stmt->execute([$entityType, $entityId]);
+    $path = $stmt->fetchColumn();
+    return $path !== false ? $path : null;
+}
+
 function media_count(string $entityType, int $entityId): int
 {
     $stmt = db()->prepare('SELECT COUNT(*) FROM media WHERE entity_type = ? AND entity_id = ?');

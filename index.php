@@ -114,6 +114,7 @@ require __DIR__ . '/includes/site_header.php';
         <?php foreach ($featuredTours as $tour): ?>
           <a href="<?= h(url('/tour.php?id=' . $tour['id'])) ?>" class="tour-card">
             <div class="tour-card__media">
+              <?php if ($cover = get_cover_image('tour', $tour['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?>
               <span class="tour-card__badge"><?= h($tour['budget_type']) ?></span>
             </div>
             <div class="tour-card__body">

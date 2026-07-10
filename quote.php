@@ -12,7 +12,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">About Us</p>
+    <p class="page-header__eyebrow">Get a Quote</p>
     <h1 class="page-header__title"><?= $type === 'safari' ? 'Safari Quote' : 'Experiential Quote' ?></h1>
     <p class="page-header__lead">Tell us what you're picturing and we'll put together a tailored quote within 48 hours.</p>
   </div>

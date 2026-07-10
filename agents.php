@@ -11,7 +11,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">About Us</p>
+    <p class="page-header__eyebrow">Agent Pool</p>
     <h1 class="page-header__title">Join the Agent Pool</h1>
     <p class="page-header__lead">Sell Safarisap tours to your clients and earn commission on every booking. Tell us about your agency.</p>
   </div>

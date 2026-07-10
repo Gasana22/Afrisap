@@ -11,7 +11,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">About Us</p>
+    <p class="page-header__eyebrow">Get In Touch</p>
     <h1 class="page-header__title">Contact Us</h1>
     <p class="page-header__lead">24/7 Support &middot; <a href="tel:+256393246926" style="color:inherit;text-decoration:underline;">+256 393 246 926</a> &middot; WhatsApp <a href="https://wa.me/256775328952" style="color:inherit;text-decoration:underline;">+256 775 328 952</a></p>
   </div>

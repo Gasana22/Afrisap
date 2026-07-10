@@ -11,7 +11,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">About Us</p>
+    <p class="page-header__eyebrow">Journal</p>
     <h1 class="page-header__title">Blog</h1>
     <p class="page-header__lead">Notes from the road — trip reports, park guides and travel planning tips.</p>
   </div>

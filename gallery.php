@@ -25,7 +25,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">About Us</p>
+    <p class="page-header__eyebrow">In Pictures</p>
     <h1 class="page-header__title">Gallery</h1>
     <p class="page-header__lead">A look at the parks, cultures and journeys Safarisap plans.</p>
   </div>

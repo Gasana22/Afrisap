@@ -132,7 +132,10 @@ require __DIR__ . '/includes/site_header.php';
       <div class="card-grid">
         <?php foreach ($relatedTours as $tour): ?>
           <a href="<?= h(url('/tour.php?id=' . $tour['id'])) ?>" class="tour-card">
-            <div class="tour-card__media"><span class="tour-card__badge"><?= h($tour['budget_type']) ?></span></div>
+            <div class="tour-card__media">
+              <?php if ($cover = get_cover_image('tour', $tour['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?>
+              <span class="tour-card__badge"><?= h($tour['budget_type']) ?></span>
+            </div>
             <div class="tour-card__body">
               <p class="tour-card__meta"><?= h($tour['category_name']) ?> &middot; <?= (int) $tour['days'] ?> days</p>
               <h3 class="tour-card__title"><?= h($tour['title']) ?></h3>

@@ -39,7 +39,7 @@ require __DIR__ . '/includes/site_header.php';
     <?php if ($page && $page['body']): ?>
       <p class="detail-text" style="font-size:16px;"><?= nl2br(h($page['body'])) ?></p>
     <?php else: ?>
-      <p class="empty-note">This page is being written — check back soon.</p>
+      <p class="empty-note">Our story is being written — check back soon, or <a href="<?= h(url('/contact.php')) ?>">reach out</a> and we'll tell you in person.</p>
     <?php endif; ?>
   </div>
 </section>
