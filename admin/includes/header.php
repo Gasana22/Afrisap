@@ -10,6 +10,10 @@ $counts = [
     'operators' => (int) db()->query('SELECT COUNT(*) FROM tour_operators')->fetchColumn(),
     'destinations' => (int) db()->query('SELECT COUNT(*) FROM destinations')->fetchColumn(),
     'tours' => (int) db()->query('SELECT COUNT(*) FROM tours')->fetchColumn(),
+    'activities' => (int) db()->query('SELECT COUNT(*) FROM activities')->fetchColumn(),
+    'providers' => (int) db()->query('SELECT COUNT(*) FROM service_providers')->fetchColumn(),
+    'experience-destinations' => (int) db()->query('SELECT COUNT(*) FROM experience_destinations')->fetchColumn(),
+    'experience-tours' => (int) db()->query('SELECT COUNT(*) FROM experience_tours')->fetchColumn(),
 ];
 $active_nav = $active_nav ?? '';
 ?>
@@ -58,6 +62,24 @@ $active_nav = $active_nav ?? '';
         </a>
         <a class="nav-link<?= $active_nav === 'tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/tours/index.php')) ?>">
           Tours <span class="nav-link__count"><?= $counts['tours'] ?></span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group__label">Activities</div>
+        <a class="nav-link<?= $active_nav === 'activities' ? ' is-active' : '' ?>" href="<?= h(url('/admin/activities/index.php')) ?>">
+          Activities <span class="nav-link__count"><?= $counts['activities'] ?></span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group__label">Experiential</div>
+        <a class="nav-link<?= $active_nav === 'providers' ? ' is-active' : '' ?>" href="<?= h(url('/admin/providers/index.php')) ?>">
+          Service Providers <span class="nav-link__count"><?= $counts['providers'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'experience-destinations' ? ' is-active' : '' ?>" href="<?= h(url('/admin/experience-destinations/index.php')) ?>">
+          Experience Destinations <span class="nav-link__count"><?= $counts['experience-destinations'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'experience-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/experience-tours/index.php')) ?>">
+          Experience Tours <span class="nav-link__count"><?= $counts['experience-tours'] ?></span>
         </a>
       </div>
     </nav>

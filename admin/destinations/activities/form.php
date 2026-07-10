@@ -16,7 +16,7 @@ if (!$destination) {
     redirect('/admin/destinations/index.php');
 }
 
-$activity = ['title' => '', 'description' => ''];
+$activity = ['title' => '', 'description' => '', 'activity_id' => ''];
 $errors = [];
 
 if ($id) {
@@ -29,10 +29,13 @@ if ($id) {
     }
 }
 
+$catalog = db()->query('SELECT id, name, short_description FROM activities ORDER BY name')->fetchAll();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $activity['title'] = trim($_POST['title'] ?? '');
     $activity['description'] = trim($_POST['description'] ?? '');
+    $activity['activity_id'] = $_POST['activity_id'] !== '' ? (int) $_POST['activity_id'] : null;
 
     if ($activity['title'] === '') {
         $errors['title'] = 'Enter an activity title.';
@@ -40,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         if ($id) {
-            db()->prepare('UPDATE destination_activities SET title = ?, description = ? WHERE id = ?')
-                ->execute([$activity['title'], $activity['description'], $id]);
+            db()->prepare('UPDATE destination_activities SET title = ?, description = ?, activity_id = ? WHERE id = ?')
+                ->execute([$activity['title'], $activity['description'], $activity['activity_id'], $id]);
         } else {
             $stmt = db()->prepare('SELECT COALESCE(MAX(sort_order), -1) + 1 FROM destination_activities WHERE destination_id = ?');
             $stmt->execute([$destinationId]);
             $nextOrder = (int) $stmt->fetchColumn();
-            db()->prepare('INSERT INTO destination_activities (destination_id, title, description, sort_order) VALUES (?, ?, ?, ?)')
-                ->execute([$destinationId, $activity['title'], $activity['description'], $nextOrder]);
+            db()->prepare('INSERT INTO destination_activities (destination_id, title, description, activity_id, sort_order) VALUES (?, ?, ?, ?, ?)')
+                ->execute([$destinationId, $activity['title'], $activity['description'], $activity['activity_id'], $nextOrder]);
         }
         flash_set('success', 'Activity saved.');
         redirect('/admin/destinations/manage.php?id=' . $destinationId);
@@ -66,6 +69,19 @@ require __DIR__ . '/../../includes/header.php';
     <form method="post" novalidate>
       <?= csrf_field() ?>
       <div class="form-grid">
+        <div class="form-field form-field--full">
+          <label for="activity_id">Link to catalog activity (optional)</label>
+          <select id="activity_id" name="activity_id">
+            <option value="">Not linked &mdash; freeform entry</option>
+            <?php foreach ($catalog as $catalogActivity): ?>
+              <option value="<?= (int) $catalogActivity['id'] ?>"
+                data-name="<?= h($catalogActivity['name']) ?>"
+                data-description="<?= h($catalogActivity['short_description'] ?? '') ?>"
+                <?= (int) ($activity['activity_id'] ?? 0) === (int) $catalogActivity['id'] ? 'selected' : '' ?>><?= h($catalogActivity['name']) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <span class="hint">Picking one fills the title/description below &mdash; still editable, and this destination keeps its own copy.</span>
+        </div>
         <div class="form-field form-field--full<?= isset($errors['title']) ? ' has-error' : '' ?>">
           <label for="title">Activity title</label>
           <input type="text" id="title" name="title" value="<?= h($activity['title']) ?>" placeholder="e.g. Guided Gorilla Trek" autofocus required>
@@ -88,5 +104,19 @@ require __DIR__ . '/../../includes/header.php';
     </form>
   </div>
 </div>
+
+<script>
+document.getElementById('activity_id').addEventListener('change', function () {
+  var opt = this.options[this.selectedIndex];
+  var titleField = document.getElementById('title');
+  var descField = document.getElementById('description');
+  if (opt.value && !titleField.value) {
+    titleField.value = opt.dataset.name || '';
+  }
+  if (opt.value && !descField.value) {
+    descField.value = opt.dataset.description || '';
+  }
+});
+</script>
 
 <?php require __DIR__ . '/../../includes/footer.php'; ?>
