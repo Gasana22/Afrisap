@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/site_bootstrap.php';
 require_once __DIR__ . '/includes/uploads.php';
+require_once __DIR__ . '/includes/mailer.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
@@ -46,6 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
         db()->prepare('INSERT INTO career_applications (career_id, full_name, email, phone, cv_path, cover_letter) VALUES (?, ?, ?, ?, ?, ?)')
             ->execute([$id, $name, $email, $phone, $cvPath, $coverLetter]);
+
+        send_email(
+            $email,
+            'We received your application — ' . $career['title'],
+            "Hi $name,\n\nThanks for applying for {$career['title']}. We'll review your application and be in touch.\n\n— Safarisap"
+        );
+        notify_admin(
+            'New application: ' . $career['title'] . ' from ' . $name,
+            "New career application\n\nRole: {$career['title']}\nName: $name\nEmail: $email\nPhone: $phone\nCV attached: " . ($cvPath ? 'Yes' : 'No') . "\nCover letter:\n$coverLetter"
+        );
+
         redirect('/career.php?id=' . $id . '&sent=1');
     }
 }

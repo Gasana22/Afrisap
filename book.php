@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/site_bootstrap.php';
+require_once __DIR__ . '/includes/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('/tours.php');
@@ -21,14 +22,29 @@ if (!$tourId || $name === '' || $email === '' || !filter_var($email, FILTER_VALI
     redirect('/tour.php?id=' . $tourId);
 }
 
-$exists = db()->prepare("SELECT id FROM tours WHERE id = ? AND status = 'published'");
-$exists->execute([$tourId]);
-if (!$exists->fetch()) {
+$stmt = db()->prepare("SELECT t.id, t.title, o.email AS operator_email
+    FROM tours t LEFT JOIN tour_operators o ON o.id = t.operator_id
+    WHERE t.id = ? AND t.status = 'published'");
+$stmt->execute([$tourId]);
+$tour = $stmt->fetch();
+if (!$tour) {
     redirect('/tours.php');
 }
 
 db()->prepare('INSERT INTO bookings (bookable_type, bookable_id, customer_name, customer_email, customer_phone, travel_date, num_people, message, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
     ->execute(['tour', $tourId, $name, $email, $phone, $travelDate, $numPeople, $message, 'pending']);
+
+send_email(
+    $email,
+    'We received your enquiry — ' . $tour['title'],
+    "Hi $name,\n\nThanks for your enquiry about \"{$tour['title']}\". We'll be in touch shortly to confirm dates and availability.\n\nYour details:\nTravel date: " . ($travelDate ?: 'Not specified') . "\nPeople: $numPeople\n\n— Safarisap"
+);
+
+$notifyBody = "New tour enquiry\n\nTour: {$tour['title']}\nName: $name\nEmail: $email\nPhone: $phone\nTravel date: " . ($travelDate ?: 'Not specified') . "\nPeople: $numPeople\nMessage: $message";
+notify_admin('New tour enquiry: ' . $tour['title'], $notifyBody);
+if ($tour['operator_email']) {
+    send_email($tour['operator_email'], 'New enquiry for your tour: ' . $tour['title'], $notifyBody, $email);
+}
 
 redirect('/tour.php?id=' . $tourId . '&sent=1');
