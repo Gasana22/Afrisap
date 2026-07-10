@@ -362,13 +362,24 @@ CREATE TABLE blog_posts (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Simple CMS pages: About, Uganda Travel Tips, Contact Us, etc.
+-- Simple CMS pages: About, Uganda Travel Tips, etc.
 CREATE TABLE pages (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     slug VARCHAR(120) NOT NULL UNIQUE,
     title VARCHAR(200) NOT NULL,
     body LONGTEXT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE contact_messages (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    phone VARCHAR(50) NULL,
+    subject VARCHAR(200) NULL,
+    message TEXT NOT NULL,
+    status ENUM('new', 'read', 'closed') NOT NULL DEFAULT 'new',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================

@@ -84,3 +84,10 @@ INSERT INTO activities (name) VALUES
     ('Skydiving'), ('White Water Rafting'), ('Horseback Riding'), ('Mountain Hiking'),
     ('Nature Walks'), ('Kayaking'), ('Boat Cruises'), ('Sport Fishing'),
     ('Bungee Jumping'), ('Cycling'), ('Quad Biking');
+
+-- Starter content for the two fixed About Us CMS pages (editable in admin).
+INSERT INTO pages (slug, title, body) VALUES
+    ('about', 'About Safarisap',
+     'Safarisap connects travellers to East Africa on two tracks: safari tours into the region''s national parks and game reserves, and experiential tours into the everyday life of the communities that call this region home.\n\nWe work with licensed, named tour operators and local service providers across Uganda, Kenya, Tanzania, Rwanda, Burundi, South Sudan and DR Congo, with branches in Kampala, Nairobi, Addis Ababa and London.'),
+    ('uganda-travel-tips', 'Uganda Travel Tips',
+     'Visas: most visitors can apply for a Uganda e-visa online before travel.\n\nCurrency: the Ugandan Shilling (UGX) is the local currency; US Dollars are widely accepted for larger payments like gorilla permits and hotel bills.\n\nHealth: a yellow fever vaccination certificate is required on arrival, and antimalarial medication is strongly recommended.\n\nPacking: neutral-coloured clothing, a light rain jacket and sturdy walking shoes cover most itineraries, especially forest treks.');

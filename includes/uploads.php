@@ -2,20 +2,29 @@
 declare(strict_types=1);
 
 const UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
-const UPLOAD_ALLOWED_MIME = [
+
+const UPLOAD_ALLOWED_IMAGE_MIME = [
     'image/jpeg' => 'jpg',
     'image/png' => 'png',
     'image/webp' => 'webp',
 ];
 
+const UPLOAD_ALLOWED_DOCUMENT_MIME = [
+    'image/jpeg' => 'jpg',
+    'image/png' => 'png',
+    'image/webp' => 'webp',
+    'application/pdf' => 'pdf',
+];
+
 /**
- * Moves an uploaded image into /uploads/{Y}/{m}/ and returns the path
+ * Moves an uploaded file into /uploads/{Y}/{m}/ and returns the path
  * relative to the project root (e.g. "uploads/2026/07/64f...a1.jpg"),
  * or null if no file was submitted for this field.
  *
+ * @param array<string,string> $allowedMime mime type => file extension
  * @throws RuntimeException on an invalid or oversized file.
  */
-function handle_image_upload(string $fieldName): ?string
+function handle_upload(string $fieldName, array $allowedMime, string $tooLargeMessage, string $wrongTypeMessage): ?string
 {
     if (!isset($_FILES[$fieldName]) || $_FILES[$fieldName]['error'] === UPLOAD_ERR_NO_FILE) {
         return null;
@@ -27,15 +36,15 @@ function handle_image_upload(string $fieldName): ?string
         throw new RuntimeException('The file failed to upload. Try again.');
     }
     if ($file['size'] > UPLOAD_MAX_BYTES) {
-        throw new RuntimeException('That image is too large (5MB max).');
+        throw new RuntimeException($tooLargeMessage);
     }
 
     $mime = mime_content_type($file['tmp_name']);
-    if (!isset(UPLOAD_ALLOWED_MIME[$mime])) {
-        throw new RuntimeException('Only JPG, PNG or WEBP images are allowed.');
+    if (!isset($allowedMime[$mime])) {
+        throw new RuntimeException($wrongTypeMessage);
     }
 
-    $ext = UPLOAD_ALLOWED_MIME[$mime];
+    $ext = $allowedMime[$mime];
     $subdir = 'uploads/' . date('Y') . '/' . date('m');
     $absDir = __DIR__ . '/../' . $subdir;
 
@@ -51,4 +60,14 @@ function handle_image_upload(string $fieldName): ?string
     }
 
     return $relPath;
+}
+
+function handle_image_upload(string $fieldName): ?string
+{
+    return handle_upload($fieldName, UPLOAD_ALLOWED_IMAGE_MIME, 'That image is too large (5MB max).', 'Only JPG, PNG or WEBP images are allowed.');
+}
+
+function handle_document_upload(string $fieldName): ?string
+{
+    return handle_upload($fieldName, UPLOAD_ALLOWED_DOCUMENT_MIME, 'That file is too large (5MB max).', 'Only JPG, PNG, WEBP or PDF files are allowed.');
 }

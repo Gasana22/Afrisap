@@ -14,6 +14,9 @@ $counts = [
     'providers' => (int) db()->query('SELECT COUNT(*) FROM service_providers')->fetchColumn(),
     'experience-destinations' => (int) db()->query('SELECT COUNT(*) FROM experience_destinations')->fetchColumn(),
     'experience-tours' => (int) db()->query('SELECT COUNT(*) FROM experience_tours')->fetchColumn(),
+    'pages' => (int) db()->query('SELECT COUNT(*) FROM pages')->fetchColumn(),
+    'careers' => (int) db()->query('SELECT COUNT(*) FROM careers')->fetchColumn(),
+    'blog' => (int) db()->query('SELECT COUNT(*) FROM blog_posts')->fetchColumn(),
 ];
 $active_nav = $active_nav ?? '';
 ?>
@@ -80,6 +83,18 @@ $active_nav = $active_nav ?? '';
         </a>
         <a class="nav-link<?= $active_nav === 'experience-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/experience-tours/index.php')) ?>">
           Experience Tours <span class="nav-link__count"><?= $counts['experience-tours'] ?></span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group__label">About Us</div>
+        <a class="nav-link<?= $active_nav === 'pages' ? ' is-active' : '' ?>" href="<?= h(url('/admin/pages/index.php')) ?>">
+          Pages <span class="nav-link__count"><?= $counts['pages'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'careers' ? ' is-active' : '' ?>" href="<?= h(url('/admin/careers/index.php')) ?>">
+          Careers <span class="nav-link__count"><?= $counts['careers'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'blog' ? ' is-active' : '' ?>" href="<?= h(url('/admin/blog/index.php')) ?>">
+          Blog <span class="nav-link__count"><?= $counts['blog'] ?></span>
         </a>
       </div>
     </nav>
