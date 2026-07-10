@@ -29,7 +29,7 @@ require __DIR__ . '/includes/site_header.php';
   <div class="wrap hero__content">
     <p class="hero__eyebrow">East Africa &middot; Uganda &middot; Kenya &middot; Tanzania &middot; Rwanda &middot; DR Congo</p>
     <h1 class="hero__title">Explore. Experience. Belong.</h1>
-    <p class="hero__subtitle">Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village — Safarisap plans East Africa on your terms.</p>
+    <p class="hero__subtitle">Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village. Safarisap plans East Africa on your terms.</p>
     <p class="hero__coords">01&deg;04'S, 29&deg;40'E &mdash; BWINDI IMPENETRABLE FOREST</p>
     <div class="hero__actions">
       <a href="<?= h(url('/tours.php')) ?>" class="btn btn--primary">Plan a Safari</a>
@@ -85,7 +85,7 @@ require __DIR__ . '/includes/site_header.php';
     <div class="section__header">
       <p class="section__eyebrow">Two Ways to Travel</p>
       <h2 class="section__title">Wildlife, or the world people live in</h2>
-      <p class="section__lead">Safari tours take you into the parks. Experiential tours take you into daily life — a farm, a factory floor, a football pitch, a neighbourhood. Both are Uganda.</p>
+      <p class="section__lead">Safari tours take you into the parks. Experiential tours take you into daily life: a farm, a factory floor, a football pitch, a neighbourhood. Both are Uganda.</p>
     </div>
     <div class="doors">
       <a href="<?= h(url('/tours.php')) ?>" class="door door--safari">
@@ -115,7 +115,7 @@ require __DIR__ . '/includes/site_header.php';
       <h2 class="section__title">Recently added safaris</h2>
     </div>
     <?php if (!$featuredTours): ?>
-      <p class="empty-note">Tours are being added — check back soon, or <a href="<?= h(url('/quote.php?type=safari')) ?>">tell us what you're planning</a> and we'll build an itinerary around it.</p>
+      <p class="empty-note">Tours are being added. Check back soon, or <a href="<?= h(url('/quote.php?type=safari')) ?>">tell us what you're planning</a> and we'll build an itinerary around it.</p>
     <?php else: ?>
       <div class="card-grid">
         <?php foreach ($featuredTours as $tour): ?>
@@ -150,7 +150,7 @@ require __DIR__ . '/includes/site_header.php';
       <h2 class="section__title">National parks &amp; game reserves</h2>
     </div>
     <?php if (!$destinations): ?>
-      <p class="empty-note">Destinations are being added — check back soon.</p>
+      <p class="empty-note">Destinations are being added. Check back soon.</p>
     <?php else: ?>
       <div class="tile-rail">
         <?php foreach ($destinations as $dest): ?>
@@ -171,9 +171,9 @@ require __DIR__ . '/includes/site_header.php';
       <h2 class="section__title">Five ways into everyday Uganda</h2>
     </div>
     <div class="experience-grid">
-      <?php foreach ($experienceTypes as $i => $type): ?>
+      <?php foreach ($experienceTypes as $type): ?>
         <a href="<?= h(url('/experiences.php?type=' . $type['slug'])) ?>" class="experience-tile">
-          <div class="experience-tile__number"><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></div>
+          <div class="experience-tile__mark" aria-hidden="true">&#9679;</div>
           <div class="experience-tile__title"><?= h(str_replace(' Experience', '', $type['name'])) ?></div>
         </a>
       <?php endforeach; ?>
@@ -190,15 +190,15 @@ require __DIR__ . '/includes/site_header.php';
     <div class="why-grid">
       <div class="why-item">
         <h3 class="why-item__title">Licensed operators, not middlemen</h3>
-        <p class="why-item__body">Every tour is run by a named, contactable operator — you know exactly who's guiding you before you book.</p>
+        <p class="why-item__body">Every tour is run by a named, contactable operator: you know exactly who's guiding you before you book.</p>
       </div>
       <div class="why-item">
         <h3 class="why-item__title">Beyond the wildlife circuit</h3>
-        <p class="why-item__body">We're one of the few platforms built around experiential tourism too — real farms, real neighbourhoods, real people.</p>
+        <p class="why-item__body">We're one of the few platforms built around experiential tourism too: real farms, real neighbourhoods, real people.</p>
       </div>
       <div class="why-item">
         <h3 class="why-item__title">Branches across the region</h3>
-        <p class="why-item__body">Kampala, Nairobi, Addis Ababa and London — support in your timezone, on the ground where it matters.</p>
+        <p class="why-item__body">Kampala, Nairobi, Addis Ababa and London, supporting you in your timezone, on the ground where it matters.</p>
       </div>
     </div>
   </div>
@@ -207,7 +207,7 @@ require __DIR__ . '/includes/site_header.php';
 <section class="cta-band">
   <div class="wrap">
     <h2 class="cta-band__title">Not sure where to start?</h2>
-    <p class="cta-band__body">Tell us what you're picturing and we'll put together a quote — safari, experiential, or a mix of both.</p>
+    <p class="cta-band__body">Tell us what you're picturing and we'll put together a quote (safari, experiential, or a mix of both).</p>
     <div class="cta-band__actions">
       <a href="<?= h(url('/quote.php?type=safari')) ?>" class="btn btn--primary">Get a Safari Quote</a>
       <a href="<?= h(url('/quote.php?type=experiential')) ?>" class="btn btn--outline">Get an Experiential Quote</a>
