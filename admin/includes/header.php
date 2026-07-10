@@ -17,6 +17,11 @@ $counts = [
     'pages' => (int) db()->query('SELECT COUNT(*) FROM pages')->fetchColumn(),
     'careers' => (int) db()->query('SELECT COUNT(*) FROM careers')->fetchColumn(),
     'blog' => (int) db()->query('SELECT COUNT(*) FROM blog_posts')->fetchColumn(),
+    'bookings' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'pending'")->fetchColumn(),
+    'quotes' => (int) db()->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn(),
+    'agents' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'new'")->fetchColumn(),
+    'career-applications' => (int) db()->query('SELECT COUNT(*) FROM career_applications')->fetchColumn(),
+    'messages' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'new'")->fetchColumn(),
 ];
 $active_nav = $active_nav ?? '';
 ?>
@@ -95,6 +100,24 @@ $active_nav = $active_nav ?? '';
         </a>
         <a class="nav-link<?= $active_nav === 'blog' ? ' is-active' : '' ?>" href="<?= h(url('/admin/blog/index.php')) ?>">
           Blog <span class="nav-link__count"><?= $counts['blog'] ?></span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group__label">Inbox</div>
+        <a class="nav-link<?= $active_nav === 'bookings' ? ' is-active' : '' ?>" href="<?= h(url('/admin/bookings/index.php')) ?>">
+          Bookings <span class="nav-link__count"><?= $counts['bookings'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'quotes' ? ' is-active' : '' ?>" href="<?= h(url('/admin/quotes/index.php')) ?>">
+          Quote Requests <span class="nav-link__count"><?= $counts['quotes'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'agents' ? ' is-active' : '' ?>" href="<?= h(url('/admin/agents/index.php')) ?>">
+          Agent Applications <span class="nav-link__count"><?= $counts['agents'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'career-applications' ? ' is-active' : '' ?>" href="<?= h(url('/admin/career-applications/index.php')) ?>">
+          Career Applications <span class="nav-link__count"><?= $counts['career-applications'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'messages' ? ' is-active' : '' ?>" href="<?= h(url('/admin/messages/index.php')) ?>">
+          Messages <span class="nav-link__count"><?= $counts['messages'] ?></span>
         </a>
       </div>
     </nav>

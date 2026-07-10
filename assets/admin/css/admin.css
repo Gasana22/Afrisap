@@ -699,6 +699,47 @@ a { color: inherit; }
   border-bottom-color: var(--murram);
 }
 
+/* ---------- Inbox (bookings, quotes, applications, messages) ---------- */
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  background: var(--mist);
+  border: 1px solid var(--line);
+}
+
+.status-pill--new,
+.status-pill--pending { color: var(--murram-dark); border-color: #e7c7b8; background: #fbf1ea; }
+
+.status-pill--confirmed,
+.status-pill--approved,
+.status-pill--closed,
+.status-pill--read,
+.status-pill--contacted { color: #204531; border-color: #c7dccb; background: #eef4ee; }
+
+.status-pill--cancelled,
+.status-pill--rejected { color: var(--danger); border-color: #e7c7c1; background: #fbeeec; }
+
+.inline-status-form select {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--white);
+}
+
+.inbox-message {
+  max-width: 320px;
+  white-space: normal;
+  font-size: 12.5px;
+  opacity: 0.8;
+}
+
 @media (max-width: 860px) {
   .admin-shell { grid-template-columns: 1fr; }
   .sidebar { display: none; }
