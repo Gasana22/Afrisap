@@ -28,54 +28,57 @@ require __DIR__ . '/includes/site_header.php';
   <?= render_hero_illustration() ?>
   <div class="wrap hero__content">
     <p class="hero__eyebrow">East Africa &middot; Uganda &middot; Kenya &middot; Tanzania &middot; Rwanda &middot; DR Congo</p>
-    <h1 class="hero__title">Explore. Experience.<br>Belong.</h1>
+    <h1 class="hero__title">Explore. Experience. Belong.</h1>
     <p class="hero__subtitle">Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village — Safarisap plans East Africa on your terms.</p>
+    <p class="hero__coords">01&deg;04'S, 29&deg;40'E &mdash; BWINDI IMPENETRABLE FOREST</p>
     <div class="hero__actions">
       <a href="<?= h(url('/tours.php')) ?>" class="btn btn--primary">Plan a Safari</a>
       <a href="<?= h(url('/experiences.php')) ?>" class="btn btn--outline">Discover Experiences</a>
     </div>
-
-    <form class="search-bar" action="<?= h(url('/tours.php')) ?>" method="get">
-      <div class="search-bar__field">
-        <label for="search-budget">Budget</label>
-        <select id="search-budget" name="budget">
-          <option value="">Any budget</option>
-          <option value="Luxury">Luxury</option>
-          <option value="Mid-Range">Mid-Range</option>
-          <option value="Budget">Budget</option>
-        </select>
-      </div>
-      <div class="search-bar__field">
-        <label for="search-country">Country</label>
-        <select id="search-country" name="country">
-          <option value="">Any country</option>
-          <?php foreach (db()->query('SELECT id, name FROM countries ORDER BY name')->fetchAll() as $country): ?>
-            <option value="<?= (int) $country['id'] ?>"><?= h($country['name']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <div class="search-bar__field">
-        <label for="search-days">Days</label>
-        <select id="search-days" name="days">
-          <option value="">Any length</option>
-          <option value="1-3">1–3 days</option>
-          <option value="4-7">4–7 days</option>
-          <option value="8+">8+ days</option>
-        </select>
-      </div>
-      <div class="search-bar__field">
-        <label for="search-destination">Destination</label>
-        <select id="search-destination" name="destination">
-          <option value="">Any national park</option>
-          <?php foreach (db()->query('SELECT id, name FROM destinations ORDER BY name')->fetchAll() as $dest): ?>
-            <option value="<?= (int) $dest['id'] ?>"><?= h($dest['name']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <button type="submit" class="btn btn--dark">Search</button>
-    </form>
   </div>
 </header>
+
+<div class="search-band">
+  <form class="wrap search-bar" action="<?= h(url('/tours.php')) ?>" method="get">
+    <div class="search-bar__field">
+      <label for="search-budget">Budget</label>
+      <select id="search-budget" name="budget">
+        <option value="">Any budget</option>
+        <option value="Luxury">Luxury</option>
+        <option value="Mid-Range">Mid-Range</option>
+        <option value="Budget">Budget</option>
+      </select>
+    </div>
+    <div class="search-bar__field">
+      <label for="search-country">Country</label>
+      <select id="search-country" name="country">
+        <option value="">Any country</option>
+        <?php foreach (db()->query('SELECT id, name FROM countries ORDER BY name')->fetchAll() as $country): ?>
+          <option value="<?= (int) $country['id'] ?>"><?= h($country['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="search-bar__field">
+      <label for="search-days">Days</label>
+      <select id="search-days" name="days">
+        <option value="">Any length</option>
+        <option value="1-3">1–3 days</option>
+        <option value="4-7">4–7 days</option>
+        <option value="8+">8+ days</option>
+      </select>
+    </div>
+    <div class="search-bar__field">
+      <label for="search-destination">Destination</label>
+      <select id="search-destination" name="destination">
+        <option value="">Any national park</option>
+        <?php foreach (db()->query('SELECT id, name FROM destinations ORDER BY name')->fetchAll() as $dest): ?>
+          <option value="<?= (int) $dest['id'] ?>"><?= h($dest['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <button type="submit" class="btn btn--dark">Search</button>
+  </form>
+</div>
 
 <section class="section">
   <div class="wrap">
@@ -86,12 +89,16 @@ require __DIR__ . '/includes/site_header.php';
     </div>
     <div class="doors">
       <a href="<?= h(url('/tours.php')) ?>" class="door door--safari">
+        <span class="door__seal" aria-hidden="true"></span>
+        <p class="door__route">ROUTE 01 &mdash; INTO THE PARKS</p>
         <p class="door__eyebrow">Safari Tours</p>
         <h3 class="door__title">Gorillas, game drives &amp; the Rift Valley</h3>
         <p class="door__body">Gorilla and chimpanzee trekking, wildlife drives, birding, and combined East Africa itineraries.</p>
         <span class="btn btn--outline">Browse Safaris</span>
       </a>
       <a href="<?= h(url('/experiences.php')) ?>" class="door door--experiential">
+        <span class="door__seal" aria-hidden="true"></span>
+        <p class="door__route">ROUTE 02 &mdash; INTO DAILY LIFE</p>
         <p class="door__eyebrow">Experiential Tours</p>
         <h3 class="door__title">Culture, farms, sport &amp; the everyday</h3>
         <p class="door__body">Cultural immersion by tribe, working farm visits, local sport, manufacturing tours, and ghetto experiences.</p>

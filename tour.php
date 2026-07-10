@@ -145,6 +145,7 @@ require __DIR__ . '/includes/site_header.php';
 
       <aside class="detail-side">
         <div class="side-card side-card--price">
+          <p class="side-card__permit-no">ITINERARY NO. SS&ndash;<?= str_pad((string) $tour['id'], 4, '0', STR_PAD_LEFT) ?></p>
           <div class="side-card__price">
             $<?= number_format($netPrice, 0) ?>
             <?php if ((float) $tour['discount_percent'] > 0): ?>

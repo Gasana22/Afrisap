@@ -9,11 +9,12 @@
   --canopy-line: #2c4a3a;
   --murram: #b5502b;
   --murram-dark: #93401f;
-  --savanna: #f1e9d8;
-  --savanna-line: #e2d5b8;
+  --savanna: #e8ddbc;
+  --savanna-line: #cdbb8c;
+  --paper: #f4efe0;
   --dusk: #241b34;
   --ember: #e8823c;
-  --gold: #c99a3e;
+  --gold: #a97f2e;
   --ink: #14201b;
   --white: #ffffff;
 
@@ -21,7 +22,7 @@
   --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --radius: 6px;
+  --radius: 3px;
   --shadow-card: 0 1px 2px rgba(20, 32, 27, 0.06), 0 8px 24px rgba(20, 32, 27, 0.06);
   --max-width: 1200px;
 }
@@ -215,10 +216,26 @@ a { color: inherit; text-decoration: none; }
 .hero__content {
   position: relative;
   z-index: 1;
-  padding-bottom: 90px;
-  text-align: center;
+  padding-bottom: 56px;
   color: var(--white);
 }
+
+.hero__coords {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  background: rgba(20, 32, 27, 0.35);
+  border: 1px solid rgba(201, 154, 62, 0.4);
+  padding: 5px 10px;
+  border-radius: 999px;
+  margin: 32px 0 22px;
+}
+
+.hero__coords::before { content: '\25C9'; font-size: 9px; }
 
 .hero__eyebrow {
   font-family: var(--font-mono);
@@ -231,17 +248,18 @@ a { color: inherit; text-decoration: none; }
 
 .hero__title {
   font-family: var(--font-display);
-  font-size: clamp(40px, 6vw, 68px);
+  font-size: clamp(40px, 5.6vw, 64px);
   font-weight: 600;
   line-height: 1.05;
   margin: 0 0 18px;
   letter-spacing: -0.01em;
+  max-width: 11ch;
 }
 
 .hero__subtitle {
   font-size: 17px;
-  max-width: 560px;
-  margin: 0 auto 32px;
+  max-width: 460px;
+  margin: 0 0 32px;
   color: var(--savanna);
   opacity: 0.92;
 }
@@ -249,9 +267,8 @@ a { color: inherit; text-decoration: none; }
 .hero__actions {
   display: flex;
   gap: 14px;
-  justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 46px;
+  margin-bottom: 0;
 }
 
 .btn {
@@ -276,31 +293,38 @@ a { color: inherit; text-decoration: none; }
 .btn--dark { background: var(--canopy); color: var(--white); }
 .btn--dark:hover { background: var(--canopy-dark); }
 
-/* Search bar */
+/* Search bar -- styled as an entry manifest seated in normal flow directly
+   under the hero, not a floating white card overlapping the hero/section
+   seam. Fields are separated by hairlines rather than boxed individually. */
 
-.search-bar {
+.search-band {
   position: relative;
   z-index: 1;
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: 0 24px 48px rgba(20, 32, 27, 0.28);
-  padding: 18px;
+  background: var(--paper);
+  border-top: 1px solid rgba(169, 127, 46, 0.4);
+}
+
+.search-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr) auto;
-  gap: 12px;
-  align-items: end;
+  align-items: stretch;
   text-align: left;
-  max-width: 980px;
-  margin: 0 auto;
 }
+
+.search-bar__field {
+  padding: 16px 22px;
+  border-left: 1px solid var(--savanna-line);
+}
+
+.search-bar__field:first-child { border-left: none; padding-left: 0; }
 
 .search-bar__field label {
   display: block;
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--canopy);
+  color: var(--murram);
   margin-bottom: 6px;
 }
 
@@ -308,57 +332,102 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   font-family: var(--font-ui);
   font-size: 14px;
-  padding: 10px 11px;
-  border: 1px solid var(--savanna-line);
-  border-radius: 5px;
-  background: var(--white);
+  padding: 2px 0;
+  border: none;
+  background: transparent;
   color: var(--ink);
 }
 
-.search-bar .btn { width: 100%; justify-content: center; }
+.search-bar .btn {
+  border-radius: 0;
+  align-self: stretch;
+  justify-content: center;
+  padding-left: 30px;
+  padding-right: 30px;
+}
 
 /* ---------- Sections ---------- */
 
-.section { padding: 72px 0; }
+.section { padding: 72px 0; position: relative; }
 .section--savanna { background: var(--savanna); }
 
-.section__header {
-  text-align: center;
-  max-width: 620px;
-  margin: 0 auto 44px;
+/* A single contour line marks the seam where a band changes tone, instead
+   of an abrupt flat-color cut -- a quiet echo of the hero's map lines. */
+.section--savanna::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--savanna-line);
 }
 
+/* "Log entry" header: a coordinate-style tag with a hairline running the
+   rest of the section width, then the heading and lead set left, not
+   centered. This is the site's primary structural device -- it replaces the
+   generic centered eyebrow/title/subhead stack (the single most recognizable
+   templated pattern) with something that reads like a waypoint entry in a
+   field log. No markup change needed anywhere this component is used. */
+.section__header { margin: 0 0 40px; }
+
 .section__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--murram);
-  margin: 0 0 10px;
+  margin: 0 0 16px;
+}
+
+.section__eyebrow::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--savanna-line);
 }
 
 .section__title {
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 38px);
+  font-size: clamp(26px, 3.2vw, 36px);
   font-weight: 600;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   letter-spacing: -0.01em;
+  max-width: 640px;
 }
 
-.section__lead { color: var(--ink); opacity: 0.72; font-size: 16px; margin: 0; }
+.section__lead { color: var(--ink); opacity: 0.68; font-size: 15.5px; margin: 0; max-width: 560px; }
 
-/* Two doors */
+/* Two doors -- styled as a pair of route stubs torn from the same manifest,
+   not flat SaaS feature blocks. A dashed perforation runs down the gap
+   between them; each carries a stamped contour seal and a route number. */
 
 .doors {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 1px;
+  background: var(--savanna-line);
+  border: 1px solid var(--savanna-line);
+}
+
+.doors::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  border-left: 2px dashed rgba(255, 255, 255, 0.3);
+  z-index: 1;
 }
 
 .door {
   position: relative;
-  border-radius: 10px;
-  padding: 40px 32px;
+  padding: 40px 36px;
   color: var(--white);
   overflow: hidden;
   min-height: 260px;
@@ -367,8 +436,37 @@ a { color: inherit; text-decoration: none; }
   justify-content: flex-end;
 }
 
-.door--safari { background: linear-gradient(160deg, #1f3a2e, #2c4a3a); }
-.door--experiential { background: linear-gradient(160deg, #6b3420, var(--murram)); }
+.door--safari { background: var(--canopy); }
+.door--experiential { background: var(--murram-dark); }
+
+.door__seal {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+}
+
+.door__seal::before,
+.door__seal::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+}
+
+.door__seal::after { inset: 32px; }
+
+.door__route {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ember);
+  margin: 0 0 16px;
+}
 
 .door__eyebrow {
   font-family: var(--font-mono);
@@ -731,7 +829,25 @@ a { color: inherit; text-decoration: none; }
   text-decoration: underline;
 }
 
-.side-card--price { background: var(--canopy-dark); color: var(--white); border: none; }
+/* Price card styled as a permit stub -- a reference number and stamped
+   tier seal up top, a dashed perforation before the facts list, echoing
+   the real permit paperwork gorilla trekking and park entry require. */
+.side-card--price {
+  background: var(--canopy-dark);
+  color: var(--white);
+  border: none;
+  position: relative;
+  padding-top: 20px;
+}
+
+.side-card__permit-no {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  opacity: 0.8;
+  margin: 0 0 16px;
+}
 
 .side-card__price {
   font-family: var(--font-mono);
@@ -743,7 +859,12 @@ a { color: inherit; text-decoration: none; }
 .side-card__was { font-size: 15px; opacity: 0.55; text-decoration: line-through; margin-left: 6px; }
 .side-card__unit { font-size: 12px; opacity: 0.6; font-weight: 400; display: block; margin-top: 2px; }
 
-.side-card__facts { list-style: none; margin: 0 0 16px; padding: 0; border-top: 1px solid rgba(255, 255, 255, 0.15); }
+.side-card__facts {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 14px 0 0;
+  border-top: 1px dashed rgba(255, 255, 255, 0.3);
+}
 
 .side-card__facts li {
   display: flex;
@@ -753,7 +874,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 13px;
 }
 
-.side-card__facts li span:first-child { opacity: 0.6; }
+.side-card__facts li span:first-child { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.55; }
 
 /* Galleries inline on detail pages */
 
@@ -878,16 +999,21 @@ a.list-row:hover { border-color: var(--murram); }
   background: var(--white);
 }
 
-/* Generic site forms (enquiry, quote, contact) */
+/* Site forms (enquiry, quote, contact) -- styled as a manifest being filled
+   in by hand: underlined fields on paper rather than boxed inputs, labels
+   set as small field-log tags. */
 
-.site-form { display: flex; flex-direction: column; gap: 16px; }
+.site-form { display: flex; flex-direction: column; gap: 20px; }
 
 .site-form__row label {
   display: block;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--canopy);
-  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--murram);
+  margin-bottom: 8px;
 }
 
 .site-form__row input,
@@ -895,14 +1021,23 @@ a.list-row:hover { border-color: var(--murram); }
 .site-form__row textarea {
   width: 100%;
   font-family: var(--font-ui);
-  font-size: 14.5px;
-  padding: 10px 12px;
-  border: 1px solid var(--savanna-line);
-  border-radius: 5px;
-  background: var(--white);
+  font-size: 15px;
+  padding: 9px 2px;
+  border: none;
+  border-bottom: 1px solid var(--savanna-line);
+  border-radius: 0;
+  background: transparent;
+  transition: border-color 0.15s ease;
 }
 
-.site-form__row textarea { resize: vertical; }
+.site-form__row input:focus,
+.site-form__row select:focus,
+.site-form__row textarea:focus {
+  border-bottom-color: var(--murram);
+}
+
+.site-form__row textarea { resize: vertical; border: 1px solid var(--savanna-line); padding: 10px 12px; background: var(--white); }
+.site-form__row textarea:focus { border-color: var(--murram); }
 
 .flash {
   padding: 12px 16px;
@@ -918,9 +1053,11 @@ a.list-row:hover { border-color: var(--murram); }
 
 @media (max-width: 980px) {
   .doors { grid-template-columns: 1fr; }
+  .doors::before { display: none; }
   .why-grid { grid-template-columns: 1fr; }
   .experience-grid { grid-template-columns: repeat(3, 1fr); }
   .search-bar { grid-template-columns: 1fr 1fr; }
+  .search-bar__field:nth-child(odd) { border-left: none; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-side { position: static; }
@@ -984,6 +1121,8 @@ a.list-row:hover { border-color: var(--murram); }
   }
   .experience-grid { grid-template-columns: repeat(2, 1fr); }
   .search-bar { grid-template-columns: 1fr; }
+  .search-bar__field { border-left: none !important; border-top: 1px solid var(--savanna-line); }
+  .search-bar__field:first-child { border-top: none; }
   .footer-grid { grid-template-columns: 1fr; }
   .filter-bar { grid-template-columns: 1fr; }
   .gallery-strip--hero { grid-template-columns: 1fr; grid-auto-rows: 200px; }
