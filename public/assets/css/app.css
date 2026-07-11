@@ -261,6 +261,27 @@ a:not(.btn, .nav-link, .dropdown-item, .page-link):hover {
     letter-spacing: 0.05em;
     color: #8fb5a5;
     padding: 0.9rem 0.9rem 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Admin Panel is a distinct, permission-gated zone -- not just another item
+   in the same list -- so it gets its own visually bounded panel: a divider
+   above it, a tinted background, and a gold accent bar (the platform's
+   "this is a controlled/flagged area" signal, reused from the traceability
+   scan-frame motif) instead of blending into the regular nav. */
+.admin-zone {
+    margin-top: 0.9rem;
+    padding: 0.5rem 0.4rem 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: rgba(0, 0, 0, 0.16);
+    border-radius: 0.5rem;
+    border-left: 2px solid var(--brand-gold);
+}
+
+.admin-zone .nav-section-label {
+    color: var(--brand-gold-light);
 }
 
 .app-main {

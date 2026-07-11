@@ -86,18 +86,20 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     <?php endif; ?>
 
     <?php if (Auth::hasPermission('users.view') || Auth::hasPermission('roles.view') || Auth::hasPermission('settings.view') || Auth::hasPermission('audit.view')): ?>
-    <div class="nav-section-label">Admin Panel</div>
-    <?php if (Auth::hasPermission('users.view')): ?>
-    <a class="nav-link <?= $isActive('/admin/users') ?>" href="/admin/users"><i class="bi bi-person-badge"></i> <span>Users</span></a>
-    <?php endif; ?>
-    <?php if (Auth::hasPermission('roles.view')): ?>
-    <a class="nav-link <?= $isActive('/admin/roles') ?>" href="/admin/roles"><i class="bi bi-shield-lock"></i> <span>Roles &amp; Permissions</span></a>
-    <?php endif; ?>
-    <?php if (Auth::hasPermission('settings.view')): ?>
-    <a class="nav-link <?= $isActive('/admin/settings') ?>" href="/admin/settings"><i class="bi bi-gear"></i> <span>Settings</span></a>
-    <?php endif; ?>
-    <?php if (Auth::hasPermission('audit.view')): ?>
-    <a class="nav-link <?= $isActive('/admin/audit-logs') ?>" href="/admin/audit-logs"><i class="bi bi-clipboard-data"></i> <span>Audit Log</span></a>
-    <?php endif; ?>
+    <div class="admin-zone">
+        <div class="nav-section-label"><i class="bi bi-shield-lock-fill"></i> Admin Panel</div>
+        <?php if (Auth::hasPermission('users.view')): ?>
+        <a class="nav-link <?= $isActive('/admin/users') ?>" href="/admin/users"><i class="bi bi-person-badge"></i> <span>Users</span></a>
+        <?php endif; ?>
+        <?php if (Auth::hasPermission('roles.view')): ?>
+        <a class="nav-link <?= $isActive('/admin/roles') ?>" href="/admin/roles"><i class="bi bi-shield-lock"></i> <span>Roles &amp; Permissions</span></a>
+        <?php endif; ?>
+        <?php if (Auth::hasPermission('settings.view')): ?>
+        <a class="nav-link <?= $isActive('/admin/settings') ?>" href="/admin/settings"><i class="bi bi-gear"></i> <span>Settings</span></a>
+        <?php endif; ?>
+        <?php if (Auth::hasPermission('audit.view')): ?>
+        <a class="nav-link <?= $isActive('/admin/audit-logs') ?>" href="/admin/audit-logs"><i class="bi bi-clipboard-data"></i> <span>Audit Log</span></a>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 </nav>
