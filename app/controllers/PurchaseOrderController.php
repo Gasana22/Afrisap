@@ -18,7 +18,7 @@ class PurchaseOrderController extends Controller
     public function index(): void
     {
         $page = max(1, (int) $this->input('page', 1));
-        $result = PurchaseOrder::paginated($page);
+        $result = PurchaseOrder::paginated($page, 25, Auth::organizationId());
         $this->view('procurement/orders/index', [
             'pageTitle' => 'Purchase Orders',
             'orders' => $result['rows'],
@@ -27,12 +27,23 @@ class PurchaseOrderController extends Controller
         ]);
     }
 
+    /** The tenant-isolation gate for every action below. */
+    private function requireOwnedOrder(int $id): array
+    {
+        $order = PurchaseOrder::findInOrganization($id, Auth::organizationId());
+        if (!$order) {
+            $this->flash('danger', 'Purchase order not found.');
+            $this->redirect('/purchase-orders');
+        }
+        return $order;
+    }
+
     public function create(): void
     {
         $this->view('procurement/orders/create', [
             'pageTitle' => 'Create Purchase Order',
-            'suppliers' => Supplier::all(),
-            'farms' => Farm::all(),
+            'suppliers' => Supplier::forOrganization(Auth::organizationId()),
+            'farms' => Farm::forOrganization(Auth::organizationId()),
         ]);
     }
 
@@ -44,6 +55,12 @@ class PurchaseOrderController extends Controller
             ->required('order_date', 'Order date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/purchase-orders/create');
+        }
+
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))
+            || !Supplier::findInOrganization((int) $this->input('supplier_id'), Auth::organizationId())) {
+            $this->flash('danger', 'Farm or supplier not found.');
             $this->redirect('/purchase-orders/create');
         }
 
@@ -87,11 +104,7 @@ class PurchaseOrderController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $order = PurchaseOrder::find($id);
-        if (!$order) {
-            $this->flash('danger', 'Purchase order not found.');
-            $this->redirect('/purchase-orders');
-        }
+        $order = $this->requireOwnedOrder($id);
 
         $this->view('procurement/orders/show', [
             'pageTitle' => 'PO #' . $id,
@@ -105,10 +118,7 @@ class PurchaseOrderController extends Controller
     public function updateStatus(array $params): void
     {
         $id = (int) $params['id'];
-        $order = PurchaseOrder::find($id);
-        if (!$order) {
-            $this->redirect('/purchase-orders');
-        }
+        $order = $this->requireOwnedOrder($id);
 
         $status = $this->input('status');
         $validator = (new Validator(['status' => $status]))
@@ -131,10 +141,7 @@ class PurchaseOrderController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
-        $order = PurchaseOrder::find($id);
-        if (!$order) {
-            $this->redirect('/purchase-orders');
-        }
+        $order = $this->requireOwnedOrder($id);
 
         if ($order['status'] !== 'draft') {
             $this->flash('danger', 'Only a draft purchase order can be deleted.');
@@ -151,6 +158,7 @@ class PurchaseOrderController extends Controller
     public function addDelivery(array $params): void
     {
         $poId = (int) $params['id'];
+        $this->requireOwnedOrder($poId);
         $validator = (new Validator($_POST))->required('delivery_date', 'Delivery date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -171,6 +179,7 @@ class PurchaseOrderController extends Controller
     public function addPayment(array $params): void
     {
         $poId = (int) $params['id'];
+        $this->requireOwnedOrder($poId);
         $validator = (new Validator($_POST))
             ->required('amount', 'Amount')->numeric('amount', 'Amount')
             ->required('payment_date', 'Payment date')

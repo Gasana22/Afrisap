@@ -11,6 +11,13 @@ class Supplier
         return Database::connection()->query('SELECT * FROM suppliers ORDER BY name')->fetchAll();
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM suppliers WHERE organization_id = :org_id ORDER BY name');
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
     public static function find(int $id): ?array
     {
         $stmt = Database::connection()->prepare('SELECT * FROM suppliers WHERE id = :id');
@@ -18,12 +25,21 @@ class Supplier
         return $stmt->fetch() ?: null;
     }
 
+    /** The tenant-isolation check: fetching another organization's supplier by id returns null. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM suppliers WHERE id = :id AND organization_id = :org_id');
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(array $data): int
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('INSERT INTO suppliers (name, contact_person, phone, email, address, category)
-            VALUES (:name, :contact_person, :phone, :email, :address, :category)');
+        $stmt = $pdo->prepare('INSERT INTO suppliers (organization_id, name, contact_person, phone, email, address, category)
+            VALUES (:organization_id, :name, :contact_person, :phone, :email, :address, :category)');
         $stmt->execute([
+            'organization_id' => $data['organization_id'],
             'name' => $data['name'],
             'contact_person' => $data['contact_person'] ?: null,
             'phone' => $data['phone'] ?: null,

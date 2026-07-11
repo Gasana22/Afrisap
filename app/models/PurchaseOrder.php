@@ -19,12 +19,16 @@ class PurchaseOrder
         return Database::connection()->query(self::SELECT_BASE . ' ORDER BY po.order_date DESC, po.id DESC')->fetchAll();
     }
 
-    public static function paginated(int $page, int $perPage = 25): array
+    public static function paginated(int $page, int $perPage, int $organizationId): array
     {
         $pdo = Database::connection();
-        $total = (int) $pdo->query('SELECT COUNT(*) FROM purchase_orders')->fetchColumn();
 
-        $stmt = $pdo->prepare(self::SELECT_BASE . ' ORDER BY po.order_date DESC, po.id DESC LIMIT :limit OFFSET :offset');
+        $countStmt = $pdo->prepare('SELECT COUNT(*) FROM purchase_orders po JOIN farms f ON f.id = po.farm_id WHERE f.organization_id = :org_id');
+        $countStmt->execute(['org_id' => $organizationId]);
+        $total = (int) $countStmt->fetchColumn();
+
+        $stmt = $pdo->prepare(self::SELECT_BASE . ' WHERE f.organization_id = :org_id ORDER BY po.order_date DESC, po.id DESC LIMIT :limit OFFSET :offset');
+        $stmt->bindValue(':org_id', $organizationId, \PDO::PARAM_INT);
         $stmt->bindValue(':limit', $perPage, \PDO::PARAM_INT);
         $stmt->bindValue(':offset', ($page - 1) * $perPage, \PDO::PARAM_INT);
         $stmt->execute();
@@ -36,6 +40,14 @@ class PurchaseOrder
     {
         $stmt = Database::connection()->prepare(self::SELECT_BASE . ' WHERE po.id = :id');
         $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    /** The tenant-isolation check: fetching another organization's purchase order by id returns null. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare(self::SELECT_BASE . ' WHERE po.id = :id AND f.organization_id = :org_id');
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
         return $stmt->fetch() ?: null;
     }
 

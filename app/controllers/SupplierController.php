@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\Validator;
@@ -11,7 +12,7 @@ class SupplierController extends Controller
 {
     public function index(): void
     {
-        $this->view('procurement/suppliers/index', ['pageTitle' => 'Suppliers', 'suppliers' => Supplier::all()]);
+        $this->view('procurement/suppliers/index', ['pageTitle' => 'Suppliers', 'suppliers' => Supplier::forOrganization(Auth::organizationId())]);
     }
 
     public function create(): void
@@ -28,6 +29,7 @@ class SupplierController extends Controller
         }
 
         $id = Supplier::create([
+            'organization_id' => Auth::organizationId(),
             'name' => $this->input('name'),
             'contact_person' => $this->input('contact_person'),
             'phone' => $this->input('phone'),
@@ -43,7 +45,7 @@ class SupplierController extends Controller
 
     public function edit(array $params): void
     {
-        $supplier = Supplier::find((int) $params['id']);
+        $supplier = Supplier::findInOrganization((int) $params['id'], Auth::organizationId());
         if (!$supplier) {
             $this->flash('danger', 'Supplier not found.');
             $this->redirect('/suppliers');
@@ -55,7 +57,7 @@ class SupplierController extends Controller
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Supplier::find($id);
+        $before = Supplier::findInOrganization($id, Auth::organizationId());
         if (!$before) {
             $this->flash('danger', 'Supplier not found.');
             $this->redirect('/suppliers');
@@ -84,12 +86,17 @@ class SupplierController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
+        $before = Supplier::findInOrganization($id, Auth::organizationId());
+        if (!$before) {
+            $this->flash('danger', 'Supplier not found.');
+            $this->redirect('/suppliers');
+        }
+
         if (Supplier::hasPurchaseOrders($id)) {
             $this->flash('danger', 'This supplier has purchase orders on record and cannot be deleted.');
             $this->redirect('/suppliers');
         }
 
-        $before = Supplier::find($id);
         Supplier::delete($id);
         AuditLogger::log('delete', 'suppliers', (string) $id, $before, null);
 

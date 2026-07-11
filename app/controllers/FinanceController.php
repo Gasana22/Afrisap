@@ -15,33 +15,50 @@ use App\Models\Income;
 
 class FinanceController extends Controller
 {
+    /** Resolves the requested farm filter to something safe to hand to
+     * FinanceReport: the single requested farm if the caller actually owns
+     * it, otherwise every farm in the caller's own organization -- never an
+     * arbitrary farm_id from the query string, and never unscoped. */
+    private function resolveFarmScope(?int $requestedFarmId): int|array
+    {
+        if ($requestedFarmId !== null && Auth::organizationOwnsFarm($requestedFarmId)) {
+            return $requestedFarmId;
+        }
+        return Farm::idsForOrganization(Auth::organizationId());
+    }
+
     public function report(): void
     {
-        $farmId = $this->input('farm_id') ? (int) $this->input('farm_id') : null;
+        $requestedFarmId = $this->input('farm_id') ? (int) $this->input('farm_id') : null;
+        $farmScope = $this->resolveFarmScope($requestedFarmId);
         $from = $this->input('from') ?: null;
         $to = $this->input('to') ?: null;
 
         $format = $this->input('format');
         if ($format === 'pdf' || $format === 'excel') {
-            $this->exportSummary($farmId, $from, $to, $format);
+            $this->exportSummary($farmScope, $from, $to, $format);
             return;
         }
 
         $this->view('finance/report', [
             'pageTitle' => 'Finance',
-            'farms' => Farm::all(),
-            'selectedFarmId' => $farmId,
+            'farms' => Farm::forOrganization(Auth::organizationId()),
+            'selectedFarmId' => is_int($farmScope) ? $farmScope : null,
             'from' => $from,
             'to' => $to,
-            'summary' => FinanceReport::summary($farmId, $from, $to),
-            'incomeEntries' => FinanceReport::incomeEntries($farmId, $from, $to),
-            'expenseEntries' => FinanceReport::expenseEntries($farmId, $from, $to),
+            'summary' => FinanceReport::summary($farmScope, $from, $to),
+            'incomeEntries' => FinanceReport::incomeEntries($farmScope, $from, $to),
+            'expenseEntries' => FinanceReport::expenseEntries($farmScope, $from, $to),
         ]);
     }
 
     public function incomeIndex(): void
     {
-        $this->view('finance/income', ['pageTitle' => 'Income', 'entries' => Income::all(), 'farms' => Farm::all()]);
+        $this->view('finance/income', [
+            'pageTitle' => 'Income',
+            'entries' => Income::forOrganization(Auth::organizationId()),
+            'farms' => Farm::forOrganization(Auth::organizationId()),
+        ]);
     }
 
     public function storeIncome(): void
@@ -53,6 +70,11 @@ class FinanceController extends Controller
             ->required('income_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/finance/income');
+        }
+
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect('/finance/income');
         }
 
@@ -73,7 +95,12 @@ class FinanceController extends Controller
     public function destroyIncome(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Income::find($id);
+        $before = Income::findInOrganization($id, Auth::organizationId());
+        if (!$before) {
+            $this->flash('danger', 'Income entry not found.');
+            $this->redirect('/finance/income');
+        }
+
         Income::delete($id);
         AuditLogger::log('delete', 'income', (string) $id, $before, null);
 
@@ -83,7 +110,11 @@ class FinanceController extends Controller
 
     public function expenseIndex(): void
     {
-        $this->view('finance/expenses', ['pageTitle' => 'Expenses', 'entries' => Expense::all(), 'farms' => Farm::all()]);
+        $this->view('finance/expenses', [
+            'pageTitle' => 'Expenses',
+            'entries' => Expense::forOrganization(Auth::organizationId()),
+            'farms' => Farm::forOrganization(Auth::organizationId()),
+        ]);
     }
 
     public function storeExpense(): void
@@ -96,6 +127,11 @@ class FinanceController extends Controller
             ->required('expense_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/finance/expenses');
+        }
+
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect('/finance/expenses');
         }
 
@@ -117,7 +153,12 @@ class FinanceController extends Controller
     public function destroyExpense(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Expense::find($id);
+        $before = Expense::findInOrganization($id, Auth::organizationId());
+        if (!$before) {
+            $this->flash('danger', 'Expense entry not found.');
+            $this->redirect('/finance/expenses');
+        }
+
         Expense::delete($id);
         AuditLogger::log('delete', 'expenses', (string) $id, $before, null);
 
@@ -125,10 +166,10 @@ class FinanceController extends Controller
         $this->redirect('/finance/expenses');
     }
 
-    private function exportSummary(?int $farmId, ?string $from, ?string $to, string $format): void
+    private function exportSummary(int|array $farmScope, ?string $from, ?string $to, string $format): void
     {
-        $income = FinanceReport::incomeEntries($farmId, $from, $to);
-        $expenses = FinanceReport::expenseEntries($farmId, $from, $to);
+        $income = FinanceReport::incomeEntries($farmScope, $from, $to);
+        $expenses = FinanceReport::expenseEntries($farmScope, $from, $to);
 
         $headers = ['Type', 'Date', 'Source', 'Farm', 'Amount'];
         $rows = [];

@@ -15,7 +15,18 @@ class InventoryController extends Controller
 {
     public function index(): void
     {
-        $this->view('inventory/index', ['pageTitle' => 'Inventory', 'items' => InventoryItem::all()]);
+        $this->view('inventory/index', ['pageTitle' => 'Inventory', 'items' => InventoryItem::forOrganization(Auth::organizationId())]);
+    }
+
+    /** The tenant-isolation gate for every action below. */
+    private function requireOwnedItem(int $id): array
+    {
+        $item = InventoryItem::findInOrganization($id, Auth::organizationId());
+        if (!$item) {
+            $this->flash('danger', 'Item not found.');
+            $this->redirect('/inventory');
+        }
+        return $item;
     }
 
     public function create(): void
@@ -35,6 +46,7 @@ class InventoryController extends Controller
         }
 
         $id = InventoryItem::create([
+            'organization_id' => Auth::organizationId(),
             'name' => $this->input('name'),
             'category' => $this->input('category'),
             'unit' => $this->input('unit'),
@@ -49,28 +61,20 @@ class InventoryController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $item = InventoryItem::find($id);
-        if (!$item) {
-            $this->flash('danger', 'Item not found.');
-            $this->redirect('/inventory');
-        }
+        $item = $this->requireOwnedItem($id);
 
         $this->view('inventory/show', [
             'pageTitle' => $item['name'],
             'item' => $item,
             'stockByFarm' => StockMovement::stockByFarm($id),
             'movements' => StockMovement::forItem($id),
-            'farms' => Farm::all(),
+            'farms' => Farm::forOrganization(Auth::organizationId()),
         ]);
     }
 
     public function edit(array $params): void
     {
-        $item = InventoryItem::find((int) $params['id']);
-        if (!$item) {
-            $this->flash('danger', 'Item not found.');
-            $this->redirect('/inventory');
-        }
+        $item = $this->requireOwnedItem((int) $params['id']);
 
         $this->view('inventory/edit', ['pageTitle' => 'Edit ' . $item['name'], 'item' => $item]);
     }
@@ -78,11 +82,7 @@ class InventoryController extends Controller
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = InventoryItem::find($id);
-        if (!$before) {
-            $this->flash('danger', 'Item not found.');
-            $this->redirect('/inventory');
-        }
+        $before = $this->requireOwnedItem($id);
 
         $validator = (new Validator($_POST))->required('name', 'Item name')->required('category', 'Category')->numeric('reorder_level', 'Reorder level');
         if ($validator->fails()) {
@@ -105,12 +105,13 @@ class InventoryController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
+        $before = $this->requireOwnedItem($id);
+
         if (InventoryItem::hasMovements($id)) {
             $this->flash('danger', 'This item has stock movement history and cannot be deleted.');
             $this->redirect("/inventory/{$id}");
         }
 
-        $before = InventoryItem::find($id);
         InventoryItem::delete($id);
         AuditLogger::log('delete', 'inventory_items', (string) $id, $before, null);
 
@@ -121,12 +122,17 @@ class InventoryController extends Controller
     public function stockIn(array $params): void
     {
         $itemId = (int) $params['id'];
+        $this->requireOwnedItem($itemId);
         $validator = (new Validator($_POST))
             ->required('farm_id', 'Farm')
             ->required('quantity', 'Quantity')->numeric('quantity', 'Quantity')
             ->required('movement_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect("/inventory/{$itemId}");
+        }
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect("/inventory/{$itemId}");
         }
 
@@ -145,12 +151,17 @@ class InventoryController extends Controller
     public function stockOut(array $params): void
     {
         $itemId = (int) $params['id'];
+        $this->requireOwnedItem($itemId);
         $validator = (new Validator($_POST))
             ->required('farm_id', 'Farm')
             ->required('quantity', 'Quantity')->numeric('quantity', 'Quantity')
             ->required('movement_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect("/inventory/{$itemId}");
+        }
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect("/inventory/{$itemId}");
         }
 
@@ -174,6 +185,7 @@ class InventoryController extends Controller
     public function transfer(array $params): void
     {
         $itemId = (int) $params['id'];
+        $this->requireOwnedItem($itemId);
         $validator = (new Validator($_POST))
             ->required('from_farm_id', 'From farm')
             ->required('to_farm_id', 'To farm')
@@ -186,6 +198,10 @@ class InventoryController extends Controller
 
         if ($this->input('from_farm_id') === $this->input('to_farm_id')) {
             $this->flash('danger', 'Source and destination farm must be different.');
+            $this->redirect("/inventory/{$itemId}");
+        }
+        if (!Auth::organizationOwnsFarm((int) $this->input('from_farm_id')) || !Auth::organizationOwnsFarm((int) $this->input('to_farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect("/inventory/{$itemId}");
         }
 

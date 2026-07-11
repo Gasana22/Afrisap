@@ -20,6 +20,24 @@ class Income
         return $stmt->fetch() ?: null;
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare('SELECT i.*, f.name AS farm_name, u.name AS recorded_by_name
+            FROM income i JOIN farms f ON f.id = i.farm_id JOIN users u ON u.id = i.recorded_by
+            WHERE f.organization_id = :org_id ORDER BY i.income_date DESC, i.id DESC');
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
+    /** The tenant-isolation check: fetching another organization's income entry by id returns null. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT i.* FROM income i JOIN farms f ON f.id = i.farm_id
+            WHERE i.id = :id AND f.organization_id = :org_id');
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(array $data, int $recordedBy): int
     {
         $pdo = Database::connection();

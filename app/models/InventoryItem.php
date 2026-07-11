@@ -22,12 +22,32 @@ class InventoryItem
         return $stmt->fetch() ?: null;
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare("SELECT i.*,
+            (SELECT COALESCE(SUM(quantity_on_hand), 0) FROM inventory_stock WHERE item_id = i.id) AS total_stock
+            FROM inventory_items i WHERE i.organization_id = :org_id ORDER BY i.name");
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
+    /** The tenant-isolation check: fetching another organization's item by id returns null. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare("SELECT i.*,
+            (SELECT COALESCE(SUM(quantity_on_hand), 0) FROM inventory_stock WHERE item_id = i.id) AS total_stock
+            FROM inventory_items i WHERE i.id = :id AND i.organization_id = :org_id");
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(array $data): int
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('INSERT INTO inventory_items (name, category, unit, reorder_level)
-            VALUES (:name, :category, :unit, :reorder_level)');
+        $stmt = $pdo->prepare('INSERT INTO inventory_items (organization_id, name, category, unit, reorder_level)
+            VALUES (:organization_id, :name, :category, :unit, :reorder_level)');
         $stmt->execute([
+            'organization_id' => $data['organization_id'],
             'name' => $data['name'],
             'category' => $data['category'],
             'unit' => $data['unit'] ?: null,
