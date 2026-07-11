@@ -1,0 +1,8 @@
+/vendor/
+/app/config/config.php
+/storage/logs/*.log
+/public/uploads/*
+!/public/uploads/.gitkeep
+.DS_Store
+*.swp
+composer.phar
