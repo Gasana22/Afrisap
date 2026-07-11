@@ -382,37 +382,37 @@ a:not(.btn, .nav-link, .dropdown-item, .page-link):hover {
 }
 
 /* ============================================================
-   Platform portal — deliberately a different primary color (slate/indigo
+   Admin portal — deliberately a different primary color (slate/indigo
    vs. the tenant app's forest green) so the two portals are visually
    unmistakable at a glance, "like two different applications sharing one
    database." Same type system and gold accent/scan-frame motif throughout,
    so it still reads as the same product family.
    ============================================================ */
 :root {
-    --platform-slate: #1e2a3f;
-    --platform-slate-light: #33456b;
-    --platform-slate-dark: #16202f;
+    --admin-slate: #1e2a3f;
+    --admin-slate-light: #33456b;
+    --admin-slate-dark: #16202f;
 }
 
-.platform-body {
-    background: linear-gradient(135deg, var(--platform-slate), var(--platform-slate-light));
+.admin-body {
+    background: linear-gradient(135deg, var(--admin-slate), var(--admin-slate-light));
     min-height: 100vh;
 }
 
-.platform-sidebar {
-    background-color: var(--platform-slate) !important;
+.admin-sidebar {
+    background-color: var(--admin-slate) !important;
 }
 
-.platform-sidebar .sidebar-nav .nav-link.active {
-    background-color: var(--platform-slate-light) !important;
+.admin-sidebar .sidebar-nav .nav-link.active {
+    background-color: var(--admin-slate-light) !important;
 }
 
-.platform-sidebar .brand-mark {
+.admin-sidebar .brand-mark {
     color: var(--brand-gold-light);
 }
 
-.platform-badge {
-    background-color: var(--platform-slate);
+.admin-badge {
+    background-color: var(--admin-slate);
     color: #fff;
     font-size: 0.7rem;
     letter-spacing: 0.05em;

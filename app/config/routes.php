@@ -1,36 +1,41 @@
 <?php
 
-use App\Controllers\AuthController;
-use App\Controllers\RegistrationController;
-use App\Controllers\DashboardController;
-use App\Controllers\FarmController;
-use App\Controllers\BlockController;
-use App\Controllers\PlotController;
-use App\Controllers\TeamController;
-use App\Controllers\Platform\AuthController as PlatformAuthController;
-use App\Controllers\Platform\DashboardController as PlatformDashboardController;
-use App\Controllers\Platform\OrganizationController;
-use App\Controllers\Platform\UserController as PlatformUserController;
-use App\Controllers\Platform\RoleController as PlatformRoleController;
-use App\Controllers\Platform\SettingsController as PlatformSettingsController;
-use App\Controllers\Platform\AuditLogController as PlatformAuditLogController;
-use App\Controllers\CropSetupController;
-use App\Controllers\CropCycleController;
-use App\Controllers\AnimalController;
-use App\Controllers\WorkerController;
-use App\Controllers\FinanceController;
-use App\Controllers\SupplierController;
-use App\Controllers\PurchaseOrderController;
-use App\Controllers\InventoryController;
-use App\Controllers\AssetController;
-use App\Controllers\TraceabilityController;
-use App\Controllers\PublicTraceController;
-use App\Controllers\ReportsController;
-use App\Controllers\MapController;
-use App\Controllers\NotificationController;
-use App\Controllers\MediaController;
-use App\Controllers\AlertsController;
-use App\Controllers\ComplianceController;
+// Public app -- the farm-tenant product (login-gated per organization, plus
+// the no-login QR trace page). See app/controllers/Public/.
+use App\Controllers\Public\AuthController;
+use App\Controllers\Public\RegistrationController;
+use App\Controllers\Public\DashboardController;
+use App\Controllers\Public\FarmController;
+use App\Controllers\Public\BlockController;
+use App\Controllers\Public\PlotController;
+use App\Controllers\Public\TeamController;
+use App\Controllers\Public\CropSetupController;
+use App\Controllers\Public\CropCycleController;
+use App\Controllers\Public\AnimalController;
+use App\Controllers\Public\WorkerController;
+use App\Controllers\Public\FinanceController;
+use App\Controllers\Public\SupplierController;
+use App\Controllers\Public\PurchaseOrderController;
+use App\Controllers\Public\InventoryController;
+use App\Controllers\Public\AssetController;
+use App\Controllers\Public\TraceabilityController;
+use App\Controllers\Public\PublicTraceController;
+use App\Controllers\Public\ReportsController;
+use App\Controllers\Public\MapController;
+use App\Controllers\Public\NotificationController;
+use App\Controllers\Public\MediaController;
+use App\Controllers\Public\AlertsController;
+use App\Controllers\Public\ComplianceController;
+
+// Admin app -- Afrisap's own staff-only platform portal (still served at
+// /platform/* URLs). See app/controllers/Admin/.
+use App\Controllers\Admin\AuthController as AdminAuthController;
+use App\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Controllers\Admin\OrganizationController;
+use App\Controllers\Admin\UserController as AdminUserController;
+use App\Controllers\Admin\RoleController as AdminRoleController;
+use App\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Controllers\Admin\AuditLogController as AdminAuditLogController;
 
 /** @var \App\Core\Router $router */
 
@@ -78,33 +83,33 @@ $router->post('/plots/{id}/delete', [PlotController::class, 'destroy'], 'farms.e
 // Platform admin portal -- separate login, separate UI shell, only ever
 // reachable by platform-scope roles (Super Admin, Platform Manager,
 // Platform Accountant). Supersedes the old /admin/* namespace.
-$router->get('/platform/login', [PlatformAuthController::class, 'showLogin']);
-$router->post('/platform/login', [PlatformAuthController::class, 'login']);
-$router->get('/platform/mfa', [PlatformAuthController::class, 'showMfa']);
-$router->post('/platform/mfa', [PlatformAuthController::class, 'verifyMfa']);
-$router->post('/platform/logout', [PlatformAuthController::class, 'logout']);
+$router->get('/platform/login', [AdminAuthController::class, 'showLogin']);
+$router->post('/platform/login', [AdminAuthController::class, 'login']);
+$router->get('/platform/mfa', [AdminAuthController::class, 'showMfa']);
+$router->post('/platform/mfa', [AdminAuthController::class, 'verifyMfa']);
+$router->post('/platform/logout', [AdminAuthController::class, 'logout']);
 
-$router->get('/platform', [PlatformDashboardController::class, 'index']);
+$router->get('/platform', [AdminDashboardController::class, 'index']);
 
 $router->get('/platform/organizations', [OrganizationController::class, 'index'], 'organizations.view');
 $router->get('/platform/organizations/{id}', [OrganizationController::class, 'show'], 'organizations.view');
 $router->post('/platform/organizations/{id}/status', [OrganizationController::class, 'toggleStatus'], 'organizations.edit');
 
-$router->get('/platform/users', [PlatformUserController::class, 'index'], 'users.view');
-$router->get('/platform/users/create', [PlatformUserController::class, 'create'], 'users.create');
-$router->post('/platform/users', [PlatformUserController::class, 'store'], 'users.create');
-$router->get('/platform/users/{id}/edit', [PlatformUserController::class, 'edit'], 'users.edit');
-$router->post('/platform/users/{id}', [PlatformUserController::class, 'update'], 'users.edit');
-$router->post('/platform/users/{id}/delete', [PlatformUserController::class, 'destroy'], 'users.delete');
+$router->get('/platform/users', [AdminUserController::class, 'index'], 'users.view');
+$router->get('/platform/users/create', [AdminUserController::class, 'create'], 'users.create');
+$router->post('/platform/users', [AdminUserController::class, 'store'], 'users.create');
+$router->get('/platform/users/{id}/edit', [AdminUserController::class, 'edit'], 'users.edit');
+$router->post('/platform/users/{id}', [AdminUserController::class, 'update'], 'users.edit');
+$router->post('/platform/users/{id}/delete', [AdminUserController::class, 'destroy'], 'users.delete');
 
-$router->get('/platform/roles', [PlatformRoleController::class, 'index'], 'roles.view');
-$router->get('/platform/roles/{id}/edit', [PlatformRoleController::class, 'edit'], 'roles.edit');
-$router->post('/platform/roles/{id}', [PlatformRoleController::class, 'update'], 'roles.edit');
+$router->get('/platform/roles', [AdminRoleController::class, 'index'], 'roles.view');
+$router->get('/platform/roles/{id}/edit', [AdminRoleController::class, 'edit'], 'roles.edit');
+$router->post('/platform/roles/{id}', [AdminRoleController::class, 'update'], 'roles.edit');
 
-$router->get('/platform/settings', [PlatformSettingsController::class, 'index'], 'settings.view');
-$router->post('/platform/settings', [PlatformSettingsController::class, 'update'], 'settings.edit');
+$router->get('/platform/settings', [AdminSettingsController::class, 'index'], 'settings.view');
+$router->post('/platform/settings', [AdminSettingsController::class, 'update'], 'settings.edit');
 
-$router->get('/platform/audit-logs', [PlatformAuditLogController::class, 'index'], 'audit.view');
+$router->get('/platform/audit-logs', [AdminAuditLogController::class, 'index'], 'audit.view');
 
 // Crop setup (types & seasons)
 $router->get('/crops/setup', [CropSetupController::class, 'index'], 'crops.edit');

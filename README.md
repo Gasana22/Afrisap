@@ -86,43 +86,46 @@ password from Platform Staff → your own account right after first login).
 To try the farm-tenant side, go to `/signup` and create a Farm Owner account
 — there's no seeded tenant user, since signup is meant to be self-service.
 
-## Running tests
-
-The test suite uses a **separate database** (`sfmtp_test`) so it never
-touches development data, and wraps every test in a transaction that's
-rolled back afterward.
-
-```bash
-mysql -u root -e "CREATE DATABASE sfmtp_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-    GRANT ALL PRIVILEGES ON sfmtp_test.* TO 'sfmtp_app'@'localhost';"
-APP_TESTING=1 php database/migrate.php   # migrate the test database once
-php vendor/bin/phpunit
-```
-
-`phpunit.xml` sets `APP_TESTING=1` automatically for the test run itself,
-which points `Database::connection()` at `app/config/config.testing.php`
-(committed — it holds no real secrets, just local test-DB defaults matching
-`config.example.php`). Tests live in `tests/Unit` (pure logic, e.g.
-`Validator`) and `tests/Integration` (DB-backed, e.g. batch-code format,
-finance aggregation, alert detection).
-
 ## Project layout
 
+One database, two portals. The folder structure says so directly — every
+controller and view lives under an `Admin/` or `Public/` folder, so it's
+obvious at a glance which portal a file belongs to:
+
 ```
-public/            Web root — front controller, .htaccess, CSS/JS/uploads
-app/core/           Router, Auth (RBAC + MFA), Database (PDO), SecurityHeaders,
-                     Notifier, PdfExporter/ExcelExporter, QrGenerator, etc.
-app/controllers/    One per module (Platform/ subfolder for the separate
-                     platform-admin portal, e.g. Platform\OrganizationController)
-app/models/         Thin PDO data-access classes, one per entity, plus a few
-                     read-only aggregators (FinanceReport, AnalyticsReport,
-                     AlertEngine, TraceBatch) that compute live from existing
-                     tables instead of duplicating data into parallel ones
-app/views/          Server-rendered PHP views, grouped by module
-database/migrations/   Numbered plain SQL files, applied in order by migrate.php
-database/seeders/      Seed data (roles, permissions, default admin)
-database/maintenance/  Cron-runnable scripts (backup, login_attempts pruning)
-tests/              PHPUnit suite (Unit + Integration)
+public/                        Web root — front controller, .htaccess, CSS/JS/uploads
+app/core/                      Router, Auth (RBAC + MFA), Database (PDO), SecurityHeaders,
+                                Notifier, PdfExporter/ExcelExporter, QrGenerator, etc.
+                                (shared by both portals — not part of either one)
+
+app/controllers/Admin/         Afrisap staff-only platform portal (served at
+                                /platform/*): organizations, platform staff,
+                                roles & permissions, settings, audit log.
+app/views/admin/               Its views. Layout: app/views/layouts/admin.php.
+
+app/controllers/Public/        The farm-tenant product everyone else uses: auth
+                                & signup, dashboard, farm/crop/livestock/worker
+                                management, finance, procurement, inventory,
+                                assets, traceability & the no-login QR scan
+                                page, reports, maps, media, alerts, team.
+app/views/public/               Its views. Layouts: app/views/layouts/app.php
+                                (signed-in pages), auth.php (login/signup),
+                                public.php (the no-login QR page).
+
+app/views/layouts/, partials/, errors/   Shared chrome used by both portals.
+
+app/models/                    Thin PDO data-access classes, one per entity
+                                (shared by both portals — Admin manages
+                                Organizations/Users/Roles, Public manages
+                                everything a farm owns), plus a few read-only
+                                aggregators (FinanceReport, AnalyticsReport,
+                                AlertEngine, TraceBatch) that compute live from
+                                existing tables instead of duplicating data.
+
+database/migrations/           Numbered plain SQL files, applied in order by
+                                migrate.php — all against the one database.
+database/seeders/              Seed data (roles, permissions, default admin)
+database/maintenance/          Cron-runnable scripts (backup, login_attempts pruning)
 ```
 
 ## Deployment (shared/cPanel hosting)
