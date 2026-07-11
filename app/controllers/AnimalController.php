@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\Validator;
@@ -22,7 +23,7 @@ class AnimalController extends Controller
     public function index(): void
     {
         $page = max(1, (int) $this->input('page', 1));
-        $result = Animal::paginated($page);
+        $result = Animal::paginated($page, 25, Auth::organizationId());
         $this->view('livestock/index', [
             'pageTitle' => 'Livestock',
             'animals' => $result['rows'],
@@ -31,12 +32,25 @@ class AnimalController extends Controller
         ]);
     }
 
+    /** The tenant-isolation gate for every action below: fetching another
+     * organization's animal by id redirects to "not found" instead of
+     * exposing it. */
+    private function requireOwnedAnimal(int $animalId): array
+    {
+        $animal = Animal::findInOrganization($animalId, Auth::organizationId());
+        if (!$animal) {
+            $this->flash('danger', 'Animal not found.');
+            $this->redirect('/livestock');
+        }
+        return $animal;
+    }
+
     public function create(): void
     {
         $this->view('livestock/create', [
             'pageTitle' => 'Add Animal',
-            'farms' => Farm::all(),
-            'existingAnimals' => Animal::all(),
+            'farms' => Farm::forOrganization(Auth::organizationId()),
+            'existingAnimals' => Animal::forOrganization(Auth::organizationId()),
         ]);
     }
 
@@ -50,6 +64,11 @@ class AnimalController extends Controller
 
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/livestock/create');
+        }
+
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect('/livestock/create');
         }
 
@@ -74,11 +93,7 @@ class AnimalController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $animal = Animal::find($id);
-        if (!$animal) {
-            $this->flash('danger', 'Animal not found.');
-            $this->redirect('/livestock');
-        }
+        $animal = $this->requireOwnedAnimal($id);
 
         $this->view('livestock/show', [
             'pageTitle' => $animal['animal_code'],
@@ -96,27 +111,19 @@ class AnimalController extends Controller
 
     public function edit(array $params): void
     {
-        $animal = Animal::find((int) $params['id']);
-        if (!$animal) {
-            $this->flash('danger', 'Animal not found.');
-            $this->redirect('/livestock');
-        }
+        $animal = $this->requireOwnedAnimal((int) $params['id']);
 
         $this->view('livestock/edit', [
             'pageTitle' => 'Edit ' . $animal['animal_code'],
             'animal' => $animal,
-            'existingAnimals' => array_filter(Animal::all(), fn($a) => (int) $a['id'] !== (int) $animal['id']),
+            'existingAnimals' => array_filter(Animal::forOrganization(Auth::organizationId()), fn($a) => (int) $a['id'] !== (int) $animal['id']),
         ]);
     }
 
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Animal::find($id);
-        if (!$before) {
-            $this->flash('danger', 'Animal not found.');
-            $this->redirect('/livestock');
-        }
+        $before = $this->requireOwnedAnimal($id);
 
         $validator = (new Validator($_POST))->required('gender', 'Gender')->in('gender', ['male', 'female'], 'Gender');
         if ($validator->fails()) {
@@ -142,10 +149,7 @@ class AnimalController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
-        $animal = Animal::find($id);
-        if (!$animal) {
-            $this->redirect('/livestock');
-        }
+        $animal = $this->requireOwnedAnimal($id);
 
         if (Animal::hasAnyHistory($id)) {
             $this->flash('danger', 'This animal has recorded history and cannot be deleted (traceability requires permanent history). Deactivate it instead by recording a sale or mortality.');
@@ -164,6 +168,7 @@ class AnimalController extends Controller
     public function addVaccination(array $params): void
     {
         $animalId = (int) $params['id'];
+        $this->requireOwnedAnimal($animalId);
         $validator = (new Validator($_POST))->required('vaccine_name', 'Vaccine')->required('date_administered', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -188,6 +193,7 @@ class AnimalController extends Controller
     public function addFeeding(array $params): void
     {
         $animalId = (int) $params['id'];
+        $this->requireOwnedAnimal($animalId);
         $validator = (new Validator($_POST))->required('feed_type', 'Feed type')->required('feeding_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -213,6 +219,7 @@ class AnimalController extends Controller
     public function addWeight(array $params): void
     {
         $animalId = (int) $params['id'];
+        $this->requireOwnedAnimal($animalId);
         $validator = (new Validator($_POST))->required('weight_kg', 'Weight')->numeric('weight_kg', 'Weight')->required('recorded_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -235,6 +242,7 @@ class AnimalController extends Controller
     public function addTreatment(array $params): void
     {
         $animalId = (int) $params['id'];
+        $this->requireOwnedAnimal($animalId);
         $validator = (new Validator($_POST))->required('condition_name', 'Condition')->required('treatment', 'Treatment')->required('treatment_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -260,6 +268,7 @@ class AnimalController extends Controller
     public function addBreeding(array $params): void
     {
         $animalId = (int) $params['id'];
+        $this->requireOwnedAnimal($animalId);
         $validator = (new Validator($_POST))->required('breeding_date', 'Breeding date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -285,6 +294,7 @@ class AnimalController extends Controller
     public function addProduction(array $params): void
     {
         $animalId = (int) $params['id'];
+        $this->requireOwnedAnimal($animalId);
         $validator = (new Validator($_POST))
             ->required('production_type', 'Production type')
             ->required('quantity', 'Quantity')->numeric('quantity', 'Quantity')
@@ -312,8 +322,8 @@ class AnimalController extends Controller
     public function recordMortality(array $params): void
     {
         $animalId = (int) $params['id'];
-        $animal = Animal::find($animalId);
-        if (!$animal || $animal['status'] !== 'active') {
+        $animal = $this->requireOwnedAnimal($animalId);
+        if ($animal['status'] !== 'active') {
             $this->flash('danger', 'Only an active animal can have a mortality record.');
             $this->redirect("/livestock/{$animalId}");
         }
@@ -342,8 +352,8 @@ class AnimalController extends Controller
     public function recordSale(array $params): void
     {
         $animalId = (int) $params['id'];
-        $animal = Animal::find($animalId);
-        if (!$animal || $animal['status'] !== 'active') {
+        $animal = $this->requireOwnedAnimal($animalId);
+        if ($animal['status'] !== 'active') {
             $this->flash('danger', 'Only an active animal can be recorded as sold.');
             $this->redirect("/livestock/{$animalId}");
         }

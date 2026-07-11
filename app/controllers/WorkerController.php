@@ -19,7 +19,7 @@ class WorkerController extends Controller
     public function index(): void
     {
         $page = max(1, (int) $this->input('page', 1));
-        $result = Worker::paginated($page);
+        $result = Worker::paginated($page, 25, Auth::organizationId());
         $this->view('workers/index', [
             'pageTitle' => 'Workers',
             'workers' => $result['rows'],
@@ -28,9 +28,20 @@ class WorkerController extends Controller
         ]);
     }
 
+    /** The tenant-isolation gate for every action below. */
+    private function requireOwnedWorker(int $workerId): array
+    {
+        $worker = Worker::findInOrganization($workerId, Auth::organizationId());
+        if (!$worker) {
+            $this->flash('danger', 'Worker not found.');
+            $this->redirect('/workers');
+        }
+        return $worker;
+    }
+
     public function create(): void
     {
-        $this->view('workers/create', ['pageTitle' => 'Add Worker', 'farms' => Farm::all()]);
+        $this->view('workers/create', ['pageTitle' => 'Add Worker', 'farms' => Farm::forOrganization(Auth::organizationId())]);
     }
 
     public function store(): void
@@ -42,6 +53,11 @@ class WorkerController extends Controller
 
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/workers/create');
+        }
+
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect('/workers/create');
         }
 
@@ -64,11 +80,7 @@ class WorkerController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $worker = Worker::find($id);
-        if (!$worker) {
-            $this->flash('danger', 'Worker not found.');
-            $this->redirect('/workers');
-        }
+        $worker = $this->requireOwnedWorker($id);
 
         $this->view('workers/show', [
             'pageTitle' => $worker['name'],
@@ -81,11 +93,7 @@ class WorkerController extends Controller
 
     public function edit(array $params): void
     {
-        $worker = Worker::find((int) $params['id']);
-        if (!$worker) {
-            $this->flash('danger', 'Worker not found.');
-            $this->redirect('/workers');
-        }
+        $worker = $this->requireOwnedWorker((int) $params['id']);
 
         $this->view('workers/edit', ['pageTitle' => 'Edit ' . $worker['name'], 'worker' => $worker]);
     }
@@ -93,11 +101,7 @@ class WorkerController extends Controller
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Worker::find($id);
-        if (!$before) {
-            $this->flash('danger', 'Worker not found.');
-            $this->redirect('/workers');
-        }
+        $before = $this->requireOwnedWorker($id);
 
         $validator = (new Validator($_POST))->required('name', 'Name')->numeric('pay_rate', 'Pay rate');
         if ($validator->fails()) {
@@ -124,10 +128,7 @@ class WorkerController extends Controller
     public function toggleStatus(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Worker::find($id);
-        if (!$before) {
-            $this->redirect('/workers');
-        }
+        $before = $this->requireOwnedWorker($id);
 
         $newStatus = $before['status'] === 'active' ? 'inactive' : 'active';
         Worker::setStatus($id, $newStatus);
@@ -142,6 +143,7 @@ class WorkerController extends Controller
     public function addAttendance(array $params): void
     {
         $workerId = (int) $params['id'];
+        $this->requireOwnedWorker($workerId);
         $validator = (new Validator($_POST))->required('attendance_date', 'Date')->required('status', 'Status')
             ->in('status', ['present', 'absent', 'late', 'half_day'], 'Status');
         if ($validator->fails()) {
@@ -183,6 +185,7 @@ class WorkerController extends Controller
         if (!$record) {
             $this->redirect('/workers');
         }
+        $this->requireOwnedWorker((int) $record['worker_id']);
 
         WorkerAttendance::approve((int) $params['id'], Auth::id());
         AuditLogger::log('approve', 'worker_attendance', $params['id'], $record, ['approved_by' => Auth::id()]);
@@ -196,6 +199,7 @@ class WorkerController extends Controller
     public function addTask(array $params): void
     {
         $workerId = (int) $params['id'];
+        $this->requireOwnedWorker($workerId);
         $validator = (new Validator($_POST))->required('title', 'Title');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -224,6 +228,7 @@ class WorkerController extends Controller
         if (!$task) {
             $this->redirect('/workers');
         }
+        $this->requireOwnedWorker((int) $task['worker_id']);
 
         $status = $this->input('status');
         $validator = (new Validator(['status' => $status]))->in('status', ['pending', 'ongoing', 'completed'], 'Status');
@@ -252,9 +257,13 @@ class WorkerController extends Controller
     public function verifyTask(array $params): void
     {
         $task = WorkerTask::find((int) $params['id']);
-        if (!$task || $task['status'] !== 'completed') {
+        if (!$task) {
+            $this->redirect('/workers');
+        }
+        $this->requireOwnedWorker((int) $task['worker_id']);
+        if ($task['status'] !== 'completed') {
             $this->flash('danger', 'Only a completed task can be verified.');
-            $this->redirect('/workers/' . ($task['worker_id'] ?? ''));
+            $this->redirect('/workers/' . $task['worker_id']);
         }
 
         WorkerTask::verify((int) $params['id'], Auth::id());
@@ -269,6 +278,7 @@ class WorkerController extends Controller
     public function addPayroll(array $params): void
     {
         $workerId = (int) $params['id'];
+        $this->requireOwnedWorker($workerId);
         $validator = (new Validator($_POST))
             ->required('period_start', 'Period start')
             ->required('period_end', 'Period end')
@@ -299,6 +309,7 @@ class WorkerController extends Controller
         if (!$payroll) {
             $this->redirect('/workers');
         }
+        $this->requireOwnedWorker((int) $payroll['worker_id']);
 
         $status = $this->input('status');
         $validator = (new Validator(['status' => $status]))->in('status', ['draft', 'approved', 'paid'], 'Status');
