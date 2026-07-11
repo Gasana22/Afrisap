@@ -34,6 +34,11 @@ framework) so the client's team can read and extend every file.
 - **Hardening**: DB-backed login rate limiting, security headers (CSP,
   X-Frame-Options, etc.), CSRF on every form, targeted indexes,
   pagination on high-volume lists, PHPUnit test suite
+- **Design system**: Fraunces (headings) + IBM Plex Sans (body) + IBM Plex
+  Mono (batch/animal codes) — all self-hosted under `public/assets/fonts/`
+  (OFL-1.1 licensed, no external font CDN dependency); brand forest-green
+  overrides Bootstrap's default blue app-wide; a gold "scan-frame" corner
+  motif on the logo nods to the platform's QR/traceability core
 
 ## Requirements
 

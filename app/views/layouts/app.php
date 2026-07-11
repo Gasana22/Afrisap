@@ -16,7 +16,7 @@ $navUser = $currentUser ?? Auth::user();
 <div class="app-shell">
     <aside class="app-sidebar" id="appSidebar">
         <div class="sidebar-brand">
-            <i class="bi bi-tree-fill"></i> <span>Afrisap SFMTP</span>
+            <span class="brand-mark scan-frame"><i class="bi bi-tree-fill"></i></span> <span>Afrisap SFMTP</span>
         </div>
         <?php require __DIR__ . '/../partials/sidebar.php'; ?>
     </aside>

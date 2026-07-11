@@ -11,7 +11,7 @@
 <body>
 <header class="border-bottom py-3 mb-4">
     <div class="container">
-        <span class="fw-bold"><i class="bi bi-tree-fill text-success"></i> Afrisap SFMTP</span>
+        <span class="fw-bold"><span class="brand-mark scan-frame d-inline-flex align-middle" style="width:26px;height:26px;font-size:0.85rem;color:var(--brand-forest-light);"><i class="bi bi-tree-fill"></i></span> Afrisap SFMTP</span>
         <span class="text-muted small">&middot; Product Traceability</span>
     </div>
 </header>

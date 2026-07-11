@@ -1,16 +1,187 @@
+/* ============================================================
+   Type system — self-hosted (no external font CDN dependency).
+   Fraunces (display): headings carry the brand's character.
+   IBM Plex Sans (body/UI): the everyday reading face.
+   IBM Plex Mono (data): batch codes, animal IDs, GPS coords — the
+   traceability platform's flagship data gets a distinct, legible,
+   "this is a record" treatment instead of blending into prose.
+   ============================================================ */
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/assets/fonts/ibm-plex-sans/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/assets/fonts/ibm-plex-sans/ibm-plex-sans-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/assets/fonts/ibm-plex-sans/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/assets/fonts/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/assets/fonts/ibm-plex-mono/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/assets/fonts/fraunces/fraunces-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/assets/fonts/fraunces/fraunces-latin-700-normal.woff2') format('woff2');
+}
+
 :root {
     --sidebar-width: 250px;
     --topbar-height: 60px;
+
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    /* Overrides Bootstrap's own --bs-font-monospace, so every existing
+       .font-monospace usage (batch codes, animal IDs) picks this up. */
+    --bs-font-monospace: 'IBM Plex Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Brand: deep forest green (farm canopy) + harvest gold (the crop/data accent). */
+    --brand-forest: #0f3d2e;
+    --brand-forest-light: #1a6b4f;
+    --brand-forest-dark: #0b2e22;
+    --brand-gold: #c8862a;
+    --brand-gold-light: #e0a94f;
+
+    --bs-body-font-family: var(--font-body);
 }
 
 body {
-    background-color: #f4f6f5;
+    font-family: var(--font-body);
+    background-color: #f5f4ef;
 }
 
 [data-bs-theme="dark"] body {
     background-color: #12181a;
 }
 
+h1, h2, h3, h4, h5, h6,
+.sidebar-brand, .auth-card h4, .card-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* Batch codes / animal IDs / GPS coords: give data its own visual register. */
+.font-monospace {
+    display: inline-block;
+    background-color: rgba(200, 134, 42, 0.12);
+    color: var(--brand-forest-light);
+    padding: 0.1em 0.55em;
+    border-radius: 0.35rem;
+    font-size: 0.92em;
+    letter-spacing: 0.01em;
+}
+[data-bs-theme="dark"] .font-monospace {
+    background-color: rgba(224, 169, 79, 0.14);
+    color: #7fd1ac;
+}
+h4.font-monospace {
+    font-size: 1.15rem;
+    padding: 0.15em 0.6em;
+}
+
+/* ============================================================
+   Brand color — replace Bootstrap's default blue "primary" so the
+   whole app reads as Afrisap, not as unstyled Bootstrap.
+   ============================================================ */
+.btn-primary {
+    --bs-btn-bg: var(--brand-forest-light);
+    --bs-btn-border-color: var(--brand-forest-light);
+    --bs-btn-hover-bg: var(--brand-forest-dark);
+    --bs-btn-hover-border-color: var(--brand-forest-dark);
+    --bs-btn-active-bg: var(--brand-forest-dark);
+    --bs-btn-active-border-color: var(--brand-forest-dark);
+    --bs-btn-disabled-bg: var(--brand-forest-light);
+    --bs-btn-disabled-border-color: var(--brand-forest-light);
+    --bs-btn-focus-shadow-rgb: 26, 107, 79;
+}
+.btn-outline-primary {
+    --bs-btn-color: var(--brand-forest-light);
+    --bs-btn-border-color: var(--brand-forest-light);
+    --bs-btn-hover-bg: var(--brand-forest-light);
+    --bs-btn-hover-border-color: var(--brand-forest-light);
+    --bs-btn-active-bg: var(--brand-forest-light);
+    --bs-btn-active-border-color: var(--brand-forest-light);
+    --bs-btn-focus-shadow-rgb: 26, 107, 79;
+}
+a:not(.btn, .nav-link, .dropdown-item, .page-link) {
+    color: var(--brand-forest-light);
+}
+a:not(.btn, .nav-link, .dropdown-item, .page-link):hover {
+    color: var(--brand-forest-dark);
+}
+.text-primary { color: var(--brand-forest-light) !important; }
+.bg-primary { background-color: var(--brand-forest-light) !important; }
+.border-primary { border-color: var(--brand-forest-light) !important; }
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: var(--brand-forest-light);
+    box-shadow: 0 0 0 0.25rem rgba(26, 107, 79, 0.2);
+}
+.form-check-input:checked {
+    background-color: var(--brand-forest-light);
+    border-color: var(--brand-forest-light);
+}
+.page-link { color: var(--brand-forest-light); }
+.page-item.active .page-link {
+    background-color: var(--brand-forest-light);
+    border-color: var(--brand-forest-light);
+}
+.nav-pills .nav-link.active { background-color: var(--brand-forest-light); }
+.spinner-border.text-primary { color: var(--brand-forest-light) !important; }
+
+/* ============================================================
+   Signature motif — scan-frame corners. Every batch on this platform
+   ends in a QR code; the same viewfinder mark shows up wherever the
+   platform is naming itself and around the traceability header, so the
+   flagship feature is visible in the chrome, not just its own page.
+   ============================================================ */
+.scan-frame {
+    position: relative;
+    background-image:
+        linear-gradient(var(--brand-gold), var(--brand-gold)), linear-gradient(var(--brand-gold), var(--brand-gold)),
+        linear-gradient(var(--brand-gold), var(--brand-gold)), linear-gradient(var(--brand-gold), var(--brand-gold)),
+        linear-gradient(var(--brand-gold), var(--brand-gold)), linear-gradient(var(--brand-gold), var(--brand-gold)),
+        linear-gradient(var(--brand-gold), var(--brand-gold)), linear-gradient(var(--brand-gold), var(--brand-gold));
+    background-size: 8px 2px, 2px 8px, 8px 2px, 2px 8px, 8px 2px, 2px 8px, 8px 2px, 2px 8px;
+    background-position: top left, top left, top right, top right, bottom left, bottom left, bottom right, bottom right;
+    background-repeat: no-repeat;
+}
+
+/* ============================================================
+   Layout shell
+   ============================================================ */
 .app-shell {
     display: flex;
     min-height: 100vh;
@@ -19,7 +190,7 @@ body {
 .app-sidebar {
     width: var(--sidebar-width);
     flex-shrink: 0;
-    background-color: #0f3d2e;
+    background-color: var(--brand-forest);
     color: #e8f3ee;
     position: fixed;
     top: 0;
@@ -32,12 +203,24 @@ body {
 
 .sidebar-brand {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     padding: 1.1rem 1.25rem;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.65rem;
+}
+
+.brand-mark {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 4px;
+    font-size: 1rem;
+    color: var(--brand-gold-light);
 }
 
 .sidebar-nav {
@@ -62,7 +245,7 @@ body {
 }
 
 .sidebar-nav .nav-link.active {
-    background-color: #1a6b4f;
+    background-color: var(--brand-forest-light);
     color: #fff;
     font-weight: 600;
 }
@@ -117,7 +300,7 @@ body {
 }
 
 .auth-body {
-    background: linear-gradient(135deg, #0f3d2e, #1a6b4f);
+    background: linear-gradient(135deg, var(--brand-forest), var(--brand-forest-light));
     min-height: 100vh;
 }
 
@@ -136,6 +319,10 @@ body {
     width: 100%;
     max-width: 420px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.card {
+    box-shadow: 0 1px 2px rgba(15, 61, 46, 0.06);
 }
 
 .stat-card {

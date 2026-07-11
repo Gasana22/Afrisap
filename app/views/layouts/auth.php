@@ -12,7 +12,7 @@
 <div class="auth-wrapper">
     <div class="auth-card">
         <div class="text-center mb-4">
-            <i class="bi bi-tree-fill fs-1 text-success"></i>
+            <span class="brand-mark scan-frame d-inline-flex mb-1" style="width:48px;height:48px;font-size:1.5rem;color:var(--brand-forest-light);"><i class="bi bi-tree-fill"></i></span>
             <h4 class="mt-2 mb-0">Afrisap SFMTP</h4>
             <p class="text-muted small">Smart Farm Management &amp; Traceability Platform</p>
         </div>
