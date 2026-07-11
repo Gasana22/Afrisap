@@ -16,6 +16,7 @@ use App\Controllers\WorkerController;
 use App\Controllers\FinanceController;
 use App\Controllers\SupplierController;
 use App\Controllers\PurchaseOrderController;
+use App\Controllers\InventoryController;
 
 /** @var \App\Core\Router $router */
 
@@ -167,3 +168,15 @@ $router->post('/purchase-orders/{id}/status', [PurchaseOrderController::class, '
 $router->post('/purchase-orders/{id}/delete', [PurchaseOrderController::class, 'destroy'], 'procurement.delete');
 $router->post('/purchase-orders/{id}/deliveries', [PurchaseOrderController::class, 'addDelivery'], 'procurement.edit');
 $router->post('/purchase-orders/{id}/payments', [PurchaseOrderController::class, 'addPayment'], 'procurement.edit');
+
+// Inventory
+$router->get('/inventory', [InventoryController::class, 'index'], 'inventory.view');
+$router->get('/inventory/create', [InventoryController::class, 'create'], 'inventory.create');
+$router->post('/inventory', [InventoryController::class, 'store'], 'inventory.create');
+$router->get('/inventory/{id}', [InventoryController::class, 'show'], 'inventory.view');
+$router->get('/inventory/{id}/edit', [InventoryController::class, 'edit'], 'inventory.edit');
+$router->post('/inventory/{id}', [InventoryController::class, 'update'], 'inventory.edit');
+$router->post('/inventory/{id}/delete', [InventoryController::class, 'destroy'], 'inventory.delete');
+$router->post('/inventory/{id}/stock-in', [InventoryController::class, 'stockIn'], 'inventory.edit');
+$router->post('/inventory/{id}/stock-out', [InventoryController::class, 'stockOut'], 'inventory.edit');
+$router->post('/inventory/{id}/transfer', [InventoryController::class, 'transfer'], 'inventory.edit');

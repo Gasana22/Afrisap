@@ -44,8 +44,11 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     </a>
     <?php endif; ?>
 
-    <div class="nav-section-label">More modules</div>
-    <span class="nav-link disabled" title="Coming in Phase 5"><i class="bi bi-box-seam"></i> <span>Inventory</span> <small class="text-muted">soon</small></span>
+    <?php if (Auth::hasPermission('inventory.view')): ?>
+    <a class="nav-link <?= $isActive('/inventory') ?>" href="/inventory">
+        <i class="bi bi-box-seam"></i> <span>Inventory</span>
+    </a>
+    <?php endif; ?>
 
     <?php if (Auth::hasPermission('users.view') || Auth::hasPermission('roles.view') || Auth::hasPermission('settings.view') || Auth::hasPermission('audit.view')): ?>
     <div class="nav-section-label">Admin Panel</div>
