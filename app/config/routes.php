@@ -13,6 +13,7 @@ use App\Controllers\CropSetupController;
 use App\Controllers\CropCycleController;
 use App\Controllers\AnimalController;
 use App\Controllers\WorkerController;
+use App\Controllers\FinanceController;
 
 /** @var \App\Core\Router $router */
 
@@ -138,3 +139,12 @@ $router->post('/tasks/{id}/verify', [WorkerController::class, 'verifyTask'], 'wo
 
 $router->post('/workers/{id}/payroll', [WorkerController::class, 'addPayroll'], 'workers.edit');
 $router->post('/payroll/{id}/status', [WorkerController::class, 'updatePayrollStatus'], 'workers.edit');
+
+// Finance
+$router->get('/finance', [FinanceController::class, 'report'], 'finance.view');
+$router->get('/finance/income', [FinanceController::class, 'incomeIndex'], 'finance.view');
+$router->post('/finance/income', [FinanceController::class, 'storeIncome'], 'finance.create');
+$router->post('/income/{id}/delete', [FinanceController::class, 'destroyIncome'], 'finance.delete');
+$router->get('/finance/expenses', [FinanceController::class, 'expenseIndex'], 'finance.view');
+$router->post('/finance/expenses', [FinanceController::class, 'storeExpense'], 'finance.create');
+$router->post('/expenses/{id}/delete', [FinanceController::class, 'destroyExpense'], 'finance.delete');

@@ -32,8 +32,15 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     </a>
     <?php endif; ?>
 
+    <?php if (Auth::hasPermission('finance.view')): ?>
+    <a class="nav-link <?= $isActive('/finance') ?>" href="/finance">
+        <i class="bi bi-cash-coin"></i> <span>Finance</span>
+    </a>
+    <?php endif; ?>
+
     <div class="nav-section-label">More modules</div>
-    <span class="nav-link disabled" title="Coming in Phase 5"><i class="bi bi-cash-coin"></i> <span>Finance</span> <small class="text-muted">soon</small></span>
+    <span class="nav-link disabled" title="Coming in Phase 5"><i class="bi bi-truck"></i> <span>Procurement</span> <small class="text-muted">soon</small></span>
+    <span class="nav-link disabled" title="Coming in Phase 5"><i class="bi bi-box-seam"></i> <span>Inventory</span> <small class="text-muted">soon</small></span>
 
     <?php if (Auth::hasPermission('users.view') || Auth::hasPermission('roles.view') || Auth::hasPermission('settings.view') || Auth::hasPermission('audit.view')): ?>
     <div class="nav-section-label">Admin Panel</div>
