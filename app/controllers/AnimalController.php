@@ -15,6 +15,7 @@ use App\Models\AnimalTreatment;
 use App\Models\AnimalVaccination;
 use App\Models\AnimalWeight;
 use App\Models\Farm;
+use App\Models\TraceBatch;
 
 class AnimalController extends Controller
 {
@@ -57,6 +58,7 @@ class AnimalController extends Controller
         ]);
 
         AuditLogger::log('create', 'animals', (string) $id, null, Animal::find($id));
+        TraceBatch::createForAnimal($id);
 
         $this->flash('success', 'Animal registered with ID ' . Animal::find($id)['animal_code'] . '.');
         $this->redirect('/livestock/' . $id);

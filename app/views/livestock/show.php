@@ -12,6 +12,9 @@
         </p>
     </div>
     <div class="d-flex gap-2">
+        <?php if (Auth::hasPermission('traceability.view')): ?>
+        <a href="/livestock/<?= (int) $animal['id'] ?>/traceability" class="btn btn-outline-success btn-sm"><i class="bi bi-qr-code"></i> Traceability</a>
+        <?php endif; ?>
         <?php if ($canEdit): ?>
         <a href="/livestock/<?= (int) $animal['id'] ?>/edit" class="btn btn-outline-secondary btn-sm">Edit</a>
         <?php endif; ?>

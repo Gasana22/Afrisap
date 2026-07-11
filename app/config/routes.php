@@ -18,6 +18,8 @@ use App\Controllers\SupplierController;
 use App\Controllers\PurchaseOrderController;
 use App\Controllers\InventoryController;
 use App\Controllers\AssetController;
+use App\Controllers\TraceabilityController;
+use App\Controllers\PublicTraceController;
 
 /** @var \App\Core\Router $router */
 
@@ -191,3 +193,19 @@ $router->get('/farm-assets/{id}/edit', [AssetController::class, 'edit'], 'assets
 $router->post('/farm-assets/{id}', [AssetController::class, 'update'], 'assets.edit');
 $router->post('/farm-assets/{id}/delete', [AssetController::class, 'destroy'], 'assets.delete');
 $router->post('/farm-assets/{id}/maintenance', [AssetController::class, 'addMaintenance'], 'assets.edit');
+
+// Traceability
+$router->get('/traceability', [TraceabilityController::class, 'index'], 'traceability.view');
+$router->get('/traceability/{id}', [TraceabilityController::class, 'show'], 'traceability.view');
+$router->post('/traceability/{id}/status', [TraceabilityController::class, 'updateStatus'], 'traceability.edit');
+$router->post('/traceability/{id}/qr', [TraceabilityController::class, 'generateQr'], 'traceability.edit');
+$router->post('/traceability/{id}/documents', [TraceabilityController::class, 'addDocument'], 'traceability.edit');
+$router->post('/traceability/{id}/approvals', [TraceabilityController::class, 'addApproval'], 'traceability.edit');
+$router->post('/approvals/{id}/status', [TraceabilityController::class, 'updateApprovalStatus'], 'traceability.edit');
+$router->post('/traceability/{id}/journey', [TraceabilityController::class, 'addJourneyStage'], 'traceability.edit');
+
+$router->get('/crops/{id}/traceability', [TraceabilityController::class, 'forCropCycle'], 'crops.view');
+$router->get('/livestock/{id}/traceability', [TraceabilityController::class, 'forAnimal'], 'livestock.view');
+
+// Public QR scan page (no login required)
+$router->get('/trace/{token}', [PublicTraceController::class, 'show']);

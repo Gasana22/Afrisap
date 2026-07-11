@@ -17,6 +17,7 @@ use App\Models\MonitoringRecord;
 use App\Models\NurseryRecord;
 use App\Models\Plot;
 use App\Models\Season;
+use App\Models\TraceBatch;
 use App\Models\YieldForecast;
 
 class CropCycleController extends Controller
@@ -60,6 +61,7 @@ class CropCycleController extends Controller
         ]);
 
         AuditLogger::log('create', 'crop_cycles', (string) $id, null, CropCycle::find($id));
+        TraceBatch::createForCropCycle($id);
 
         $this->flash('success', 'Crop cycle started with batch code ' . CropCycle::find($id)['batch_code'] . '.');
         $this->redirect('/crops/' . $id);
