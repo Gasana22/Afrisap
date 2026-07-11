@@ -17,7 +17,18 @@ class TraceabilityController extends Controller
 {
     public function index(): void
     {
-        $this->view('traceability/index', ['pageTitle' => 'Traceability', 'batches' => TraceBatch::all()]);
+        $this->view('traceability/index', ['pageTitle' => 'Traceability', 'batches' => TraceBatch::forOrganization(Auth::organizationId())]);
+    }
+
+    /** The tenant-isolation gate for every action below. */
+    private function requireOwnedBatch(int $id): array
+    {
+        $batch = TraceBatch::findInOrganization($id, Auth::organizationId());
+        if (!$batch) {
+            $this->flash('danger', 'Batch not found.');
+            $this->redirect('/traceability');
+        }
+        return $batch;
     }
 
     public function forCropCycle(array $params): void
@@ -35,11 +46,7 @@ class TraceabilityController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $batch = TraceBatch::find($id);
-        if (!$batch) {
-            $this->flash('danger', 'Batch not found.');
-            $this->redirect('/traceability');
-        }
+        $batch = $this->requireOwnedBatch($id);
 
         $this->view('traceability/show', [
             'pageTitle' => 'Batch ' . $batch['batch_code'],
@@ -57,10 +64,7 @@ class TraceabilityController extends Controller
     public function updateStatus(array $params): void
     {
         $id = (int) $params['id'];
-        $batch = TraceBatch::find($id);
-        if (!$batch) {
-            $this->redirect('/traceability');
-        }
+        $batch = $this->requireOwnedBatch($id);
 
         $status = $this->input('status');
         $validator = (new Validator(['status' => $status]))->in('status', ['active', 'completed', 'recalled'], 'Status');
@@ -78,10 +82,7 @@ class TraceabilityController extends Controller
     public function generateQr(array $params): void
     {
         $id = (int) $params['id'];
-        $batch = TraceBatch::find($id);
-        if (!$batch) {
-            $this->redirect('/traceability');
-        }
+        $this->requireOwnedBatch($id);
 
         $config = require __DIR__ . '/../config/config.php';
         $qr = TraceQrCode::generate($id, $config['app']['url']);
@@ -94,10 +95,7 @@ class TraceabilityController extends Controller
     public function addDocument(array $params): void
     {
         $id = (int) $params['id'];
-        $batch = TraceBatch::find($id);
-        if (!$batch) {
-            $this->redirect('/traceability');
-        }
+        $this->requireOwnedBatch($id);
 
         $validator = (new Validator($_POST))->required('document_type', 'Document type');
         if ($validator->fails()) {
@@ -127,10 +125,7 @@ class TraceabilityController extends Controller
     public function addApproval(array $params): void
     {
         $id = (int) $params['id'];
-        $batch = TraceBatch::find($id);
-        if (!$batch) {
-            $this->redirect('/traceability');
-        }
+        $this->requireOwnedBatch($id);
 
         $validator = (new Validator($_POST))->required('approval_type', 'Approval type');
         if ($validator->fails()) {
@@ -152,6 +147,7 @@ class TraceabilityController extends Controller
         if (!$approval) {
             $this->redirect('/traceability');
         }
+        $this->requireOwnedBatch((int) $approval['trace_batch_id']);
 
         $status = $this->input('status');
         $validator = (new Validator(['status' => $status]))->in('status', ['approved', 'rejected'], 'Status');
@@ -169,10 +165,7 @@ class TraceabilityController extends Controller
     public function addJourneyStage(array $params): void
     {
         $id = (int) $params['id'];
-        $batch = TraceBatch::find($id);
-        if (!$batch) {
-            $this->redirect('/traceability');
-        }
+        $this->requireOwnedBatch($id);
 
         $validator = (new Validator($_POST))->required('stage', 'Stage')->required('stage_date', 'Date');
         if ($validator->fails()) {

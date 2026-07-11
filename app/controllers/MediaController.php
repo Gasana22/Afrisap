@@ -16,11 +16,14 @@ class MediaController extends Controller
     {
         $category = $this->input('category') ?: null;
         $farmId = $this->input('farm_id') ? (int) $this->input('farm_id') : null;
+        if ($farmId !== null && !Auth::organizationOwnsFarm($farmId)) {
+            $farmId = null;
+        }
 
         $this->view('media/index', [
             'pageTitle' => 'Media & Documents',
-            'files' => MediaFile::all($category, $farmId),
-            'farms' => Farm::all(),
+            'files' => MediaFile::all($category, $farmId, Auth::organizationId()),
+            'farms' => Farm::forOrganization(Auth::organizationId()),
             'selectedCategory' => $category,
             'selectedFarmId' => $farmId,
         ]);
@@ -28,7 +31,7 @@ class MediaController extends Controller
 
     public function create(): void
     {
-        $this->view('media/create', ['pageTitle' => 'Upload File', 'farms' => Farm::all()]);
+        $this->view('media/create', ['pageTitle' => 'Upload File', 'farms' => Farm::forOrganization(Auth::organizationId())]);
     }
 
     public function store(): void
@@ -36,6 +39,12 @@ class MediaController extends Controller
         $validator = (new Validator($_POST))->required('title', 'Title')->required('category', 'Category');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/media/create');
+        }
+
+        $farmId = $this->input('farm_id') ? (int) $this->input('farm_id') : null;
+        if ($farmId !== null && !Auth::organizationOwnsFarm($farmId)) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect('/media/create');
         }
 
@@ -52,7 +61,8 @@ class MediaController extends Controller
         }
 
         $id = MediaFile::create([
-            'farm_id' => $this->input('farm_id'),
+            'farm_id' => $farmId,
+            'organization_id' => Auth::organizationId(),
             'category' => $this->input('category'),
             'title' => $this->input('title'),
             'notes' => $this->input('notes'),
@@ -67,8 +77,9 @@ class MediaController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
-        $before = MediaFile::find($id);
+        $before = MediaFile::findInOrganization($id, Auth::organizationId());
         if (!$before) {
+            $this->flash('danger', 'File not found.');
             $this->redirect('/media');
         }
 

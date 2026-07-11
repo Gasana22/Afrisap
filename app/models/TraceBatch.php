@@ -24,6 +24,28 @@ class TraceBatch
             ORDER BY tb.created_at DESC")->fetchAll();
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT tb.*,
+                CASE WHEN tb.batch_type = 'crop' THEN ct.name ELSE CONCAT(a.species, COALESCE(CONCAT(' - ', a.name), '')) END AS product_name,
+                CASE WHEN tb.batch_type = 'crop' THEN f1.name ELSE f2.name END AS farm_name,
+                (SELECT COUNT(*) FROM trace_qr_codes WHERE trace_batch_id = tb.id) AS has_qr
+            FROM trace_batches tb
+            LEFT JOIN crop_cycles cc ON cc.id = tb.crop_cycle_id
+            LEFT JOIN crop_types ct ON ct.id = cc.crop_type_id
+            LEFT JOIN plots p ON p.id = cc.plot_id
+            LEFT JOIN blocks b ON b.id = p.block_id
+            LEFT JOIN farms f1 ON f1.id = b.farm_id
+            LEFT JOIN animals a ON a.id = tb.animal_id
+            LEFT JOIN farms f2 ON f2.id = a.farm_id
+            WHERE (tb.batch_type = 'crop' AND f1.organization_id = :org_id1)
+               OR (tb.batch_type = 'livestock' AND f2.organization_id = :org_id2)
+            ORDER BY tb.created_at DESC");
+        $stmt->execute(['org_id1' => $organizationId, 'org_id2' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
     public static function find(int $id): ?array
     {
         $stmt = Database::connection()->prepare('SELECT * FROM trace_batches WHERE id = :id');
@@ -33,6 +55,35 @@ class TraceBatch
             return null;
         }
         return self::hydrate($batch);
+    }
+
+    /** The tenant-isolation check: fetching another organization's batch by id returns null.
+     * Reuses CropCycle/Animal's own org-scoped lookups since a batch's farm is only known
+     * indirectly, via whichever of the two it links to. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM trace_batches WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        $batch = $stmt->fetch();
+        if (!$batch) {
+            return null;
+        }
+
+        if ($batch['batch_type'] === 'crop') {
+            $cycle = CropCycle::findInOrganization((int) $batch['crop_cycle_id'], $organizationId);
+            if (!$cycle) {
+                return null;
+            }
+            $batch['crop_cycle'] = $cycle;
+            return $batch;
+        }
+
+        $animal = Animal::findInOrganization((int) $batch['animal_id'], $organizationId);
+        if (!$animal) {
+            return null;
+        }
+        $batch['animal'] = $animal;
+        return $batch;
     }
 
     public static function findByToken(string $token): ?array

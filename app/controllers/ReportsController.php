@@ -2,11 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Database;
 use App\Core\ExcelExporter;
 use App\Core\PdfExporter;
 use App\Models\AnalyticsReport;
+use App\Models\Farm;
 
 class ReportsController extends Controller
 {
@@ -17,7 +19,7 @@ class ReportsController extends Controller
 
     public function cropYield(): void
     {
-        $rows = Database::connection()->query("SELECT cc.batch_code, ct.name AS crop_type, f.name AS farm_name,
+        $stmt = Database::connection()->prepare("SELECT cc.batch_code, ct.name AS crop_type, f.name AS farm_name,
                 p.plot_code, p.size_hectares, COALESCE(SUM(h.quantity), 0) AS total_yield, cc.status
             FROM crop_cycles cc
             JOIN crop_types ct ON ct.id = cc.crop_type_id
@@ -25,8 +27,11 @@ class ReportsController extends Controller
             JOIN blocks b ON b.id = p.block_id
             JOIN farms f ON f.id = b.farm_id
             LEFT JOIN harvests h ON h.crop_cycle_id = cc.id
+            WHERE f.organization_id = :org_id
             GROUP BY cc.id, cc.batch_code, ct.name, f.name, p.plot_code, p.size_hectares, cc.status
-            ORDER BY cc.batch_code")->fetchAll();
+            ORDER BY cc.batch_code");
+        $stmt->execute(['org_id' => Auth::organizationId()]);
+        $rows = $stmt->fetchAll();
 
         $headers = ['Batch Code', 'Crop Type', 'Farm', 'Plot', 'Hectares', 'Total Yield', 'Yield/Hectare', 'Status'];
         $tableRows = array_map(function ($r) {
@@ -39,13 +44,16 @@ class ReportsController extends Controller
 
     public function livestockProduction(): void
     {
-        $rows = Database::connection()->query("SELECT a.animal_code, a.species, a.name, f.name AS farm_name, a.status,
+        $stmt = Database::connection()->prepare("SELECT a.animal_code, a.species, a.name, f.name AS farm_name, a.status,
                 COALESCE(SUM(ap.quantity), 0) AS total_production
             FROM animals a
             JOIN farms f ON f.id = a.farm_id
             LEFT JOIN animal_production ap ON ap.animal_id = a.id
+            WHERE f.organization_id = :org_id
             GROUP BY a.id, a.animal_code, a.species, a.name, f.name, a.status
-            ORDER BY a.animal_code")->fetchAll();
+            ORDER BY a.animal_code");
+        $stmt->execute(['org_id' => Auth::organizationId()]);
+        $rows = $stmt->fetchAll();
 
         $headers = ['Animal ID', 'Species', 'Name', 'Farm', 'Total Production', 'Status'];
         $tableRows = array_map(fn($r) => [$r['animal_code'], $r['species'], $r['name'] ?? '', $r['farm_name'], $r['total_production'], $r['status']], $rows);
@@ -55,7 +63,7 @@ class ReportsController extends Controller
 
     public function workerProductivity(): void
     {
-        $rows = AnalyticsReport::workerProductivity(null);
+        $rows = AnalyticsReport::workerProductivity(null, Farm::idsForOrganization(Auth::organizationId()));
 
         $headers = ['Worker', 'Farm', 'Tasks Verified', 'Days Present'];
         $tableRows = array_map(fn($r) => [$r['name'], $r['farm_name'], $r['tasks_verified'], $r['days_present']], $rows);
@@ -75,9 +83,9 @@ class ReportsController extends Controller
             JOIN plots p ON p.id = cc.plot_id
             JOIN blocks b ON b.id = p.block_id
             JOIN farms f ON f.id = b.farm_id
-            WHERE fa.activity_date BETWEEN :from AND :to
+            WHERE fa.activity_date BETWEEN :from AND :to AND f.organization_id = :org_id
             ORDER BY fa.activity_date DESC");
-        $stmt->execute(['from' => $from, 'to' => $to]);
+        $stmt->execute(['from' => $from, 'to' => $to, 'org_id' => Auth::organizationId()]);
         $rows = $stmt->fetchAll();
 
         $headers = ['Date', 'Batch Code', 'Farm', 'Activity', 'Worker', 'Status', 'Cost'];

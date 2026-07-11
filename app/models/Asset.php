@@ -22,6 +22,21 @@ class Asset
         return $stmt->fetch() ?: null;
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare(self::SELECT_BASE . ' WHERE f.organization_id = :org_id ORDER BY a.created_at DESC');
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
+    /** The tenant-isolation check: fetching another organization's asset by id returns null. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare(self::SELECT_BASE . ' WHERE a.id = :id AND f.organization_id = :org_id');
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(array $data): int
     {
         $pdo = Database::connection();

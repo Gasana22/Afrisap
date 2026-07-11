@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\Validator;
@@ -13,12 +14,23 @@ class AssetController extends Controller
 {
     public function index(): void
     {
-        $this->view('assets/index', ['pageTitle' => 'Assets', 'assets' => Asset::all()]);
+        $this->view('assets/index', ['pageTitle' => 'Assets', 'assets' => Asset::forOrganization(Auth::organizationId())]);
+    }
+
+    /** The tenant-isolation gate for every action below. */
+    private function requireOwnedAsset(int $id): array
+    {
+        $asset = Asset::findInOrganization($id, Auth::organizationId());
+        if (!$asset) {
+            $this->flash('danger', 'Asset not found.');
+            $this->redirect('/farm-assets');
+        }
+        return $asset;
     }
 
     public function create(): void
     {
-        $this->view('assets/create', ['pageTitle' => 'Add Asset', 'farms' => Farm::all()]);
+        $this->view('assets/create', ['pageTitle' => 'Add Asset', 'farms' => Farm::forOrganization(Auth::organizationId())]);
     }
 
     public function store(): void
@@ -30,6 +42,11 @@ class AssetController extends Controller
             ->numeric('purchase_value', 'Purchase value');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/farm-assets/create');
+        }
+
+        if (!Auth::organizationOwnsFarm((int) $this->input('farm_id'))) {
+            $this->flash('danger', 'Farm not found.');
             $this->redirect('/farm-assets/create');
         }
 
@@ -52,11 +69,7 @@ class AssetController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $asset = Asset::find($id);
-        if (!$asset) {
-            $this->flash('danger', 'Asset not found.');
-            $this->redirect('/farm-assets');
-        }
+        $asset = $this->requireOwnedAsset($id);
 
         $this->view('assets/show', [
             'pageTitle' => $asset['name'],
@@ -67,11 +80,7 @@ class AssetController extends Controller
 
     public function edit(array $params): void
     {
-        $asset = Asset::find((int) $params['id']);
-        if (!$asset) {
-            $this->flash('danger', 'Asset not found.');
-            $this->redirect('/farm-assets');
-        }
+        $asset = $this->requireOwnedAsset((int) $params['id']);
 
         $this->view('assets/edit', ['pageTitle' => 'Edit ' . $asset['name'], 'asset' => $asset]);
     }
@@ -79,11 +88,7 @@ class AssetController extends Controller
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Asset::find($id);
-        if (!$before) {
-            $this->flash('danger', 'Asset not found.');
-            $this->redirect('/farm-assets');
-        }
+        $before = $this->requireOwnedAsset($id);
 
         $validator = (new Validator($_POST))->required('type', 'Type')->required('name', 'Name')->numeric('purchase_value', 'Purchase value');
         if ($validator->fails()) {
@@ -109,12 +114,13 @@ class AssetController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
+        $before = $this->requireOwnedAsset($id);
+
         if (Asset::hasMaintenance($id)) {
             $this->flash('danger', 'This asset has maintenance history and cannot be deleted. Mark it retired instead.');
             $this->redirect("/farm-assets/{$id}");
         }
 
-        $before = Asset::find($id);
         Asset::delete($id);
         AuditLogger::log('delete', 'assets', (string) $id, $before, null);
 
@@ -125,6 +131,7 @@ class AssetController extends Controller
     public function addMaintenance(array $params): void
     {
         $assetId = (int) $params['id'];
+        $this->requireOwnedAsset($assetId);
         $validator = (new Validator($_POST))
             ->required('maintenance_date', 'Date')
             ->required('description', 'Description')

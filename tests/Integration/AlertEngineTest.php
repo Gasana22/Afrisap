@@ -20,7 +20,7 @@ class AlertEngineTest extends DatabaseTestCase
         $this->pdo->prepare("INSERT INTO crop_inputs (crop_cycle_id, input_type, expiry_date) VALUES (:cycle_id, 'chemical', '2020-01-01')")
             ->execute(['cycle_id' => $cycleId]);
 
-        $alerts = AlertEngine::expiredInputs();
+        $alerts = AlertEngine::expiredInputs(null);
 
         $this->assertNotEmpty($alerts);
         $this->assertSame('expired_input', $alerts[0]['type']);
@@ -40,7 +40,7 @@ class AlertEngineTest extends DatabaseTestCase
         $this->pdo->prepare("INSERT INTO crop_inputs (crop_cycle_id, input_type, expiry_date) VALUES (:cycle_id, 'chemical', '2099-01-01')")
             ->execute(['cycle_id' => $cycleId]);
 
-        $this->assertEmpty(AlertEngine::expiredInputs());
+        $this->assertEmpty(AlertEngine::expiredInputs(null));
     }
 
     /**
@@ -59,7 +59,7 @@ class AlertEngineTest extends DatabaseTestCase
         $this->pdo->prepare('INSERT INTO inventory_stock (item_id, farm_id, quantity_on_hand) VALUES (:item_id, :farm_id, 30)')
             ->execute(['item_id' => $itemId, 'farm_id' => $farmId]);
 
-        $alerts = AlertEngine::inventoryVariance();
+        $alerts = AlertEngine::inventoryVariance(null);
 
         $this->assertNotEmpty($alerts);
         $this->assertSame('inventory_variance', $alerts[0]['type']);
@@ -75,13 +75,13 @@ class AlertEngineTest extends DatabaseTestCase
         $this->pdo->prepare('INSERT INTO inventory_stock (item_id, farm_id, quantity_on_hand) VALUES (:item_id, :farm_id, 500)')
             ->execute(['item_id' => $itemId, 'farm_id' => $farmId]);
 
-        $this->assertEmpty(AlertEngine::inventoryVariance());
+        $this->assertEmpty(AlertEngine::inventoryVariance(null));
     }
 
     public function test_all_returns_combined_list_without_throwing(): void
     {
-        // Smoke test: every sub-query in AlertEngine::all() runs cleanly against an
+        // Smoke test: every sub-query in AlertEngine::all(null) runs cleanly against an
         // empty-ish dataset (this is what fires on every single page load via the sidebar).
-        $this->assertIsArray(AlertEngine::all());
+        $this->assertIsArray(AlertEngine::all(null));
     }
 }

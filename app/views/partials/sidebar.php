@@ -66,7 +66,7 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     <a class="nav-link <?= $isActive('/reports') ?>" href="/reports">
         <i class="bi bi-bar-chart-line"></i> <span>Reports</span>
     </a>
-    <?php $alertCount = \App\Models\AlertEngine::count(); ?>
+    <?php $alertCount = \App\Models\AlertEngine::count(Auth::organizationId()); ?>
     <a class="nav-link <?= $isActive('/alerts') ?>" href="/alerts">
         <i class="bi bi-exclamation-triangle"></i> <span>Alerts</span>
         <?php if ($alertCount > 0): ?><span class="badge bg-danger ms-auto"><?= $alertCount ?></span><?php endif; ?>
