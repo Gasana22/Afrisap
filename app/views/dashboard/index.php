@@ -43,15 +43,16 @@
     --muted: #898781;
     --gridline: #e1e0d9;
 }
-@media (prefers-color-scheme: dark) {
-    .viz-root {
-        --series-income: #3987e5;
-        --series-expense: #e66767;
-        --series-primary: #3987e5;
-        --text-secondary: #c3c2b7;
-        --muted: #898781;
-        --gridline: #2c2c2a;
-    }
+/* Keyed off the app's own light/dark toggle (data-bs-theme), not the OS-level
+   prefers-color-scheme -- those two can disagree, and the toggle is the one
+   that actually reflects what's on screen. */
+[data-bs-theme="dark"] .viz-root {
+    --series-income: #3987e5;
+    --series-expense: #e66767;
+    --series-primary: #3987e5;
+    --text-secondary: #c3c2b7;
+    --muted: #898781;
+    --gridline: #2c2c2a;
 }
 </style>
 
@@ -155,7 +156,7 @@ $mortalityColor = ['good' => '#0ca30c', 'warning' => '#fab219', 'critical' => '#
     const colorGrid = style.getPropertyValue('--gridline').trim();
     const colorMuted = style.getPropertyValue('--muted').trim();
 
-    Chart.defaults.font.family = "system-ui, -apple-system, 'Segoe UI', sans-serif";
+    Chart.defaults.font.family = "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif";
     Chart.defaults.color = colorMuted;
     Chart.defaults.borderColor = colorGrid;
 

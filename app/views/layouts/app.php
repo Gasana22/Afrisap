@@ -7,6 +7,16 @@ $navUser = $currentUser ?? Auth::user();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+    // Applied before any content paints or runs, so the theme is already
+    // correct by the time this page's own inline scripts (e.g. Chart.js
+    // construction, which reads theme-dependent CSS variables) execute.
+    (function () {
+        try {
+            document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('sfmtp_theme') || 'light');
+        } catch (e) {}
+    })();
+    </script>
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' · ' : '' ?>Afrisap SFMTP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">

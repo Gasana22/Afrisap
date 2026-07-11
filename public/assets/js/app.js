@@ -12,9 +12,13 @@
         themeToggle.addEventListener('click', function () {
             const current = root.getAttribute('data-bs-theme');
             const next = current === 'dark' ? 'light' : 'dark';
-            root.setAttribute('data-bs-theme', next);
             localStorage.setItem('sfmtp_theme', next);
-            updateThemeIcon(next);
+            // Reload rather than just flipping the attribute: pages with
+            // Chart.js canvases read theme-dependent CSS variables once at
+            // construction time and don't repaint on their own, so an
+            // in-place toggle would leave charts showing the old theme's
+            // colors against the new theme's background.
+            location.reload();
         });
     }
 
