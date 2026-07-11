@@ -14,6 +14,8 @@ use App\Controllers\CropCycleController;
 use App\Controllers\AnimalController;
 use App\Controllers\WorkerController;
 use App\Controllers\FinanceController;
+use App\Controllers\SupplierController;
+use App\Controllers\PurchaseOrderController;
 
 /** @var \App\Core\Router $router */
 
@@ -148,3 +150,20 @@ $router->post('/income/{id}/delete', [FinanceController::class, 'destroyIncome']
 $router->get('/finance/expenses', [FinanceController::class, 'expenseIndex'], 'finance.view');
 $router->post('/finance/expenses', [FinanceController::class, 'storeExpense'], 'finance.create');
 $router->post('/expenses/{id}/delete', [FinanceController::class, 'destroyExpense'], 'finance.delete');
+
+// Procurement
+$router->get('/suppliers', [SupplierController::class, 'index'], 'procurement.view');
+$router->get('/suppliers/create', [SupplierController::class, 'create'], 'procurement.create');
+$router->post('/suppliers', [SupplierController::class, 'store'], 'procurement.create');
+$router->get('/suppliers/{id}/edit', [SupplierController::class, 'edit'], 'procurement.edit');
+$router->post('/suppliers/{id}', [SupplierController::class, 'update'], 'procurement.edit');
+$router->post('/suppliers/{id}/delete', [SupplierController::class, 'destroy'], 'procurement.delete');
+
+$router->get('/purchase-orders', [PurchaseOrderController::class, 'index'], 'procurement.view');
+$router->get('/purchase-orders/create', [PurchaseOrderController::class, 'create'], 'procurement.create');
+$router->post('/purchase-orders', [PurchaseOrderController::class, 'store'], 'procurement.create');
+$router->get('/purchase-orders/{id}', [PurchaseOrderController::class, 'show'], 'procurement.view');
+$router->post('/purchase-orders/{id}/status', [PurchaseOrderController::class, 'updateStatus'], 'procurement.edit');
+$router->post('/purchase-orders/{id}/delete', [PurchaseOrderController::class, 'destroy'], 'procurement.delete');
+$router->post('/purchase-orders/{id}/deliveries', [PurchaseOrderController::class, 'addDelivery'], 'procurement.edit');
+$router->post('/purchase-orders/{id}/payments', [PurchaseOrderController::class, 'addPayment'], 'procurement.edit');
