@@ -36,9 +36,9 @@
 <div class="viz-root">
 <style>
 .viz-root {
-    --series-income: #2a78d6;
-    --series-expense: #e34948;
-    --series-primary: #2a78d6;
+    --series-income: #1a6b4f;
+    --series-expense: #b3562e;
+    --series-primary: #c8862a;
     --text-secondary: #52514e;
     --muted: #898781;
     --gridline: #e1e0d9;
@@ -47,9 +47,9 @@
    prefers-color-scheme -- those two can disagree, and the toggle is the one
    that actually reflects what's on screen. */
 [data-bs-theme="dark"] .viz-root {
-    --series-income: #3987e5;
-    --series-expense: #e66767;
-    --series-primary: #3987e5;
+    --series-income: #4fb98a;
+    --series-expense: #d97c50;
+    --series-primary: #e0a94f;
     --text-secondary: #c3c2b7;
     --muted: #898781;
     --gridline: #2c2c2a;

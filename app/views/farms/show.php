@@ -21,8 +21,49 @@
     </div>
 </div>
 
+<?php
+$plotCount = 0;
+$totalPlotHectares = 0.0;
+foreach ($blocks as $b) {
+    $plotCount += count($b['plots']);
+    foreach ($b['plots'] as $p) {
+        $totalPlotHectares += (float) ($p['size_hectares'] ?? 0);
+    }
+}
+?>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="text-muted small"><i class="bi bi-grid-3x3-gap me-1"></i>Blocks</div>
+            <div class="fs-3 fw-bold"><?= count($blocks) ?></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="text-muted small"><i class="bi bi-bounding-box me-1"></i>Plots</div>
+            <div class="fs-3 fw-bold"><?= $plotCount ?></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="text-muted small"><i class="bi bi-arrows-angle-expand me-1"></i>Farm Size</div>
+            <div class="fs-3 fw-bold"><?= $farm['size_hectares'] !== null ? htmlspecialchars($farm['size_hectares']) : '—' ?> <span class="fs-6 fw-normal text-muted">ha</span></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="text-muted small"><i class="bi bi-check2-circle me-1"></i>Plotted Area</div>
+            <div class="fs-3 fw-bold"><?= number_format($totalPlotHectares, 1) ?> <span class="fs-6 fw-normal text-muted">ha</span></div>
+        </div>
+    </div>
+</div>
+
 <?php if ($farm['gps_lat'] && $farm['gps_lng']): ?>
-<div id="farmShowMap" style="height: 260px; border-radius: 0.5rem;" class="mb-4"></div>
+<div class="card mb-4">
+    <div class="card-body p-2">
+        <div id="farmShowMap" style="height: 280px; border-radius: 0.5rem;"></div>
+    </div>
+</div>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>

@@ -266,24 +266,6 @@ a:not(.btn, .nav-link, .dropdown-item, .page-link):hover {
     gap: 0.4rem;
 }
 
-/* Admin Panel is a distinct, permission-gated zone -- not just another item
-   in the same list -- so it gets its own visually bounded panel: a divider
-   above it, a tinted background, and a gold accent bar (the platform's
-   "this is a controlled/flagged area" signal, reused from the traceability
-   scan-frame motif) instead of blending into the regular nav. */
-.admin-zone {
-    margin-top: 0.9rem;
-    padding: 0.5rem 0.4rem 0.6rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
-    background-color: rgba(0, 0, 0, 0.16);
-    border-radius: 0.5rem;
-    border-left: 2px solid var(--brand-gold);
-}
-
-.admin-zone .nav-section-label {
-    color: var(--brand-gold-light);
-}
-
 .app-main {
     margin-left: var(--sidebar-width);
     flex: 1;
@@ -349,6 +331,54 @@ a:not(.btn, .nav-link, .dropdown-item, .page-link):hover {
 .stat-card {
     border-radius: 0.75rem;
     border: 1px solid var(--bs-border-color);
+    border-top: 3px solid var(--brand-gold);
+    background: linear-gradient(180deg, rgba(200, 134, 42, 0.06), transparent 55%);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(15, 61, 46, 0.1);
+}
+
+[data-bs-theme="dark"] .stat-card {
+    background: linear-gradient(180deg, rgba(224, 169, 79, 0.08), transparent 55%);
+}
+
+[data-bs-theme="dark"] .stat-card:hover {
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* ============================================================
+   Accordion — replace Bootstrap's default blue active-panel styling
+   (which otherwise clashes hard against the forest/gold brand system,
+   most visibly on Crop Cycle and Livestock detail pages) with the same
+   palette used everywhere else in the app.
+   ============================================================ */
+.accordion {
+    --bs-accordion-color: var(--brand-forest-dark);
+    --bs-accordion-active-color: var(--brand-forest-dark);
+    --bs-accordion-active-bg: rgba(26, 107, 79, 0.09);
+    --bs-accordion-btn-focus-border-color: var(--brand-forest-light);
+    --bs-accordion-btn-focus-box-shadow: 0 0 0 0.2rem rgba(26, 107, 79, 0.2);
+    --bs-accordion-btn-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230f3d2e'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231a6b4f'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+}
+
+[data-bs-theme="dark"] .accordion {
+    --bs-accordion-color: #e8f3ee;
+    --bs-accordion-active-color: #fff;
+    --bs-accordion-active-bg: rgba(127, 209, 172, 0.12);
+    --bs-accordion-btn-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23cfe4da'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%237fd1ac'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+}
+
+.accordion-item {
+    border-left: 3px solid transparent;
+}
+
+.accordion-item:has(.accordion-button:not(.collapsed)) {
+    border-left-color: var(--brand-gold);
 }
 
 /* ============================================================
