@@ -11,6 +11,7 @@ use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\AuditLogController;
 use App\Controllers\CropSetupController;
 use App\Controllers\CropCycleController;
+use App\Controllers\AnimalController;
 
 /** @var \App\Core\Router $router */
 
@@ -99,3 +100,21 @@ $router->post('/harvests/{id}/delete', [CropCycleController::class, 'deleteHarve
 
 $router->post('/harvests/{harvestId}/sales', [CropCycleController::class, 'addSale'], 'crops.edit');
 $router->post('/crop-sales/{id}/delete', [CropCycleController::class, 'deleteSale'], 'crops.edit');
+
+// Livestock
+$router->get('/livestock', [AnimalController::class, 'index'], 'livestock.view');
+$router->get('/livestock/create', [AnimalController::class, 'create'], 'livestock.create');
+$router->post('/livestock', [AnimalController::class, 'store'], 'livestock.create');
+$router->get('/livestock/{id}', [AnimalController::class, 'show'], 'livestock.view');
+$router->get('/livestock/{id}/edit', [AnimalController::class, 'edit'], 'livestock.edit');
+$router->post('/livestock/{id}', [AnimalController::class, 'update'], 'livestock.edit');
+$router->post('/livestock/{id}/delete', [AnimalController::class, 'destroy'], 'livestock.delete');
+
+$router->post('/livestock/{id}/vaccinations', [AnimalController::class, 'addVaccination'], 'livestock.edit');
+$router->post('/livestock/{id}/feedings', [AnimalController::class, 'addFeeding'], 'livestock.edit');
+$router->post('/livestock/{id}/weights', [AnimalController::class, 'addWeight'], 'livestock.edit');
+$router->post('/livestock/{id}/treatments', [AnimalController::class, 'addTreatment'], 'livestock.edit');
+$router->post('/livestock/{id}/breeding', [AnimalController::class, 'addBreeding'], 'livestock.edit');
+$router->post('/livestock/{id}/production', [AnimalController::class, 'addProduction'], 'livestock.edit');
+$router->post('/livestock/{id}/mortality', [AnimalController::class, 'recordMortality'], 'livestock.edit');
+$router->post('/livestock/{id}/sale', [AnimalController::class, 'recordSale'], 'livestock.edit');

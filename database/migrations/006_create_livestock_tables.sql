@@ -1,0 +1,111 @@
+CREATE TABLE IF NOT EXISTS animals (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    farm_id INT UNSIGNED NOT NULL,
+    animal_code VARCHAR(60) NOT NULL UNIQUE,
+    name VARCHAR(100) NULL,
+    species VARCHAR(60) NOT NULL,
+    breed VARCHAR(100) NULL,
+    tag_number VARCHAR(60) NULL,
+    gender ENUM('male','female') NOT NULL,
+    birth_date DATE NULL,
+    parent_id INT UNSIGNED NULL,
+    status ENUM('active','sold','deceased') NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (farm_id) REFERENCES farms(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES animals(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_vaccinations (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL,
+    vaccine_name VARCHAR(150) NOT NULL,
+    date_administered DATE NOT NULL,
+    next_due_date DATE NULL,
+    administered_by VARCHAR(150) NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_feedings (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL,
+    feed_type VARCHAR(100) NOT NULL,
+    quantity DECIMAL(10,2) NULL,
+    unit VARCHAR(30) NULL,
+    feeding_date DATE NOT NULL,
+    cost DECIMAL(12,2) NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_weights (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL,
+    weight_kg DECIMAL(8,2) NOT NULL,
+    recorded_date DATE NOT NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_treatments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL,
+    condition_name VARCHAR(150) NOT NULL,
+    treatment VARCHAR(255) NOT NULL,
+    treatment_date DATE NOT NULL,
+    administered_by VARCHAR(150) NULL,
+    cost DECIMAL(12,2) NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_breeding (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL,
+    mate_description VARCHAR(150) NULL,
+    breeding_date DATE NOT NULL,
+    expected_due_date DATE NULL,
+    outcome ENUM('pending','successful','failed') NOT NULL DEFAULT 'pending',
+    offspring_count INT UNSIGNED NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_production (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL,
+    production_type VARCHAR(60) NOT NULL,
+    quantity DECIMAL(10,2) NOT NULL,
+    unit VARCHAR(30) NULL,
+    production_date DATE NOT NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_mortality (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL UNIQUE,
+    death_date DATE NOT NULL,
+    cause VARCHAR(255) NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS animal_sales (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT UNSIGNED NOT NULL UNIQUE,
+    buyer_name VARCHAR(150) NOT NULL,
+    sale_price DECIMAL(12,2) NOT NULL,
+    sale_date DATE NOT NULL,
+    notes VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
