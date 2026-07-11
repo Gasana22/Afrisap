@@ -9,6 +9,8 @@ use App\Controllers\Admin\UserController;
 use App\Controllers\Admin\RoleController;
 use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\AuditLogController;
+use App\Controllers\CropSetupController;
+use App\Controllers\CropCycleController;
 
 /** @var \App\Core\Router $router */
 
@@ -59,3 +61,41 @@ $router->get('/admin/settings', [SettingsController::class, 'index'], 'settings.
 $router->post('/admin/settings', [SettingsController::class, 'update'], 'settings.edit');
 
 $router->get('/admin/audit-logs', [AuditLogController::class, 'index'], 'audit.view');
+
+// Crop setup (types & seasons)
+$router->get('/crops/setup', [CropSetupController::class, 'index'], 'crops.edit');
+$router->post('/crops/setup/types', [CropSetupController::class, 'storeType'], 'crops.edit');
+$router->post('/crop-types/{id}/delete', [CropSetupController::class, 'destroyType'], 'crops.edit');
+$router->post('/crops/setup/seasons', [CropSetupController::class, 'storeSeason'], 'crops.edit');
+$router->post('/seasons/{id}/delete', [CropSetupController::class, 'destroySeason'], 'crops.edit');
+
+// Crop lifecycle
+$router->get('/crops', [CropCycleController::class, 'index'], 'crops.view');
+$router->get('/crops/create', [CropCycleController::class, 'create'], 'crops.create');
+$router->post('/crops', [CropCycleController::class, 'store'], 'crops.create');
+$router->get('/crops/{id}', [CropCycleController::class, 'show'], 'crops.view');
+$router->get('/crops/{id}/edit', [CropCycleController::class, 'edit'], 'crops.edit');
+$router->post('/crops/{id}', [CropCycleController::class, 'update'], 'crops.edit');
+$router->post('/crops/{id}/delete', [CropCycleController::class, 'destroy'], 'crops.delete');
+
+$router->post('/crops/{id}/inputs', [CropCycleController::class, 'addInput'], 'crops.edit');
+$router->post('/crop-inputs/{id}/delete', [CropCycleController::class, 'deleteInput'], 'crops.edit');
+
+$router->post('/crops/{id}/nursery', [CropCycleController::class, 'addNursery'], 'crops.edit');
+$router->post('/nursery/{id}/delete', [CropCycleController::class, 'deleteNursery'], 'crops.edit');
+
+$router->post('/crops/{id}/activities', [CropCycleController::class, 'addActivity'], 'crops.edit');
+$router->post('/activities/{id}/status', [CropCycleController::class, 'updateActivityStatus'], 'crops.edit');
+$router->post('/activities/{id}/delete', [CropCycleController::class, 'deleteActivity'], 'crops.edit');
+
+$router->post('/crops/{id}/monitoring', [CropCycleController::class, 'addMonitoring'], 'crops.edit');
+$router->post('/monitoring/{id}/delete', [CropCycleController::class, 'deleteMonitoring'], 'crops.edit');
+
+$router->post('/crops/{id}/yield-forecast', [CropCycleController::class, 'addForecast'], 'crops.edit');
+$router->post('/yield-forecasts/{id}/delete', [CropCycleController::class, 'deleteForecast'], 'crops.edit');
+
+$router->post('/crops/{id}/harvest', [CropCycleController::class, 'addHarvest'], 'crops.edit');
+$router->post('/harvests/{id}/delete', [CropCycleController::class, 'deleteHarvest'], 'crops.edit');
+
+$router->post('/harvests/{harvestId}/sales', [CropCycleController::class, 'addSale'], 'crops.edit');
+$router->post('/crop-sales/{id}/delete', [CropCycleController::class, 'deleteSale'], 'crops.edit');

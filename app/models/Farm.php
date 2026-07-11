@@ -35,7 +35,10 @@ class Farm
             'owner_id' => $data['owner_id'] ?: null,
             'status' => $data['status'] ?? 'active',
         ]);
-        return (int) $pdo->lastInsertId();
+        $id = (int) $pdo->lastInsertId();
+        $pdo->prepare("UPDATE farms SET code = CONCAT('FARM', LPAD(:id, 2, '0')) WHERE id = :id2")
+            ->execute(['id' => $id, 'id2' => $id]);
+        return $id;
     }
 
     public static function update(int $id, array $data): void
