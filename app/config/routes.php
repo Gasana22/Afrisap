@@ -17,6 +17,7 @@ use App\Controllers\FinanceController;
 use App\Controllers\SupplierController;
 use App\Controllers\PurchaseOrderController;
 use App\Controllers\InventoryController;
+use App\Controllers\AssetController;
 
 /** @var \App\Core\Router $router */
 
@@ -180,3 +181,13 @@ $router->post('/inventory/{id}/delete', [InventoryController::class, 'destroy'],
 $router->post('/inventory/{id}/stock-in', [InventoryController::class, 'stockIn'], 'inventory.edit');
 $router->post('/inventory/{id}/stock-out', [InventoryController::class, 'stockOut'], 'inventory.edit');
 $router->post('/inventory/{id}/transfer', [InventoryController::class, 'transfer'], 'inventory.edit');
+
+// Assets
+$router->get('/farm-assets', [AssetController::class, 'index'], 'assets.view');
+$router->get('/farm-assets/create', [AssetController::class, 'create'], 'assets.create');
+$router->post('/farm-assets', [AssetController::class, 'store'], 'assets.create');
+$router->get('/farm-assets/{id}', [AssetController::class, 'show'], 'assets.view');
+$router->get('/farm-assets/{id}/edit', [AssetController::class, 'edit'], 'assets.edit');
+$router->post('/farm-assets/{id}', [AssetController::class, 'update'], 'assets.edit');
+$router->post('/farm-assets/{id}/delete', [AssetController::class, 'destroy'], 'assets.delete');
+$router->post('/farm-assets/{id}/maintenance', [AssetController::class, 'addMaintenance'], 'assets.edit');

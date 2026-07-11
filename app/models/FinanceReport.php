@@ -48,6 +48,14 @@ class FinanceReport
 
         UNION ALL
 
+        SELECT am.maintenance_date AS entry_date, am.cost AS amount, CONCAT('Asset Maintenance: ', am.description) AS source, f.id AS farm_id, f.name AS farm_name
+        FROM asset_maintenance am
+        JOIN assets a ON a.id = am.asset_id
+        JOIN farms f ON f.id = a.farm_id
+        WHERE am.cost IS NOT NULL
+
+        UNION ALL
+
         SELECT e.expense_date AS entry_date, e.amount AS amount, e.description AS source, f.id AS farm_id, f.name AS farm_name
         FROM expenses e
         JOIN farms f ON f.id = e.farm_id
