@@ -201,5 +201,18 @@ $farmName = $batch['batch_type'] === 'crop' ? ($batch['crop_cycle']['farm_name']
                 <?php endif; ?>
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h6 class="mb-3">Compliance Reports</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="/traceability/<?= (int) $batch['id'] ?>/compliance/organic" class="btn btn-sm btn-outline-secondary">Organic Certification</a>
+                    <a href="/traceability/<?= (int) $batch['id'] ?>/compliance/gap" class="btn btn-sm btn-outline-secondary">GAP Compliance</a>
+                    <a href="/traceability/<?= (int) $batch['id'] ?>/compliance/export" class="btn btn-sm btn-outline-secondary">Export Documentation</a>
+                    <a href="/traceability/<?= (int) $batch['id'] ?>/compliance/food_safety" class="btn btn-sm btn-outline-secondary">Food Safety Audit</a>
+                    <a href="/traceability/<?= (int) $batch['id'] ?>/compliance/carbon" class="btn btn-sm btn-outline-secondary">Carbon Reporting</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

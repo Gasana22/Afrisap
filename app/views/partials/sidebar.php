@@ -66,11 +66,22 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     <a class="nav-link <?= $isActive('/reports') ?>" href="/reports">
         <i class="bi bi-bar-chart-line"></i> <span>Reports</span>
     </a>
+    <?php $alertCount = \App\Models\AlertEngine::count(); ?>
+    <a class="nav-link <?= $isActive('/alerts') ?>" href="/alerts">
+        <i class="bi bi-exclamation-triangle"></i> <span>Alerts</span>
+        <?php if ($alertCount > 0): ?><span class="badge bg-danger ms-auto"><?= $alertCount ?></span><?php endif; ?>
+    </a>
     <?php endif; ?>
 
     <?php if (Auth::hasPermission('farms.view')): ?>
     <a class="nav-link <?= $isActive('/maps') ?>" href="/maps">
         <i class="bi bi-map"></i> <span>Farm Map</span>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Auth::hasPermission('media.view')): ?>
+    <a class="nav-link <?= $isActive('/media') ?>" href="/media">
+        <i class="bi bi-folder2-open"></i> <span>Media &amp; Documents</span>
     </a>
     <?php endif; ?>
 

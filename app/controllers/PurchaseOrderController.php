@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
+use App\Core\Notifier;
 use App\Core\Validator;
 use App\Models\Delivery;
 use App\Models\Farm;
@@ -111,6 +112,10 @@ class PurchaseOrderController extends Controller
 
         PurchaseOrder::updateStatus($id, $status);
         AuditLogger::log('update_status', 'purchase_orders', (string) $id, $order, ['status' => $status]);
+
+        if ($status === 'received' && (int) $order['created_by'] !== Auth::id()) {
+            Notifier::notify((int) $order['created_by'], 'Purchase order received', "PO #{$id} from {$order['supplier_name']} has been marked received.", 'success', "/purchase-orders/{$id}");
+        }
 
         $this->flash('success', 'Purchase order status updated.');
         $this->redirect("/purchase-orders/{$id}");

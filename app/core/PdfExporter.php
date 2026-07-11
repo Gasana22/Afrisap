@@ -39,11 +39,24 @@ class PdfExporter
         }
         $html .= '</tbody></table></body></html>';
 
+        self::stream($html, $filename, 'landscape');
+    }
+
+    /**
+     * Streams arbitrary HTML (a freeform document, not a table) as a PDF download and ends the request.
+     */
+    public static function streamHtml(string $html, string $filename, string $orientation = 'portrait'): void
+    {
+        self::stream($html, $filename, $orientation);
+    }
+
+    private static function stream(string $html, string $filename, string $orientation): void
+    {
         $options = new Options();
         $options->set('isRemoteEnabled', false);
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4', $orientation);
         $dompdf->render();
         $dompdf->stream($filename, ['Attachment' => true]);
         exit;

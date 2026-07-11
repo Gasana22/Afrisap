@@ -29,7 +29,7 @@ foreach ($pdo->query('SELECT id, slug FROM roles') as $row) {
     $roleIds[$row['slug']] = (int) $row['id'];
 }
 
-$modules = ['users', 'roles', 'settings', 'audit', 'farms', 'crops', 'livestock', 'workers', 'finance', 'procurement', 'inventory', 'assets', 'reports', 'traceability'];
+$modules = ['users', 'roles', 'settings', 'audit', 'farms', 'crops', 'livestock', 'workers', 'finance', 'procurement', 'inventory', 'assets', 'reports', 'traceability', 'media'];
 $actions = ['view', 'create', 'edit', 'delete'];
 
 $permStmt = $pdo->prepare('INSERT INTO permissions (code, module, description) VALUES (:code, :module, :description)
@@ -57,7 +57,7 @@ foreach ($permIds as $code => $id) {
 }
 
 // Farm Owner: view everything, create/edit on operational modules, no user/role management.
-$ownerModules = ['farms', 'crops', 'livestock', 'workers', 'finance', 'procurement', 'inventory', 'assets', 'reports', 'traceability'];
+$ownerModules = ['farms', 'crops', 'livestock', 'workers', 'finance', 'procurement', 'inventory', 'assets', 'reports', 'traceability', 'media'];
 foreach ($ownerModules as $module) {
     foreach ($actions as $action) {
         $code = "$module.$action";
@@ -69,7 +69,7 @@ foreach ($ownerModules as $module) {
 $assign->execute(['role_id' => $roleIds['farm_owner'], 'permission_id' => $permIds['audit.view']]);
 
 // Farm Manager: operate farms/crops/livestock/workers/inventory, view finance/reports.
-$managerFull = ['farms', 'crops', 'livestock', 'workers', 'inventory', 'traceability'];
+$managerFull = ['farms', 'crops', 'livestock', 'workers', 'inventory', 'traceability', 'media'];
 foreach ($managerFull as $module) {
     foreach ($actions as $action) {
         $code = "$module.$action";

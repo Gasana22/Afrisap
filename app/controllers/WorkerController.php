@@ -6,6 +6,7 @@ use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\FileUpload;
+use App\Core\Notifier;
 use App\Core\Validator;
 use App\Models\Farm;
 use App\Models\Worker;
@@ -200,6 +201,11 @@ class WorkerController extends Controller
             'due_date' => $this->input('due_date'),
         ]);
         AuditLogger::log('create', 'worker_tasks', (string) $taskId, null, WorkerTask::find($taskId));
+
+        $worker = Worker::find($workerId);
+        if ($worker && $worker['user_id']) {
+            Notifier::notify((int) $worker['user_id'], 'New task assigned', $this->input('title'), 'info', "/workers/{$workerId}");
+        }
 
         $this->flash('success', 'Task assigned.');
         $this->redirect("/workers/{$workerId}");

@@ -22,6 +22,10 @@ use App\Controllers\TraceabilityController;
 use App\Controllers\PublicTraceController;
 use App\Controllers\ReportsController;
 use App\Controllers\MapController;
+use App\Controllers\NotificationController;
+use App\Controllers\MediaController;
+use App\Controllers\AlertsController;
+use App\Controllers\ComplianceController;
 
 /** @var \App\Core\Router $router */
 
@@ -221,3 +225,20 @@ $router->get('/reports/daily-activities', [ReportsController::class, 'dailyActiv
 
 // Maps
 $router->get('/maps', [MapController::class, 'index'], 'farms.view');
+
+// Notifications
+$router->get('/notifications', [NotificationController::class, 'index']);
+$router->post('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+$router->post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+
+// Media & documents
+$router->get('/media', [MediaController::class, 'index'], 'media.view');
+$router->get('/media/create', [MediaController::class, 'create'], 'media.create');
+$router->post('/media', [MediaController::class, 'store'], 'media.create');
+$router->post('/media/{id}/delete', [MediaController::class, 'destroy'], 'media.delete');
+
+// Alerts
+$router->get('/alerts', [AlertsController::class, 'index'], 'reports.view');
+
+// Compliance reports
+$router->get('/traceability/{id}/compliance/{type}', [ComplianceController::class, 'generate'], 'traceability.view');
