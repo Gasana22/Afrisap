@@ -1,17 +1,20 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers\Platform;
 
 use App\Core\AuditLogger;
-use App\Core\Controller;
 use App\Models\Permission;
 use App\Models\Role;
 
-class RoleController extends Controller
+/** The real RBAC editor -- platform-only. Edits the full role catalog (both
+ * scopes: a tenant role's permissions still apply to every organization
+ * using it, so this stays a Super Admin action, not something any one
+ * tenant can touch). */
+class RoleController extends PlatformController
 {
     public function index(): void
     {
-        $this->view('admin/roles/index', ['pageTitle' => 'Roles & Permissions', 'roles' => Role::all()]);
+        $this->view('platform/roles/index', ['pageTitle' => 'Roles & Permissions', 'roles' => Role::all()]);
     }
 
     public function edit(array $params): void
@@ -19,10 +22,10 @@ class RoleController extends Controller
         $role = Role::find((int) $params['id']);
         if (!$role) {
             $this->flash('danger', 'Role not found.');
-            $this->redirect('/admin/roles');
+            $this->redirect('/platform/roles');
         }
 
-        $this->view('admin/roles/edit', [
+        $this->view('platform/roles/edit', [
             'pageTitle' => 'Edit Role: ' . $role['name'],
             'role' => $role,
             'permissionGroups' => Permission::allGroupedByModule(),
@@ -36,7 +39,7 @@ class RoleController extends Controller
         $role = Role::find($id);
         if (!$role) {
             $this->flash('danger', 'Role not found.');
-            $this->redirect('/admin/roles');
+            $this->redirect('/platform/roles');
         }
 
         $before = Role::permissionCodes($id);
@@ -46,6 +49,6 @@ class RoleController extends Controller
         AuditLogger::log('update_permissions', 'roles', (string) $id, ['permission_ids' => $before], ['permission_ids' => $permissionIds]);
 
         $this->flash('success', "Permissions updated for {$role['name']}.");
-        $this->redirect('/admin/roles');
+        $this->redirect('/platform/roles');
     }
 }

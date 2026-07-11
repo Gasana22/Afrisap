@@ -350,3 +350,43 @@ a:not(.btn, .nav-link, .dropdown-item, .page-link):hover {
     border-radius: 0.75rem;
     border: 1px solid var(--bs-border-color);
 }
+
+/* ============================================================
+   Platform portal — deliberately a different primary color (slate/indigo
+   vs. the tenant app's forest green) so the two portals are visually
+   unmistakable at a glance, "like two different applications sharing one
+   database." Same type system and gold accent/scan-frame motif throughout,
+   so it still reads as the same product family.
+   ============================================================ */
+:root {
+    --platform-slate: #1e2a3f;
+    --platform-slate-light: #33456b;
+    --platform-slate-dark: #16202f;
+}
+
+.platform-body {
+    background: linear-gradient(135deg, var(--platform-slate), var(--platform-slate-light));
+    min-height: 100vh;
+}
+
+.platform-sidebar {
+    background-color: var(--platform-slate) !important;
+}
+
+.platform-sidebar .sidebar-nav .nav-link.active {
+    background-color: var(--platform-slate-light) !important;
+}
+
+.platform-sidebar .brand-mark {
+    color: var(--brand-gold-light);
+}
+
+.platform-badge {
+    background-color: var(--platform-slate);
+    color: #fff;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.3rem;
+}

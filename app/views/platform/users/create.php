@@ -1,7 +1,7 @@
-<h4 class="mb-4">Add User</h4>
+<h4 class="mb-4">Add Platform Staff</h4>
 <div class="card" style="max-width: 560px;">
     <div class="card-body">
-        <form method="post" action="/admin/users">
+        <form method="post" action="/platform/users">
             <?= \App\Core\Csrf::field() ?>
             <div class="mb-3">
                 <label class="form-label">Full name</label>
@@ -31,8 +31,8 @@
                 <input type="checkbox" name="mfa_enabled" value="1" class="form-check-input" id="mfaEnabled" checked>
                 <label class="form-check-label" for="mfaEnabled">Require email MFA on login</label>
             </div>
-            <button type="submit" class="btn btn-success">Create User</button>
-            <a href="/admin/users" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-dark">Create Staff Account</button>
+            <a href="/platform/users" class="btn btn-outline-secondary">Cancel</a>
         </form>
     </div>
 </div>

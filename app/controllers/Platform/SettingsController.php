@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers\Platform;
 
 use App\Core\AuditLogger;
-use App\Core\Controller;
 use App\Core\Database;
 use App\Models\Setting;
 
-class SettingsController extends Controller
+class SettingsController extends PlatformController
 {
     public function index(): void
     {
@@ -23,9 +22,9 @@ class SettingsController extends Controller
             }
         }
 
-        $this->view('admin/settings/index', [
-            'pageTitle' => 'Settings',
-            'settings' => Setting::all(),
+        $this->view('platform/settings/index', [
+            'pageTitle' => 'Platform Settings',
+            'settings' => Setting::all(null),
             'dbSizeMb' => $dbSizeRow['mb'] ?? 0,
             'uploadsSizeMb' => round($uploadsSize / 1024 / 1024, 2),
         ]);
@@ -33,16 +32,16 @@ class SettingsController extends Controller
 
     public function update(): void
     {
-        $before = Setting::all();
+        $before = Setting::all(null);
 
         $fields = ['company_name', 'default_currency', 'default_units'];
         foreach ($fields as $field) {
-            Setting::set($field, $this->input($field));
+            Setting::set($field, $this->input($field), null);
         }
 
-        AuditLogger::log('update', 'settings', null, $before, Setting::all());
+        AuditLogger::log('update', 'settings', null, $before, Setting::all(null));
 
         $this->flash('success', 'Settings updated.');
-        $this->redirect('/admin/settings');
+        $this->redirect('/platform/settings');
     }
 }

@@ -1,6 +1,6 @@
-<h4 class="mb-4">Edit Role: <?= htmlspecialchars($role['name']) ?></h4>
+<h4 class="mb-4">Edit Role: <?= htmlspecialchars($role['name']) ?> <span class="badge bg-<?= $role['scope'] === 'platform' ? 'dark' : 'success' ?> align-middle"><?= htmlspecialchars($role['scope']) ?></span></h4>
 
-<form method="post" action="/admin/roles/<?= (int) $role['id'] ?>">
+<form method="post" action="/platform/roles/<?= (int) $role['id'] ?>">
     <?= \App\Core\Csrf::field() ?>
     <div class="row g-3">
         <?php foreach ($permissionGroups as $module => $permissions): ?>
@@ -23,7 +23,7 @@
     </div>
 
     <div class="mt-4">
-        <button type="submit" class="btn btn-success">Save Permissions</button>
-        <a href="/admin/roles" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-dark">Save Permissions</button>
+        <a href="/platform/roles" class="btn btn-outline-secondary">Cancel</a>
     </div>
 </form>

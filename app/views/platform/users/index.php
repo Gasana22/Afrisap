@@ -1,8 +1,8 @@
 <?php use App\Core\Auth; use App\Core\Csrf; ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Users</h4>
+    <h4 class="mb-0">Platform Staff</h4>
     <?php if (Auth::hasPermission('users.create')): ?>
-    <a href="/admin/users/create" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add User</a>
+    <a href="/platform/users/create" class="btn btn-dark"><i class="bi bi-plus-lg"></i> Add Staff</a>
     <?php endif; ?>
 </div>
 
@@ -13,6 +13,9 @@
                 <tr><th>Name</th><th>Email</th><th>Role</th><th>MFA</th><th>Status</th><th>Last Login</th><th></th></tr>
             </thead>
             <tbody>
+                <?php if (empty($users)): ?>
+                <tr><td colspan="7" class="text-center text-muted py-4">No platform staff yet.</td></tr>
+                <?php endif; ?>
                 <?php foreach ($users as $u): ?>
                 <tr>
                     <td><?= htmlspecialchars($u['name']) ?></td>
@@ -23,10 +26,10 @@
                     <td class="text-muted small"><?= $u['last_login_at'] ? htmlspecialchars($u['last_login_at']) : 'never' ?></td>
                     <td class="text-end">
                         <?php if (Auth::hasPermission('users.edit')): ?>
-                        <a href="/admin/users/<?= (int) $u['id'] ?>/edit" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a href="/platform/users/<?= (int) $u['id'] ?>/edit" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <?php endif; ?>
                         <?php if (Auth::hasPermission('users.delete') && (int) $u['id'] !== Auth::id()): ?>
-                        <form method="post" action="/admin/users/<?= (int) $u['id'] ?>/delete" class="d-inline" onsubmit="return confirm('Toggle status for this user?');">
+                        <form method="post" action="/platform/users/<?= (int) $u['id'] ?>/delete" class="d-inline" onsubmit="return confirm('Toggle status for this user?');">
                             <?= Csrf::field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger"><?= $u['status'] === 'active' ? 'Deactivate' : 'Activate' ?></button>
                         </form>

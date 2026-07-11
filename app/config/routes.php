@@ -7,10 +7,13 @@ use App\Controllers\FarmController;
 use App\Controllers\BlockController;
 use App\Controllers\PlotController;
 use App\Controllers\TeamController;
-use App\Controllers\Admin\UserController;
-use App\Controllers\Admin\RoleController;
-use App\Controllers\Admin\SettingsController;
-use App\Controllers\Admin\AuditLogController;
+use App\Controllers\Platform\AuthController as PlatformAuthController;
+use App\Controllers\Platform\DashboardController as PlatformDashboardController;
+use App\Controllers\Platform\OrganizationController;
+use App\Controllers\Platform\UserController as PlatformUserController;
+use App\Controllers\Platform\RoleController as PlatformRoleController;
+use App\Controllers\Platform\SettingsController as PlatformSettingsController;
+use App\Controllers\Platform\AuditLogController as PlatformAuditLogController;
 use App\Controllers\CropSetupController;
 use App\Controllers\CropCycleController;
 use App\Controllers\AnimalController;
@@ -72,22 +75,36 @@ $router->post('/blocks/{id}/delete', [BlockController::class, 'destroy'], 'farms
 $router->post('/blocks/{blockId}/plots', [PlotController::class, 'store'], 'farms.edit');
 $router->post('/plots/{id}/delete', [PlotController::class, 'destroy'], 'farms.edit');
 
-// Admin panel
-$router->get('/admin/users', [UserController::class, 'index'], 'users.view');
-$router->get('/admin/users/create', [UserController::class, 'create'], 'users.create');
-$router->post('/admin/users', [UserController::class, 'store'], 'users.create');
-$router->get('/admin/users/{id}/edit', [UserController::class, 'edit'], 'users.edit');
-$router->post('/admin/users/{id}', [UserController::class, 'update'], 'users.edit');
-$router->post('/admin/users/{id}/delete', [UserController::class, 'destroy'], 'users.delete');
+// Platform admin portal -- separate login, separate UI shell, only ever
+// reachable by platform-scope roles (Super Admin, Platform Manager,
+// Platform Accountant). Supersedes the old /admin/* namespace.
+$router->get('/platform/login', [PlatformAuthController::class, 'showLogin']);
+$router->post('/platform/login', [PlatformAuthController::class, 'login']);
+$router->get('/platform/mfa', [PlatformAuthController::class, 'showMfa']);
+$router->post('/platform/mfa', [PlatformAuthController::class, 'verifyMfa']);
+$router->post('/platform/logout', [PlatformAuthController::class, 'logout']);
 
-$router->get('/admin/roles', [RoleController::class, 'index'], 'roles.view');
-$router->get('/admin/roles/{id}/edit', [RoleController::class, 'edit'], 'roles.edit');
-$router->post('/admin/roles/{id}', [RoleController::class, 'update'], 'roles.edit');
+$router->get('/platform', [PlatformDashboardController::class, 'index']);
 
-$router->get('/admin/settings', [SettingsController::class, 'index'], 'settings.view');
-$router->post('/admin/settings', [SettingsController::class, 'update'], 'settings.edit');
+$router->get('/platform/organizations', [OrganizationController::class, 'index'], 'organizations.view');
+$router->get('/platform/organizations/{id}', [OrganizationController::class, 'show'], 'organizations.view');
+$router->post('/platform/organizations/{id}/status', [OrganizationController::class, 'toggleStatus'], 'organizations.edit');
 
-$router->get('/admin/audit-logs', [AuditLogController::class, 'index'], 'audit.view');
+$router->get('/platform/users', [PlatformUserController::class, 'index'], 'users.view');
+$router->get('/platform/users/create', [PlatformUserController::class, 'create'], 'users.create');
+$router->post('/platform/users', [PlatformUserController::class, 'store'], 'users.create');
+$router->get('/platform/users/{id}/edit', [PlatformUserController::class, 'edit'], 'users.edit');
+$router->post('/platform/users/{id}', [PlatformUserController::class, 'update'], 'users.edit');
+$router->post('/platform/users/{id}/delete', [PlatformUserController::class, 'destroy'], 'users.delete');
+
+$router->get('/platform/roles', [PlatformRoleController::class, 'index'], 'roles.view');
+$router->get('/platform/roles/{id}/edit', [PlatformRoleController::class, 'edit'], 'roles.edit');
+$router->post('/platform/roles/{id}', [PlatformRoleController::class, 'update'], 'roles.edit');
+
+$router->get('/platform/settings', [PlatformSettingsController::class, 'index'], 'settings.view');
+$router->post('/platform/settings', [PlatformSettingsController::class, 'update'], 'settings.edit');
+
+$router->get('/platform/audit-logs', [PlatformAuditLogController::class, 'index'], 'audit.view');
 
 // Crop setup (types & seasons)
 $router->get('/crops/setup', [CropSetupController::class, 'index'], 'crops.edit');

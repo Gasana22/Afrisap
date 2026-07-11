@@ -26,8 +26,8 @@ class Auth
         }
 
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug, r.name AS role_name, r.scope AS role_scope FROM users u
-            JOIN roles r ON r.id = u.role_id WHERE u.email = :email LIMIT 1');
+        $stmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug, r.name AS role_name, r.scope AS role_scope, o.status AS org_status FROM users u
+            JOIN roles r ON r.id = u.role_id LEFT JOIN organizations o ON o.id = u.organization_id WHERE u.email = :email LIMIT 1');
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch();
 
@@ -38,6 +38,10 @@ class Auth
 
         if ($user['status'] !== 'active') {
             return ['ok' => false, 'error' => 'This account is inactive. Contact your administrator.'];
+        }
+
+        if ($user['org_status'] === 'suspended') {
+            return ['ok' => false, 'error' => 'This organization has been suspended. Contact Afrisap support.'];
         }
 
         if ((int) $user['mfa_enabled'] === 1) {
