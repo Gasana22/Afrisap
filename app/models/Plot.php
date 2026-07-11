@@ -41,6 +41,15 @@ class Plot
             ORDER BY f.name, b.name, p.plot_code')->fetchAll();
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare('SELECT p.*, b.name AS block_name, f.id AS farm_id, f.name AS farm_name, f.code AS farm_code
+            FROM plots p JOIN blocks b ON b.id = p.block_id JOIN farms f ON f.id = b.farm_id
+            WHERE f.organization_id = :org_id ORDER BY f.name, b.name, p.plot_code');
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
     public static function findWithContext(int $id): ?array
     {
         $stmt = Database::connection()->prepare('SELECT p.*, b.name AS block_name, f.id AS farm_id, f.name AS farm_name, f.code AS farm_code

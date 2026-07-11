@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\FileUpload;
@@ -25,7 +26,7 @@ class CropCycleController extends Controller
     public function index(): void
     {
         $page = max(1, (int) $this->input('page', 1));
-        $result = CropCycle::paginated($page);
+        $result = CropCycle::paginated($page, 25, Auth::organizationId());
         $this->view('crops/index', [
             'pageTitle' => 'Crop Management',
             'cycles' => $result['rows'],
@@ -34,11 +35,24 @@ class CropCycleController extends Controller
         ]);
     }
 
+    /** The tenant-isolation gate for every action below: fetching another
+     * organization's crop cycle (or one of its children, once we know its
+     * cycle id) by id redirects to "not found" instead of exposing it. */
+    private function requireOwnedCycle(int $cycleId): array
+    {
+        $cycle = CropCycle::findInOrganization($cycleId, Auth::organizationId());
+        if (!$cycle) {
+            $this->flash('danger', 'Crop cycle not found.');
+            $this->redirect('/crops');
+        }
+        return $cycle;
+    }
+
     public function create(): void
     {
         $this->view('crops/create', [
             'pageTitle' => 'Start Crop Cycle',
-            'plots' => Plot::allWithContext(),
+            'plots' => Plot::forOrganization(Auth::organizationId()),
             'cropTypes' => CropType::all(),
             'seasons' => Season::all(),
         ]);
@@ -54,6 +68,12 @@ class CropCycleController extends Controller
 
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
+            $this->redirect('/crops/create');
+        }
+
+        $plot = Plot::findWithContext((int) $this->input('plot_id'));
+        if (!$plot || !Auth::organizationOwnsFarm((int) $plot['farm_id'])) {
+            $this->flash('danger', 'Plot not found.');
             $this->redirect('/crops/create');
         }
 
@@ -77,11 +97,7 @@ class CropCycleController extends Controller
     public function show(array $params): void
     {
         $id = (int) $params['id'];
-        $cycle = CropCycle::find($id);
-        if (!$cycle) {
-            $this->flash('danger', 'Crop cycle not found.');
-            $this->redirect('/crops');
-        }
+        $cycle = $this->requireOwnedCycle($id);
 
         $this->view('crops/show', [
             'pageTitle' => $cycle['batch_code'],
@@ -97,11 +113,7 @@ class CropCycleController extends Controller
 
     public function edit(array $params): void
     {
-        $cycle = CropCycle::find((int) $params['id']);
-        if (!$cycle) {
-            $this->flash('danger', 'Crop cycle not found.');
-            $this->redirect('/crops');
-        }
+        $cycle = $this->requireOwnedCycle((int) $params['id']);
 
         $this->view('crops/edit', ['pageTitle' => 'Edit ' . $cycle['batch_code'], 'cycle' => $cycle, 'seasons' => Season::all()]);
     }
@@ -109,11 +121,7 @@ class CropCycleController extends Controller
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = CropCycle::find($id);
-        if (!$before) {
-            $this->flash('danger', 'Crop cycle not found.');
-            $this->redirect('/crops');
-        }
+        $before = $this->requireOwnedCycle($id);
 
         $validator = (new Validator($_POST))->numeric('budget', 'Budget')->numeric('expected_yield', 'Expected yield')
             ->in('status', ['planning', 'procurement', 'nursery', 'field', 'monitoring', 'harvested', 'closed'], 'Status');
@@ -139,7 +147,7 @@ class CropCycleController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
-        $before = CropCycle::find($id);
+        $before = $this->requireOwnedCycle($id);
         CropCycle::delete($id);
         AuditLogger::log('delete', 'crop_cycles', (string) $id, $before, null);
 
@@ -152,6 +160,7 @@ class CropCycleController extends Controller
     public function addInput(array $params): void
     {
         $cycleId = (int) $params['id'];
+        $this->requireOwnedCycle($cycleId);
         $validator = (new Validator($_POST))->required('input_type', 'Input type');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -176,11 +185,14 @@ class CropCycleController extends Controller
     public function deleteInput(array $params): void
     {
         $input = CropInput::find((int) $params['id']);
-        if ($input) {
-            CropInput::delete((int) $params['id']);
-            AuditLogger::log('delete', 'crop_inputs', $params['id'], $input, null);
+        if (!$input) {
+            $this->redirect('/crops');
         }
-        $this->redirect('/crops/' . ($input['crop_cycle_id'] ?? ''));
+        $this->requireOwnedCycle((int) $input['crop_cycle_id']);
+
+        CropInput::delete((int) $params['id']);
+        AuditLogger::log('delete', 'crop_inputs', $params['id'], $input, null);
+        $this->redirect('/crops/' . $input['crop_cycle_id']);
     }
 
     // --- Nursery ---
@@ -188,6 +200,7 @@ class CropCycleController extends Controller
     public function addNursery(array $params): void
     {
         $cycleId = (int) $params['id'];
+        $this->requireOwnedCycle($cycleId);
         $validator = (new Validator($_POST))->required('record_date', 'Record date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -210,11 +223,14 @@ class CropCycleController extends Controller
     public function deleteNursery(array $params): void
     {
         $record = NurseryRecord::find((int) $params['id']);
-        if ($record) {
-            NurseryRecord::delete((int) $params['id']);
-            AuditLogger::log('delete', 'nursery_records', $params['id'], $record, null);
+        if (!$record) {
+            $this->redirect('/crops');
         }
-        $this->redirect('/crops/' . ($record['crop_cycle_id'] ?? ''));
+        $this->requireOwnedCycle((int) $record['crop_cycle_id']);
+
+        NurseryRecord::delete((int) $params['id']);
+        AuditLogger::log('delete', 'nursery_records', $params['id'], $record, null);
+        $this->redirect('/crops/' . $record['crop_cycle_id']);
     }
 
     // --- Field activities ---
@@ -222,6 +238,7 @@ class CropCycleController extends Controller
     public function addActivity(array $params): void
     {
         $cycleId = (int) $params['id'];
+        $this->requireOwnedCycle($cycleId);
         $validator = (new Validator($_POST))->required('activity_type', 'Activity type')->required('activity_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -260,6 +277,7 @@ class CropCycleController extends Controller
         if (!$activity) {
             $this->redirect('/crops');
         }
+        $this->requireOwnedCycle((int) $activity['crop_cycle_id']);
 
         $status = $this->input('status');
         $validator = (new Validator(['status' => $status]))->in('status', ['pending', 'ongoing', 'completed'], 'Status');
@@ -277,11 +295,14 @@ class CropCycleController extends Controller
     public function deleteActivity(array $params): void
     {
         $activity = FieldActivity::find((int) $params['id']);
-        if ($activity) {
-            FieldActivity::delete((int) $params['id']);
-            AuditLogger::log('delete', 'field_activities', $params['id'], $activity, null);
+        if (!$activity) {
+            $this->redirect('/crops');
         }
-        $this->redirect('/crops/' . ($activity['crop_cycle_id'] ?? ''));
+        $this->requireOwnedCycle((int) $activity['crop_cycle_id']);
+
+        FieldActivity::delete((int) $params['id']);
+        AuditLogger::log('delete', 'field_activities', $params['id'], $activity, null);
+        $this->redirect('/crops/' . $activity['crop_cycle_id']);
     }
 
     // --- Monitoring ---
@@ -289,6 +310,7 @@ class CropCycleController extends Controller
     public function addMonitoring(array $params): void
     {
         $cycleId = (int) $params['id'];
+        $this->requireOwnedCycle($cycleId);
         $validator = (new Validator($_POST))->required('type', 'Type')->required('record_date', 'Date');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -318,11 +340,14 @@ class CropCycleController extends Controller
     public function deleteMonitoring(array $params): void
     {
         $record = MonitoringRecord::find((int) $params['id']);
-        if ($record) {
-            MonitoringRecord::delete((int) $params['id']);
-            AuditLogger::log('delete', 'monitoring_records', $params['id'], $record, null);
+        if (!$record) {
+            $this->redirect('/crops');
         }
-        $this->redirect('/crops/' . ($record['crop_cycle_id'] ?? ''));
+        $this->requireOwnedCycle((int) $record['crop_cycle_id']);
+
+        MonitoringRecord::delete((int) $params['id']);
+        AuditLogger::log('delete', 'monitoring_records', $params['id'], $record, null);
+        $this->redirect('/crops/' . $record['crop_cycle_id']);
     }
 
     // --- Yield forecast ---
@@ -330,6 +355,7 @@ class CropCycleController extends Controller
     public function addForecast(array $params): void
     {
         $cycleId = (int) $params['id'];
+        $this->requireOwnedCycle($cycleId);
         $validator = (new Validator($_POST))->required('forecast_date', 'Date')->required('estimated_yield', 'Estimated yield')
             ->numeric('estimated_yield', 'Estimated yield');
         if ($validator->fails()) {
@@ -351,11 +377,14 @@ class CropCycleController extends Controller
     public function deleteForecast(array $params): void
     {
         $forecast = YieldForecast::find((int) $params['id']);
-        if ($forecast) {
-            YieldForecast::delete((int) $params['id']);
-            AuditLogger::log('delete', 'yield_forecasts', $params['id'], $forecast, null);
+        if (!$forecast) {
+            $this->redirect('/crops');
         }
-        $this->redirect('/crops/' . ($forecast['crop_cycle_id'] ?? ''));
+        $this->requireOwnedCycle((int) $forecast['crop_cycle_id']);
+
+        YieldForecast::delete((int) $params['id']);
+        AuditLogger::log('delete', 'yield_forecasts', $params['id'], $forecast, null);
+        $this->redirect('/crops/' . $forecast['crop_cycle_id']);
     }
 
     // --- Harvest ---
@@ -363,6 +392,7 @@ class CropCycleController extends Controller
     public function addHarvest(array $params): void
     {
         $cycleId = (int) $params['id'];
+        $this->requireOwnedCycle($cycleId);
         $validator = (new Validator($_POST))->required('harvest_date', 'Date')->required('quantity', 'Quantity')->numeric('quantity', 'Quantity');
         if ($validator->fails()) {
             $this->flash('danger', $validator->firstError());
@@ -387,11 +417,14 @@ class CropCycleController extends Controller
     public function deleteHarvest(array $params): void
     {
         $harvest = Harvest::find((int) $params['id']);
-        if ($harvest) {
-            Harvest::delete((int) $params['id']);
-            AuditLogger::log('delete', 'harvests', $params['id'], $harvest, null);
+        if (!$harvest) {
+            $this->redirect('/crops');
         }
-        $this->redirect('/crops/' . ($harvest['crop_cycle_id'] ?? ''));
+        $this->requireOwnedCycle((int) $harvest['crop_cycle_id']);
+
+        Harvest::delete((int) $params['id']);
+        AuditLogger::log('delete', 'harvests', $params['id'], $harvest, null);
+        $this->redirect('/crops/' . $harvest['crop_cycle_id']);
     }
 
     // --- Sales ---
@@ -403,6 +436,7 @@ class CropCycleController extends Controller
         if (!$harvest) {
             $this->redirect('/crops');
         }
+        $this->requireOwnedCycle((int) $harvest['crop_cycle_id']);
 
         $validator = (new Validator($_POST))
             ->required('buyer_name', 'Buyer')
@@ -429,9 +463,18 @@ class CropCycleController extends Controller
 
     public function deleteSale(array $params): void
     {
-        $cycleId = (int) $this->input('cycle_id', 0);
+        $sale = CropSale::find((int) $params['id']);
+        if (!$sale) {
+            $this->redirect('/crops');
+        }
+        $harvest = Harvest::find((int) $sale['harvest_id']);
+        if (!$harvest) {
+            $this->redirect('/crops');
+        }
+        $this->requireOwnedCycle((int) $harvest['crop_cycle_id']);
+
         CropSale::delete((int) $params['id']);
-        AuditLogger::log('delete', 'crop_sales', $params['id'], null, null);
-        $this->redirect('/crops/' . $cycleId);
+        AuditLogger::log('delete', 'crop_sales', $params['id'], $sale, null);
+        $this->redirect('/crops/' . $harvest['crop_cycle_id']);
     }
 }

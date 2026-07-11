@@ -13,6 +13,13 @@ class CropSale
         return $stmt->fetchAll();
     }
 
+    public static function find(int $id): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM crop_sales WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(int $harvestId, array $data): int
     {
         $pdo = Database::connection();
