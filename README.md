@@ -1,16 +1,38 @@
 # Afrisap SFMTP — Smart Farm Management & Traceability Platform
 
-A web platform for managing farm operations end to end: farm structure, crop
-lifecycle, livestock, workers, finance, procurement, inventory, assets, full
-batch traceability with QR codes, analytics/reports/maps, and notifications/
-alerts/compliance. Built with plain PHP, MySQL, HTML, CSS and JavaScript (no
-framework) so the client's team can read and extend every file.
+A multi-tenant web platform for managing farm operations end to end: farm
+structure, crop lifecycle, livestock, workers, finance, procurement,
+inventory, assets, full batch traceability with QR codes, analytics/reports/
+maps, and notifications/alerts/compliance. Built with plain PHP, MySQL,
+HTML, CSS and JavaScript (no framework) so the client's team can read and
+extend every file.
+
+## Two portals, two audiences
+
+This is a SaaS-shaped app with two completely separate logins and UI shells,
+sharing one database:
+
+- **The farm app** (`/login`, `/signup`) — each Farm Owner signs up their own
+  **organization**, which can own multiple farms. Every tenant user (Farm
+  Owner, Farm Manager, Agronomist, Livestock Manager, Store Manager,
+  Accountant, Field Worker, Supplier, Customer) only ever sees their own
+  organization's data — every listing, every direct-by-ID route, is scoped
+  to `organization_id`. A Farm Owner invites their own staff from `/team`,
+  picking from a fixed role catalog; they cannot grant platform-level access.
+- **The platform admin portal** (`/platform/login`) — Afrisap's own staff
+  (Super Admin, Platform Manager, Platform Accountant) run the SaaS itself:
+  view/suspend tenant organizations, manage platform staff, edit the RBAC
+  role catalog, platform-wide settings, and a cross-tenant audit log. A
+  platform credential does not work at `/login`, and a tenant credential
+  does not work at `/platform/login` — enforced server-side, not just UI.
+  Suspending an organization immediately blocks that org's users from
+  logging in.
 
 ## What's implemented
 
-- **Auth & Admin**: login, email-based MFA, password reset, RBAC (10 roles,
-  granular permissions), user/role management, audit log (insert-only,
-  never deleted)
+- **Auth**: login, email-based MFA, password reset, RBAC (12 roles across
+  the two scopes above, granular permissions), audit log (insert-only,
+  never deleted, tagged with which organization each entry belongs to)
 - **Farm structure**: farms → blocks → plots with GPS
 - **Crop management**: full lifecycle (planning → procurement → nursery →
   field ops → monitoring → harvest → sale), auto-generated batch codes
@@ -56,9 +78,13 @@ php database/seeders/seed.php                             # seeds roles, permiss
 php -S localhost:8000 -t public                           # local dev server
 ```
 
-Default admin login after seeding: `admin@afrisap.test` / `ChangeMe123!`
-(MFA is off for this seed account so you can get in immediately — turn it on
-and change the password from Admin Panel → Users right after first login).
+Default Super Admin login after seeding, at **`/platform/login`** (not the
+regular `/login`): `admin@afrisap.test` / `ChangeMe123!` (MFA is off for this
+seed account so you can get in immediately — turn it on and change the
+password from Platform Staff → your own account right after first login).
+
+To try the farm-tenant side, go to `/signup` and create a Farm Owner account
+— there's no seeded tenant user, since signup is meant to be self-service.
 
 ## Running tests
 
@@ -86,7 +112,8 @@ finance aggregation, alert detection).
 public/            Web root — front controller, .htaccess, CSS/JS/uploads
 app/core/           Router, Auth (RBAC + MFA), Database (PDO), SecurityHeaders,
                      Notifier, PdfExporter/ExcelExporter, QrGenerator, etc.
-app/controllers/    One per module (Admin/ subfolder for admin panel)
+app/controllers/    One per module (Platform/ subfolder for the separate
+                     platform-admin portal, e.g. Platform\OrganizationController)
 app/models/         Thin PDO data-access classes, one per entity, plus a few
                      read-only aggregators (FinanceReport, AnalyticsReport,
                      AlertEngine, TraceBatch) that compute live from existing
@@ -143,8 +170,10 @@ without relying on `.htaccess` alone.
    php database/migrate.php
    php database/seeders/seed.php
    ```
-4. **Change the default admin password immediately** (Admin Panel → Users),
-   and turn MFA on for that account.
+4. **Change the default Super Admin password immediately**, logging in at
+   `/platform/login` (not `/login` — that's for farm tenants), and turn MFA
+   on for that account. Real tenant (Farm Owner) accounts are created by
+   the client's customers themselves at `/signup`, not seeded.
 
 ### 5. Confirm rewriting works
 
@@ -198,14 +227,29 @@ selector, not a relative one.
 - **Audit trail**: `audit_logs` and `trace_audits`-equivalent records are
   insert-only by convention — no delete code path exists for them anywhere
   in the app.
+- **Tenant isolation**: every module's listing and direct-by-ID routes
+  (`/farms/{id}`, `/livestock/{id}`, etc.) are scoped to the caller's own
+  `organization_id` at the query level, not just hidden in the UI — fetching
+  another organization's record by guessing its id returns "not found," not
+  their data. `Auth::attemptLogin()` is scope-checked (`tenant` vs
+  `platform`), so a platform credential simply doesn't work at the farm
+  app's `/login` and vice versa, with the same generic error either way.
 
 ## Roadmap status
 
-All 10 originally planned phases are complete: foundation/admin, farm
-structure, crop management, livestock, workers, finance/procurement/
-inventory, assets, traceability & QR, analytics/reports/maps,
-notifications/media/alerts/compliance, and hardening/deployment. Natural
-next steps beyond the original plan would be a mobile companion app
-(offline-first, per the original SRS) and deeper carbon-accounting once
-emission factors are modeled — both explicitly out of scope for this
+All 10 originally planned phases are complete (foundation, farm structure,
+crop management, livestock, workers, finance/procurement/inventory, assets,
+traceability & QR, analytics/reports/maps, notifications/media/alerts/
+compliance, hardening/deployment), plus a follow-on multi-tenancy
+re-architecture: tenant self-service signup, Farm-Owner-managed team
+invites, organization-scoped data isolation across every module, and the
+separate platform-admin portal described above.
+
+Natural next steps beyond that: a proper email-invite-link flow for team
+members (current pattern is admin-sets-a-temp-password, matching what
+existed pre-multi-tenancy); per-tenant branding/logo and a tenant-facing
+`/settings` page (today `default_currency`/`default_units` are still a
+single platform-wide default, not per-organization); a mobile companion
+app (offline-first, per the original SRS); and deeper carbon-accounting
+once emission factors are modeled. All explicitly out of scope for this
 engagement so far.
