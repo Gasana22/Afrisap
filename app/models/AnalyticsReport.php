@@ -6,10 +6,11 @@ use App\Core\Database;
 
 class AnalyticsReport
 {
-    public static function revenueExpenseTrend(int $months = 6): array
+    /** @param array<int>|null $farmIds null = unscoped (platform use only) */
+    public static function revenueExpenseTrend(int $months = 6, ?array $farmIds = null): array
     {
-        $income = FinanceReport::incomeEntries();
-        $expenses = FinanceReport::expenseEntries();
+        $income = FinanceReport::incomeEntries($farmIds);
+        $expenses = FinanceReport::expenseEntries($farmIds);
 
         $buckets = [];
         for ($i = $months - 1; $i >= 0; $i--) {
@@ -33,9 +34,9 @@ class AnalyticsReport
         return array_values($buckets);
     }
 
-    public static function revenueGrowth(): array
+    public static function revenueGrowth(?array $farmIds = null): array
     {
-        $income = FinanceReport::incomeEntries();
+        $income = FinanceReport::incomeEntries($farmIds);
         $thisMonth = date('Y-m');
         $lastMonth = date('Y-m', strtotime('-1 month'));
 
@@ -55,25 +56,61 @@ class AnalyticsReport
         return ['this_month' => $thisTotal, 'last_month' => $lastTotal, 'growth_pct' => $growth];
     }
 
-    public static function costYieldPerHectare(): array
+    public static function costYieldPerHectare(?array $farmIds = null): array
     {
+        if ($farmIds === []) {
+            return [];
+        }
+
+        $params = [];
+        $where = "WHERE p.size_hectares IS NOT NULL AND p.size_hectares > 0";
+        if ($farmIds !== null) {
+            $placeholders = [];
+            foreach (array_values($farmIds) as $i => $fid) {
+                $key = "farm_id_{$i}";
+                $placeholders[] = ":{$key}";
+                $params[$key] = $fid;
+            }
+            $where .= ' AND f.id IN (' . implode(',', $placeholders) . ')';
+        }
+
         $sql = "SELECT ct.name AS crop_type_name,
                 AVG(COALESCE(ci.cost_total, 0) / p.size_hectares) AS avg_cost_per_hectare,
                 AVG(COALESCE(h.yield_total, 0) / p.size_hectares) AS avg_yield_per_hectare
             FROM crop_cycles cc
             JOIN crop_types ct ON ct.id = cc.crop_type_id
             JOIN plots p ON p.id = cc.plot_id
+            JOIN blocks b ON b.id = p.block_id
+            JOIN farms f ON f.id = b.farm_id
             LEFT JOIN (SELECT crop_cycle_id, SUM(cost) AS cost_total FROM crop_inputs GROUP BY crop_cycle_id) ci ON ci.crop_cycle_id = cc.id
             LEFT JOIN (SELECT crop_cycle_id, SUM(quantity) AS yield_total FROM harvests GROUP BY crop_cycle_id) h ON h.crop_cycle_id = cc.id
-            WHERE p.size_hectares IS NOT NULL AND p.size_hectares > 0
+            {$where}
             GROUP BY ct.id, ct.name
             ORDER BY ct.name";
 
-        return Database::connection()->query($sql)->fetchAll();
+        $stmt = Database::connection()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
     }
 
-    public static function workerProductivity(?int $limit = 10): array
+    public static function workerProductivity(?int $limit = 10, ?array $farmIds = null): array
     {
+        if ($farmIds === []) {
+            return [];
+        }
+
+        $params = [];
+        $where = '';
+        if ($farmIds !== null) {
+            $placeholders = [];
+            foreach (array_values($farmIds) as $i => $fid) {
+                $key = "farm_id_{$i}";
+                $placeholders[] = ":{$key}";
+                $params[$key] = $fid;
+            }
+            $where = 'WHERE f.id IN (' . implode(',', $placeholders) . ')';
+        }
+
         $sql = "SELECT w.name, f.name AS farm_name,
                 COUNT(CASE WHEN wt.status = 'verified' THEN 1 END) AS tasks_verified,
                 COUNT(CASE WHEN wa.status = 'present' THEN 1 END) AS days_present
@@ -81,23 +118,46 @@ class AnalyticsReport
             JOIN farms f ON f.id = w.farm_id
             LEFT JOIN worker_tasks wt ON wt.worker_id = w.id
             LEFT JOIN worker_attendance wa ON wa.worker_id = w.id
+            {$where}
             GROUP BY w.id, w.name, f.name
             ORDER BY tasks_verified DESC, days_present DESC";
 
-        $pdo = Database::connection();
-        if ($limit === null) {
-            return $pdo->query($sql)->fetchAll();
+        if ($limit !== null) {
+            $sql .= ' LIMIT :limit';
         }
 
-        $stmt = $pdo->prepare($sql . ' LIMIT :limit');
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(":{$key}", $value);
+        }
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        }
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public static function livestockMortality(): array
+    public static function livestockMortality(?array $farmIds = null): array
     {
-        $stmt = Database::connection()->query("SELECT COUNT(*) AS total, SUM(status = 'deceased') AS deceased FROM animals");
+        if ($farmIds === []) {
+            return ['total' => 0, 'deceased' => 0, 'rate' => 0.0];
+        }
+
+        $params = [];
+        $where = '';
+        if ($farmIds !== null) {
+            $placeholders = [];
+            foreach (array_values($farmIds) as $i => $fid) {
+                $key = "farm_id_{$i}";
+                $placeholders[] = ":{$key}";
+                $params[$key] = $fid;
+            }
+            $where = 'WHERE farm_id IN (' . implode(',', $placeholders) . ')';
+        }
+
+        $stmt = Database::connection()->prepare("SELECT COUNT(*) AS total, SUM(status = 'deceased') AS deceased FROM animals {$where}");
+        $stmt->execute($params);
         $row = $stmt->fetch();
         $total = (int) ($row['total'] ?? 0);
         $deceased = (int) ($row['deceased'] ?? 0);

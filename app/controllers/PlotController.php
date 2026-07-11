@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\Validator;
@@ -14,7 +15,8 @@ class PlotController extends Controller
     {
         $blockId = (int) $params['blockId'];
         $block = Block::find($blockId);
-        if (!$block) {
+        if (!$block || !Auth::organizationOwnsFarm((int) $block['farm_id'])) {
+            $this->flash('danger', 'Block not found.');
             $this->redirect('/farms');
         }
 
@@ -52,6 +54,11 @@ class PlotController extends Controller
         }
 
         $block = Block::find((int) $plot['block_id']);
+        if (!$block || !Auth::organizationOwnsFarm((int) $block['farm_id'])) {
+            $this->flash('danger', 'Plot not found.');
+            $this->redirect('/farms');
+        }
+
         Plot::delete($id);
         AuditLogger::log('delete', 'plots', (string) $id, $plot, null);
 

@@ -8,6 +8,7 @@ use App\Core\Controller;
 use App\Core\Database;
 use App\Core\Validator;
 use App\Models\AnalyticsReport;
+use App\Models\Farm;
 use App\Models\User;
 
 class DashboardController extends Controller
@@ -17,21 +18,34 @@ class DashboardController extends Controller
         $this->requireLogin();
 
         $pdo = Database::connection();
-        $stats = [
-            'farms' => (int) $pdo->query('SELECT COUNT(*) FROM farms')->fetchColumn(),
-            'blocks' => (int) $pdo->query('SELECT COUNT(*) FROM blocks')->fetchColumn(),
-            'plots' => (int) $pdo->query('SELECT COUNT(*) FROM plots')->fetchColumn(),
-            'users' => (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn(),
-        ];
+        $orgId = Auth::organizationId();
+        $farmIds = $orgId !== null ? Farm::idsForOrganization($orgId) : [];
+
+        if (empty($farmIds)) {
+            $stats = ['farms' => 0, 'blocks' => 0, 'plots' => 0, 'users' => count(User::forOrganization($orgId ?? 0))];
+        } else {
+            $placeholders = implode(',', array_fill(0, count($farmIds), '?'));
+            $blockCount = $pdo->prepare("SELECT COUNT(*) FROM blocks WHERE farm_id IN ({$placeholders})");
+            $blockCount->execute($farmIds);
+            $plotCount = $pdo->prepare("SELECT COUNT(*) FROM plots p JOIN blocks b ON b.id = p.block_id WHERE b.farm_id IN ({$placeholders})");
+            $plotCount->execute($farmIds);
+
+            $stats = [
+                'farms' => count($farmIds),
+                'blocks' => (int) $blockCount->fetchColumn(),
+                'plots' => (int) $plotCount->fetchColumn(),
+                'users' => count(User::forOrganization($orgId)),
+            ];
+        }
 
         $analytics = null;
         if (Auth::hasPermission('reports.view')) {
             $analytics = [
-                'revenueTrend' => AnalyticsReport::revenueExpenseTrend(6),
-                'revenueGrowth' => AnalyticsReport::revenueGrowth(),
-                'costYieldPerHectare' => AnalyticsReport::costYieldPerHectare(),
-                'workerProductivity' => AnalyticsReport::workerProductivity(8),
-                'livestockMortality' => AnalyticsReport::livestockMortality(),
+                'revenueTrend' => AnalyticsReport::revenueExpenseTrend(6, $farmIds),
+                'revenueGrowth' => AnalyticsReport::revenueGrowth($farmIds),
+                'costYieldPerHectare' => AnalyticsReport::costYieldPerHectare($farmIds),
+                'workerProductivity' => AnalyticsReport::workerProductivity(8, $farmIds),
+                'livestockMortality' => AnalyticsReport::livestockMortality($farmIds),
             ];
         }
 

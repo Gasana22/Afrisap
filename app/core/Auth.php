@@ -159,6 +159,24 @@ class Auth
         return self::check() && ($_SESSION['role_scope'] ?? null) === 'tenant';
     }
 
+    /**
+     * Ownership check for any farm_id taken from user input (URL param, form
+     * field, route param) before it's trusted -- the fix for the systemic
+     * IDOR pattern found across this app's models, where a child table's
+     * find()/create() takes a farm_id/parent-id with no verification that it
+     * belongs to the caller's own organization.
+     */
+    public static function organizationOwnsFarm(int $farmId): bool
+    {
+        $orgId = self::organizationId();
+        if ($orgId === null) {
+            return false;
+        }
+        $stmt = Database::connection()->prepare('SELECT 1 FROM farms WHERE id = :id AND organization_id = :org_id');
+        $stmt->execute(['id' => $farmId, 'org_id' => $orgId]);
+        return (bool) $stmt->fetchColumn();
+    }
+
     public static function require(string $permission): void
     {
         if (!self::check()) {

@@ -20,11 +20,29 @@ class Farm
         return $stmt->fetch() ?: null;
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare('SELECT f.*, u.name AS owner_name FROM farms f
+            LEFT JOIN users u ON u.id = f.owner_id WHERE f.organization_id = :org_id ORDER BY f.created_at DESC');
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
+    /** The tenant-isolation check for farm show/edit/delete: fetching another
+     * organization's farm by guessing its id returns null, not their data. */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT f.*, u.name AS owner_name FROM farms f
+            LEFT JOIN users u ON u.id = f.owner_id WHERE f.id = :id AND f.organization_id = :org_id');
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(array $data): int
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('INSERT INTO farms (name, size_hectares, gps_lat, gps_lng, district, village, owner_id, status)
-            VALUES (:name, :size_hectares, :gps_lat, :gps_lng, :district, :village, :owner_id, :status)');
+        $stmt = $pdo->prepare('INSERT INTO farms (name, size_hectares, gps_lat, gps_lng, district, village, owner_id, organization_id, status)
+            VALUES (:name, :size_hectares, :gps_lat, :gps_lng, :district, :village, :owner_id, :organization_id, :status)');
         $stmt->execute([
             'name' => $data['name'],
             'size_hectares' => $data['size_hectares'] !== '' ? $data['size_hectares'] : null,
@@ -33,6 +51,7 @@ class Farm
             'district' => $data['district'] ?: null,
             'village' => $data['village'] ?: null,
             'owner_id' => $data['owner_id'] ?: null,
+            'organization_id' => $data['organization_id'],
             'status' => $data['status'] ?? 'active',
         ]);
         $id = (int) $pdo->lastInsertId();
@@ -66,6 +85,13 @@ class Farm
     public static function delete(int $id): void
     {
         Database::connection()->prepare('DELETE FROM farms WHERE id = :id')->execute(['id' => $id]);
+    }
+
+    public static function idsForOrganization(int $organizationId): array
+    {
+        $stmt = Database::connection()->prepare('SELECT id FROM farms WHERE organization_id = :org_id');
+        $stmt->execute(['org_id' => $organizationId]);
+        return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
     }
 
     public static function blocks(int $farmId): array

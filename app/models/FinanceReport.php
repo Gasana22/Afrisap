@@ -61,17 +61,18 @@ class FinanceReport
         JOIN farms f ON f.id = e.farm_id
     ";
 
-    public static function incomeEntries(?int $farmId = null, ?string $from = null, ?string $to = null): array
+    /** @param int|array<int>|null $farmId A single farm id, a list of farm ids (an organization can own several farms), or null for unscoped (platform use only). */
+    public static function incomeEntries(int|array|null $farmId = null, ?string $from = null, ?string $to = null): array
     {
         return self::runFiltered(self::INCOME_UNION_SQL, $farmId, $from, $to);
     }
 
-    public static function expenseEntries(?int $farmId = null, ?string $from = null, ?string $to = null): array
+    public static function expenseEntries(int|array|null $farmId = null, ?string $from = null, ?string $to = null): array
     {
         return self::runFiltered(self::EXPENSE_UNION_SQL, $farmId, $from, $to);
     }
 
-    public static function summary(?int $farmId = null, ?string $from = null, ?string $to = null): array
+    public static function summary(int|array|null $farmId = null, ?string $from = null, ?string $to = null): array
     {
         $income = self::incomeEntries($farmId, $from, $to);
         $expenses = self::expenseEntries($farmId, $from, $to);
@@ -86,11 +87,26 @@ class FinanceReport
         ];
     }
 
-    private static function runFiltered(string $unionSql, ?int $farmId, ?string $from, ?string $to): array
+    private static function runFiltered(string $unionSql, int|array|null $farmId, ?string $from, ?string $to): array
     {
+        // An organization with zero farms yet (fresh signup) must see zero
+        // entries, not every organization's -- short-circuit before the query
+        // rather than letting an empty IN () clause fall through to unscoped.
+        if (is_array($farmId) && $farmId === []) {
+            return [];
+        }
+
         $params = [];
         $conditions = [];
-        if ($farmId) {
+        if (is_array($farmId)) {
+            $placeholders = [];
+            foreach (array_values($farmId) as $i => $fid) {
+                $key = "farm_id_{$i}";
+                $placeholders[] = ":{$key}";
+                $params[$key] = $fid;
+            }
+            $conditions[] = 'farm_id IN (' . implode(',', $placeholders) . ')';
+        } elseif ($farmId) {
             $conditions[] = 'farm_id = :farm_id';
             $params['farm_id'] = $farmId;
         }

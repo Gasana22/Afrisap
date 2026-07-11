@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\Validator;
@@ -12,6 +13,10 @@ class BlockController extends Controller
     public function store(array $params): void
     {
         $farmId = (int) $params['farmId'];
+        if (!Auth::organizationOwnsFarm($farmId)) {
+            $this->flash('danger', 'Farm not found.');
+            $this->redirect('/farms');
+        }
 
         $validator = (new Validator($_POST))->required('name', 'Block name');
         if ($validator->fails()) {
@@ -30,7 +35,8 @@ class BlockController extends Controller
     {
         $id = (int) $params['id'];
         $block = Block::find($id);
-        if (!$block) {
+        if (!$block || !Auth::organizationOwnsFarm((int) $block['farm_id'])) {
+            $this->flash('danger', 'Block not found.');
             $this->redirect('/farms');
         }
 

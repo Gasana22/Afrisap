@@ -2,26 +2,26 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
-use App\Core\Database;
 use App\Core\Validator;
 use App\Models\Block;
 use App\Models\Farm;
+use App\Models\User;
 
 class FarmController extends Controller
 {
     public function index(): void
     {
-        $this->view('farms/index', ['pageTitle' => 'Farm Structure', 'farms' => Farm::all()]);
+        $this->view('farms/index', ['pageTitle' => 'Farm Structure', 'farms' => Farm::forOrganization(Auth::organizationId())]);
     }
 
     public function create(): void
     {
         $this->view('farms/create', [
             'pageTitle' => 'Add Farm',
-            'owners' => Database::connection()->query("SELECT u.id, u.name FROM users u
-                JOIN roles r ON r.id = u.role_id WHERE r.slug IN ('farm_owner','system_administrator') ORDER BY u.name")->fetchAll(),
+            'owners' => User::forOrganization(Auth::organizationId()),
         ]);
     }
 
@@ -46,6 +46,7 @@ class FarmController extends Controller
             'district' => $this->input('district'),
             'village' => $this->input('village'),
             'owner_id' => $this->input('owner_id') ?: null,
+            'organization_id' => Auth::organizationId(),
             'status' => $this->input('status', 'active'),
         ]);
 
@@ -57,7 +58,7 @@ class FarmController extends Controller
 
     public function show(array $params): void
     {
-        $farm = Farm::find((int) $params['id']);
+        $farm = Farm::findInOrganization((int) $params['id'], Auth::organizationId());
         if (!$farm) {
             $this->flash('danger', 'Farm not found.');
             $this->redirect('/farms');
@@ -75,7 +76,7 @@ class FarmController extends Controller
 
     public function edit(array $params): void
     {
-        $farm = Farm::find((int) $params['id']);
+        $farm = Farm::findInOrganization((int) $params['id'], Auth::organizationId());
         if (!$farm) {
             $this->flash('danger', 'Farm not found.');
             $this->redirect('/farms');
@@ -84,15 +85,14 @@ class FarmController extends Controller
         $this->view('farms/edit', [
             'pageTitle' => 'Edit ' . $farm['name'],
             'farm' => $farm,
-            'owners' => Database::connection()->query("SELECT u.id, u.name FROM users u
-                JOIN roles r ON r.id = u.role_id WHERE r.slug IN ('farm_owner','system_administrator') ORDER BY u.name")->fetchAll(),
+            'owners' => User::forOrganization(Auth::organizationId()),
         ]);
     }
 
     public function update(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Farm::find($id);
+        $before = Farm::findInOrganization($id, Auth::organizationId());
         if (!$before) {
             $this->flash('danger', 'Farm not found.');
             $this->redirect('/farms');
@@ -129,7 +129,12 @@ class FarmController extends Controller
     public function destroy(array $params): void
     {
         $id = (int) $params['id'];
-        $before = Farm::find($id);
+        $before = Farm::findInOrganization($id, Auth::organizationId());
+        if (!$before) {
+            $this->flash('danger', 'Farm not found.');
+            $this->redirect('/farms');
+        }
+
         Farm::delete($id);
         AuditLogger::log('delete', 'farms', (string) $id, $before, null);
 
