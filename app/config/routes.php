@@ -6,6 +6,7 @@ use App\Controllers\DashboardController;
 use App\Controllers\FarmController;
 use App\Controllers\BlockController;
 use App\Controllers\PlotController;
+use App\Controllers\TeamController;
 use App\Controllers\Admin\UserController;
 use App\Controllers\Admin\RoleController;
 use App\Controllers\Admin\SettingsController;
@@ -47,6 +48,14 @@ $router->post('/signup', [RegistrationController::class, 'signup']);
 $router->get('/', [DashboardController::class, 'index']);
 $router->get('/profile', [DashboardController::class, 'profile']);
 $router->post('/profile', [DashboardController::class, 'updateProfile']);
+
+// Team (tenant-side: Farm Owner manages their own organization's staff)
+$router->get('/team', [TeamController::class, 'index'], 'team.view');
+$router->get('/team/create', [TeamController::class, 'create'], 'team.create');
+$router->post('/team', [TeamController::class, 'store'], 'team.create');
+$router->get('/team/{id}/edit', [TeamController::class, 'edit'], 'team.edit');
+$router->post('/team/{id}', [TeamController::class, 'update'], 'team.edit');
+$router->post('/team/{id}/delete', [TeamController::class, 'destroy'], 'team.delete');
 
 // Farm structure
 $router->get('/farms', [FarmController::class, 'index'], 'farms.view');

@@ -30,6 +30,27 @@ class User
         return $stmt->fetch() ?: null;
     }
 
+    public static function forOrganization(int $organizationId): array
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare('SELECT u.*, r.name AS role_name FROM users u
+            JOIN roles r ON r.id = u.role_id WHERE u.organization_id = :org_id ORDER BY u.created_at DESC');
+        $stmt->execute(['org_id' => $organizationId]);
+        return $stmt->fetchAll();
+    }
+
+    /** Fetches a user only if they belong to the given organization -- the actual
+     * tenant-isolation check for team management (prevents one org's owner from
+     * reaching another org's user by guessing an id in the URL). */
+    public static function findInOrganization(int $id, int $organizationId): ?array
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare('SELECT u.*, r.name AS role_name FROM users u
+            JOIN roles r ON r.id = u.role_id WHERE u.id = :id AND u.organization_id = :org_id');
+        $stmt->execute(['id' => $id, 'org_id' => $organizationId]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function create(array $data): int
     {
         $pdo = Database::connection();

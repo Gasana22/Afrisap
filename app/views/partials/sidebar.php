@@ -85,6 +85,12 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     </a>
     <?php endif; ?>
 
+    <?php if (Auth::hasPermission('team.view')): ?>
+    <a class="nav-link <?= $isActive('/team') ?>" href="/team">
+        <i class="bi bi-person-plus"></i> <span>Team</span>
+    </a>
+    <?php endif; ?>
+
     <?php if (Auth::hasPermission('users.view') || Auth::hasPermission('roles.view') || Auth::hasPermission('settings.view') || Auth::hasPermission('audit.view')): ?>
     <div class="admin-zone">
         <div class="nav-section-label"><i class="bi bi-shield-lock-fill"></i> Admin Panel</div>

@@ -99,7 +99,17 @@ foreach ($ownerModules as $module) {
 foreach ($actions as $action) {
     $assign->execute(['role_id' => $roleIds['farm_owner'], 'permission_id' => $permIds["team.$action"]]);
 }
-$assign->execute(['role_id' => $roleIds['farm_owner'], 'permission_id' => $permIds['audit.view']]);
+// Note: farm_owner deliberately does NOT get 'audit.view' -- that permission
+// currently only guards the platform-wide Admin\AuditLogController, which has
+// no organization_id filter yet (Phase 11d). A properly org-scoped audit view
+// for Farm Owners is a fast-follow, not granted until that scoping exists.
+
+// Revoke grants that predate this seed's current shape, so re-running seed.php
+// on an existing database converges instead of only ever adding permissions
+// (INSERT IGNORE above can't retract a grant a previous version of this file made).
+$pdo->prepare("DELETE rp FROM role_permissions rp
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE rp.role_id = :role_id AND p.code = 'audit.view'")->execute(['role_id' => $roleIds['farm_owner']]);
 
 // Farm Manager: operate farms/crops/livestock/workers/inventory, view finance/reports.
 $managerFull = ['farms', 'crops', 'livestock', 'workers', 'inventory', 'traceability', 'media'];

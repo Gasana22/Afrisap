@@ -33,6 +33,15 @@ class Role
         return $stmt->fetch() ?: null;
     }
 
+    /** Roles a Farm Owner can hand to staff they invite -- every tenant role
+     * except farm_owner itself (inviting a co-owner isn't supported yet). */
+    public static function assignableByFarmOwner(): array
+    {
+        $stmt = Database::connection()->prepare("SELECT * FROM roles WHERE scope = 'tenant' AND slug != 'farm_owner' ORDER BY name");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public static function permissionCodes(int $roleId): array
     {
         $stmt = Database::connection()->prepare('SELECT permission_id FROM role_permissions WHERE role_id = :id');
