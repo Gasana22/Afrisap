@@ -12,6 +12,7 @@ use App\Controllers\Admin\AuditLogController;
 use App\Controllers\CropSetupController;
 use App\Controllers\CropCycleController;
 use App\Controllers\AnimalController;
+use App\Controllers\WorkerController;
 
 /** @var \App\Core\Router $router */
 
@@ -118,3 +119,22 @@ $router->post('/livestock/{id}/breeding', [AnimalController::class, 'addBreeding
 $router->post('/livestock/{id}/production', [AnimalController::class, 'addProduction'], 'livestock.edit');
 $router->post('/livestock/{id}/mortality', [AnimalController::class, 'recordMortality'], 'livestock.edit');
 $router->post('/livestock/{id}/sale', [AnimalController::class, 'recordSale'], 'livestock.edit');
+
+// Workers
+$router->get('/workers', [WorkerController::class, 'index'], 'workers.view');
+$router->get('/workers/create', [WorkerController::class, 'create'], 'workers.create');
+$router->post('/workers', [WorkerController::class, 'store'], 'workers.create');
+$router->get('/workers/{id}', [WorkerController::class, 'show'], 'workers.view');
+$router->get('/workers/{id}/edit', [WorkerController::class, 'edit'], 'workers.edit');
+$router->post('/workers/{id}', [WorkerController::class, 'update'], 'workers.edit');
+$router->post('/workers/{id}/toggle-status', [WorkerController::class, 'toggleStatus'], 'workers.delete');
+
+$router->post('/workers/{id}/attendance', [WorkerController::class, 'addAttendance'], 'workers.edit');
+$router->post('/attendance/{id}/approve', [WorkerController::class, 'approveAttendance'], 'workers.edit');
+
+$router->post('/workers/{id}/tasks', [WorkerController::class, 'addTask'], 'workers.edit');
+$router->post('/tasks/{id}/status', [WorkerController::class, 'updateTaskStatus'], 'workers.edit');
+$router->post('/tasks/{id}/verify', [WorkerController::class, 'verifyTask'], 'workers.edit');
+
+$router->post('/workers/{id}/payroll', [WorkerController::class, 'addPayroll'], 'workers.edit');
+$router->post('/payroll/{id}/status', [WorkerController::class, 'updatePayrollStatus'], 'workers.edit');
