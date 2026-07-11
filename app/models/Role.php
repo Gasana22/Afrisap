@@ -18,6 +18,14 @@ class Role
         return $stmt->fetch() ?: null;
     }
 
+    /** @param 'platform'|'tenant' $scope */
+    public static function byScope(string $scope): array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM roles WHERE scope = :scope ORDER BY name');
+        $stmt->execute(['scope' => $scope]);
+        return $stmt->fetchAll();
+    }
+
     public static function permissionCodes(int $roleId): array
     {
         $stmt = Database::connection()->prepare('SELECT permission_id FROM role_permissions WHERE role_id = :id');

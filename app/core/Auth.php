@@ -9,7 +9,15 @@ class Auth
     private const MAX_LOGIN_ATTEMPTS = 5;
     private const LOCKOUT_SECONDS = 300;
 
-    public static function attemptLogin(string $email, string $password): array
+    /**
+     * $expectedScope pins this login endpoint to one portal ('tenant' for the
+     * regular farm app, 'platform' for the platform-admin portal). A correct
+     * password for the other portal's account is rejected with the same
+     * generic message as a wrong password -- a platform login can't be used to
+     * even confirm whether a given email belongs to a tenant account, or vice
+     * versa.
+     */
+    public static function attemptLogin(string $email, string $password, string $expectedScope = 'tenant'): array
     {
         $email = trim(strtolower($email));
 
@@ -18,12 +26,12 @@ class Auth
         }
 
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug, r.name AS role_name FROM users u
+        $stmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug, r.name AS role_name, r.scope AS role_scope FROM users u
             JOIN roles r ON r.id = u.role_id WHERE u.email = :email LIMIT 1');
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch();
 
-        if (!$user || !password_verify($password, $user['password_hash'])) {
+        if (!$user || !password_verify($password, $user['password_hash']) || $user['role_scope'] !== $expectedScope) {
             self::registerFailedAttempt($email);
             return ['ok' => false, 'error' => 'Invalid email or password.'];
         }
@@ -66,7 +74,7 @@ class Auth
 
         $pdo->prepare('UPDATE otp_codes SET used_at = NOW() WHERE id = :id')->execute(['id' => $otp['id']]);
 
-        $userStmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug, r.name AS role_name FROM users u
+        $userStmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug, r.name AS role_name, r.scope AS role_scope FROM users u
             JOIN roles r ON r.id = u.role_id WHERE u.id = :id');
         $userStmt->execute(['id' => $userId]);
         $user = $userStmt->fetch();
@@ -82,6 +90,8 @@ class Auth
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $user['id'];
         $_SESSION['role_slug'] = $user['role_slug'];
+        $_SESSION['role_scope'] = $user['role_scope'];
+        $_SESSION['organization_id'] = $user['organization_id'] !== null ? (int) $user['organization_id'] : null;
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['permissions'] = self::loadPermissions((int) $user['role_id']);
 
@@ -120,7 +130,8 @@ class Auth
             return $cached;
         }
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('SELECT u.id, u.name, u.email, u.phone, u.avatar_path, u.role_id, r.slug AS role_slug, r.name AS role_name
+        $stmt = $pdo->prepare('SELECT u.id, u.name, u.email, u.phone, u.avatar_path, u.role_id, u.organization_id,
+                r.slug AS role_slug, r.name AS role_name, r.scope AS role_scope
             FROM users u JOIN roles r ON r.id = u.role_id WHERE u.id = :id');
         $stmt->execute(['id' => $_SESSION['user_id']]);
         $cached = $stmt->fetch() ?: null;
@@ -130,6 +141,22 @@ class Auth
     public static function hasPermission(string $code): bool
     {
         return self::check() && in_array($code, $_SESSION['permissions'] ?? [], true);
+    }
+
+    /** Null for platform-tier staff; the tenant id for everyone else. */
+    public static function organizationId(): ?int
+    {
+        return self::check() ? ($_SESSION['organization_id'] ?? null) : null;
+    }
+
+    public static function isPlatform(): bool
+    {
+        return self::check() && ($_SESSION['role_scope'] ?? null) === 'platform';
+    }
+
+    public static function isTenant(): bool
+    {
+        return self::check() && ($_SESSION['role_scope'] ?? null) === 'tenant';
     }
 
     public static function require(string $permission): void
