@@ -20,6 +20,8 @@ use App\Controllers\InventoryController;
 use App\Controllers\AssetController;
 use App\Controllers\TraceabilityController;
 use App\Controllers\PublicTraceController;
+use App\Controllers\ReportsController;
+use App\Controllers\MapController;
 
 /** @var \App\Core\Router $router */
 
@@ -209,3 +211,13 @@ $router->get('/livestock/{id}/traceability', [TraceabilityController::class, 'fo
 
 // Public QR scan page (no login required)
 $router->get('/trace/{token}', [PublicTraceController::class, 'show']);
+
+// Reports
+$router->get('/reports', [ReportsController::class, 'index'], 'reports.view');
+$router->get('/reports/crop-yield', [ReportsController::class, 'cropYield'], 'reports.view');
+$router->get('/reports/livestock-production', [ReportsController::class, 'livestockProduction'], 'reports.view');
+$router->get('/reports/worker-productivity', [ReportsController::class, 'workerProductivity'], 'reports.view');
+$router->get('/reports/daily-activities', [ReportsController::class, 'dailyActivities'], 'reports.view');
+
+// Maps
+$router->get('/maps', [MapController::class, 'index'], 'farms.view');

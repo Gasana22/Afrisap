@@ -7,6 +7,7 @@ use App\Core\AuditLogger;
 use App\Core\Controller;
 use App\Core\Database;
 use App\Core\Validator;
+use App\Models\AnalyticsReport;
 use App\Models\User;
 
 class DashboardController extends Controller
@@ -23,7 +24,18 @@ class DashboardController extends Controller
             'users' => (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn(),
         ];
 
-        $this->view('dashboard/index', ['pageTitle' => 'Dashboard', 'stats' => $stats]);
+        $analytics = null;
+        if (Auth::hasPermission('reports.view')) {
+            $analytics = [
+                'revenueTrend' => AnalyticsReport::revenueExpenseTrend(6),
+                'revenueGrowth' => AnalyticsReport::revenueGrowth(),
+                'costYieldPerHectare' => AnalyticsReport::costYieldPerHectare(),
+                'workerProductivity' => AnalyticsReport::workerProductivity(8),
+                'livestockMortality' => AnalyticsReport::livestockMortality(),
+            ];
+        }
+
+        $this->view('dashboard/index', ['pageTitle' => 'Dashboard', 'stats' => $stats, 'analytics' => $analytics]);
     }
 
     public function profile(): void

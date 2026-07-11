@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Core\Auth;
 use App\Core\AuditLogger;
 use App\Core\Controller;
+use App\Core\ExcelExporter;
+use App\Core\PdfExporter;
 use App\Core\Validator;
 use App\Models\Expense;
 use App\Models\Farm;
@@ -18,6 +20,12 @@ class FinanceController extends Controller
         $farmId = $this->input('farm_id') ? (int) $this->input('farm_id') : null;
         $from = $this->input('from') ?: null;
         $to = $this->input('to') ?: null;
+
+        $format = $this->input('format');
+        if ($format === 'pdf' || $format === 'excel') {
+            $this->exportSummary($farmId, $from, $to, $format);
+            return;
+        }
 
         $this->view('finance/report', [
             'pageTitle' => 'Finance',
@@ -115,5 +123,28 @@ class FinanceController extends Controller
 
         $this->flash('success', 'Expense entry removed.');
         $this->redirect('/finance/expenses');
+    }
+
+    private function exportSummary(?int $farmId, ?string $from, ?string $to, string $format): void
+    {
+        $income = FinanceReport::incomeEntries($farmId, $from, $to);
+        $expenses = FinanceReport::expenseEntries($farmId, $from, $to);
+
+        $headers = ['Type', 'Date', 'Source', 'Farm', 'Amount'];
+        $rows = [];
+        foreach ($income as $e) {
+            $rows[] = ['Income', $e['entry_date'], $e['source'], $e['farm_name'], $e['amount']];
+        }
+        foreach ($expenses as $e) {
+            $rows[] = ['Expense', $e['entry_date'], $e['source'], $e['farm_name'], $e['amount']];
+        }
+        usort($rows, fn($a, $b) => strcmp((string) $b[1], (string) $a[1]));
+
+        $filenameBase = 'finance-report-' . date('Y-m-d');
+        if ($format === 'pdf') {
+            PdfExporter::streamTable('Finance Report', $headers, $rows, "{$filenameBase}.pdf");
+            return;
+        }
+        ExcelExporter::streamTable('Finance Report', $headers, $rows, "{$filenameBase}.xlsx");
     }
 }

@@ -88,6 +88,7 @@ foreach ($actions as $action) {
 }
 $assign->execute(['role_id' => $roleIds['agronomist'], 'permission_id' => $permIds['farms.view']]);
 $assign->execute(['role_id' => $roleIds['agronomist'], 'permission_id' => $permIds['traceability.view']]);
+$assign->execute(['role_id' => $roleIds['agronomist'], 'permission_id' => $permIds['reports.view']]);
 
 // Livestock Manager: livestock full, farms view.
 foreach ($actions as $action) {
@@ -95,6 +96,7 @@ foreach ($actions as $action) {
 }
 $assign->execute(['role_id' => $roleIds['livestock_manager'], 'permission_id' => $permIds['farms.view']]);
 $assign->execute(['role_id' => $roleIds['livestock_manager'], 'permission_id' => $permIds['traceability.view']]);
+$assign->execute(['role_id' => $roleIds['livestock_manager'], 'permission_id' => $permIds['reports.view']]);
 
 // Store Manager: inventory + procurement full.
 foreach (['inventory', 'procurement'] as $module) {
@@ -102,6 +104,7 @@ foreach (['inventory', 'procurement'] as $module) {
         $assign->execute(['role_id' => $roleIds['store_manager'], 'permission_id' => $permIds["$module.$action"]]);
     }
 }
+$assign->execute(['role_id' => $roleIds['store_manager'], 'permission_id' => $permIds['reports.view']]);
 
 // Accountant: finance full, reports full, view procurement.
 foreach (['finance', 'reports'] as $module) {

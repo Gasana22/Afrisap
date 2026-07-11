@@ -4,6 +4,9 @@
     <div class="d-flex gap-2">
         <a href="/finance/income" class="btn btn-outline-secondary btn-sm">Income Ledger</a>
         <a href="/finance/expenses" class="btn btn-outline-secondary btn-sm">Expense Ledger</a>
+        <?php $exportQuery = http_build_query(['farm_id' => $selectedFarmId, 'from' => $from, 'to' => $to]); ?>
+        <a href="/finance?<?= $exportQuery ?>&format=pdf" class="btn btn-outline-danger btn-sm"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+        <a href="/finance?<?= $exportQuery ?>&format=excel" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel"></i> Excel</a>
     </div>
 </div>
 

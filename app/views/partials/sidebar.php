@@ -62,6 +62,18 @@ $isActive = fn(string $prefix) => str_starts_with($uri, $prefix) ? 'active' : ''
     </a>
     <?php endif; ?>
 
+    <?php if (Auth::hasPermission('reports.view')): ?>
+    <a class="nav-link <?= $isActive('/reports') ?>" href="/reports">
+        <i class="bi bi-bar-chart-line"></i> <span>Reports</span>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Auth::hasPermission('farms.view')): ?>
+    <a class="nav-link <?= $isActive('/maps') ?>" href="/maps">
+        <i class="bi bi-map"></i> <span>Farm Map</span>
+    </a>
+    <?php endif; ?>
+
     <?php if (Auth::hasPermission('users.view') || Auth::hasPermission('roles.view') || Auth::hasPermission('settings.view') || Auth::hasPermission('audit.view')): ?>
     <div class="nav-section-label">Admin Panel</div>
     <?php if (Auth::hasPermission('users.view')): ?>
