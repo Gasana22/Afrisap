@@ -26,6 +26,13 @@ class Role
         return $stmt->fetchAll();
     }
 
+    public static function findBySlug(string $slug): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM roles WHERE slug = :slug');
+        $stmt->execute(['slug' => $slug]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function permissionCodes(int $roleId): array
     {
         $stmt = Database::connection()->prepare('SELECT permission_id FROM role_permissions WHERE role_id = :id');

@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AuthController;
+use App\Controllers\RegistrationController;
 use App\Controllers\DashboardController;
 use App\Controllers\FarmController;
 use App\Controllers\BlockController;
@@ -39,6 +40,8 @@ $router->get('/forgot-password', [AuthController::class, 'showForgotPassword']);
 $router->post('/forgot-password', [AuthController::class, 'sendResetLink']);
 $router->get('/reset-password', [AuthController::class, 'showResetPassword']);
 $router->post('/reset-password', [AuthController::class, 'resetPassword']);
+$router->get('/signup', [RegistrationController::class, 'showSignup']);
+$router->post('/signup', [RegistrationController::class, 'signup']);
 
 // Dashboard
 $router->get('/', [DashboardController::class, 'index']);

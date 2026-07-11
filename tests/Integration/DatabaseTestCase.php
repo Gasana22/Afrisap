@@ -35,8 +35,8 @@ abstract class DatabaseTestCase extends TestCase
     {
         $this->pdo->prepare('INSERT INTO farms (name) VALUES (:name)')->execute(['name' => $name]);
         $id = (int) $this->pdo->lastInsertId();
-        $this->pdo->prepare("UPDATE farms SET code = CONCAT('FARM', LPAD(:id, 2, '0')) WHERE id = :id2")
-            ->execute(['id' => $id, 'id2' => $id]);
+        $this->pdo->prepare("UPDATE farms SET code = CONCAT('FARM', LPAD(:id, GREATEST(2, CHAR_LENGTH(CAST(:id2 AS CHAR))), '0')) WHERE id = :id3")
+            ->execute(['id' => $id, 'id2' => $id, 'id3' => $id]);
         return $id;
     }
 

@@ -33,14 +33,15 @@ class User
     public static function create(array $data): int
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('INSERT INTO users (name, email, phone, password_hash, role_id, status, mfa_enabled)
-            VALUES (:name, :email, :phone, :password_hash, :role_id, :status, :mfa_enabled)');
+        $stmt = $pdo->prepare('INSERT INTO users (name, email, phone, password_hash, role_id, organization_id, status, mfa_enabled)
+            VALUES (:name, :email, :phone, :password_hash, :role_id, :organization_id, :status, :mfa_enabled)');
         $stmt->execute([
             'name' => $data['name'],
             'email' => strtolower(trim($data['email'])),
             'phone' => $data['phone'] ?? null,
             'password_hash' => password_hash($data['password'], PASSWORD_BCRYPT),
             'role_id' => $data['role_id'],
+            'organization_id' => $data['organization_id'] ?? null,
             'status' => $data['status'] ?? 'active',
             'mfa_enabled' => $data['mfa_enabled'] ?? 1,
         ]);

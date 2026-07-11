@@ -12,4 +12,8 @@
     <div class="text-center mt-3">
         <a href="/forgot-password" class="small">Forgot password?</a>
     </div>
+    <hr class="my-3">
+    <div class="text-center small text-muted">
+        New farm? <a href="/signup">Create your farm account</a>
+    </div>
 </form>

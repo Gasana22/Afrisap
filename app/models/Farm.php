@@ -36,8 +36,12 @@ class Farm
             'status' => $data['status'] ?? 'active',
         ]);
         $id = (int) $pdo->lastInsertId();
-        $pdo->prepare("UPDATE farms SET code = CONCAT('FARM', LPAD(:id, 2, '0')) WHERE id = :id2")
-            ->execute(['id' => $id, 'id2' => $id]);
+        // LPAD truncates rather than pads once the id is wider than the target
+        // width, which would silently collide two different farms onto the same
+        // code (e.g. ids 11 and 111 both landing on 'FARM11'). GREATEST keeps the
+        // "FARM01"-style zero-padding for small ids while never truncating larger ones.
+        $pdo->prepare("UPDATE farms SET code = CONCAT('FARM', LPAD(:id, GREATEST(2, CHAR_LENGTH(CAST(:id2 AS CHAR))), '0')) WHERE id = :id3")
+            ->execute(['id' => $id, 'id2' => $id, 'id3' => $id]);
         return $id;
     }
 
