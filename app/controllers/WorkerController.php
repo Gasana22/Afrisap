@@ -18,7 +18,14 @@ class WorkerController extends Controller
 {
     public function index(): void
     {
-        $this->view('workers/index', ['pageTitle' => 'Workers', 'workers' => Worker::all()]);
+        $page = max(1, (int) $this->input('page', 1));
+        $result = Worker::paginated($page);
+        $this->view('workers/index', [
+            'pageTitle' => 'Workers',
+            'workers' => $result['rows'],
+            'page' => $page,
+            'totalPages' => $result['totalPages'],
+        ]);
     }
 
     public function create(): void

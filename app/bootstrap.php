@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Core\SecurityHeaders;
 use App\Core\Session;
 
 $config = require __DIR__ . '/config/config.php';
@@ -15,6 +16,7 @@ if ($config['app']['debug']) {
     ini_set('display_errors', '0');
 }
 
+SecurityHeaders::apply();
 Session::start();
 
 return $config;

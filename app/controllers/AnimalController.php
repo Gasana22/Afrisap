@@ -21,7 +21,14 @@ class AnimalController extends Controller
 {
     public function index(): void
     {
-        $this->view('livestock/index', ['pageTitle' => 'Livestock', 'animals' => Animal::all()]);
+        $page = max(1, (int) $this->input('page', 1));
+        $result = Animal::paginated($page);
+        $this->view('livestock/index', [
+            'pageTitle' => 'Livestock',
+            'animals' => $result['rows'],
+            'page' => $page,
+            'totalPages' => $result['totalPages'],
+        ]);
     }
 
     public function create(): void

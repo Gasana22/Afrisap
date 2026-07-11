@@ -32,8 +32,6 @@ class Auth
             return ['ok' => false, 'error' => 'This account is inactive. Contact your administrator.'];
         }
 
-        self::clearFailedAttempts($email);
-
         if ((int) $user['mfa_enabled'] === 1) {
             $code = self::generateOtp((int) $user['id'], 'login_mfa');
             $_SESSION['mfa_pending_user_id'] = (int) $user['id'];
@@ -167,29 +165,35 @@ class Auth
         return $code;
     }
 
+    /**
+     * Persistent, insert-only rate limiting keyed on email and IP. A session-based
+     * counter can be bypassed simply by not sending the session cookie, so this is
+     * backed by the login_attempts table instead — checked against real elapsed
+     * time, not a client-controllable session.
+     */
     private static function isRateLimited(string $email): bool
     {
-        $key = 'login_attempts_' . md5($email);
-        $data = $_SESSION[$key] ?? ['count' => 0, 'first' => time()];
-        if ($data['count'] >= self::MAX_LOGIN_ATTEMPTS && (time() - $data['first']) < self::LOCKOUT_SECONDS) {
+        $pdo = Database::connection();
+        $seconds = self::LOCKOUT_SECONDS;
+
+        $emailStmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE email = :email AND created_at >= DATE_SUB(NOW(), INTERVAL {$seconds} SECOND)");
+        $emailStmt->execute(['email' => $email]);
+        if ((int) $emailStmt->fetchColumn() >= self::MAX_LOGIN_ATTEMPTS) {
             return true;
         }
+
+        $ipStmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = :ip AND created_at >= DATE_SUB(NOW(), INTERVAL {$seconds} SECOND)");
+        $ipStmt->execute(['ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown']);
+        if ((int) $ipStmt->fetchColumn() >= self::MAX_LOGIN_ATTEMPTS * 4) {
+            return true;
+        }
+
         return false;
     }
 
     private static function registerFailedAttempt(string $email): void
     {
-        $key = 'login_attempts_' . md5($email);
-        $data = $_SESSION[$key] ?? ['count' => 0, 'first' => time()];
-        if ((time() - $data['first']) >= self::LOCKOUT_SECONDS) {
-            $data = ['count' => 0, 'first' => time()];
-        }
-        $data['count']++;
-        $_SESSION[$key] = $data;
-    }
-
-    private static function clearFailedAttempts(string $email): void
-    {
-        unset($_SESSION['login_attempts_' . md5($email)]);
+        $stmt = Database::connection()->prepare('INSERT INTO login_attempts (email, ip_address) VALUES (:email, :ip)');
+        $stmt->execute(['email' => $email, 'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown']);
     }
 }

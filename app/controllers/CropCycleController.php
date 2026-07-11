@@ -24,7 +24,14 @@ class CropCycleController extends Controller
 {
     public function index(): void
     {
-        $this->view('crops/index', ['pageTitle' => 'Crop Management', 'cycles' => CropCycle::all()]);
+        $page = max(1, (int) $this->input('page', 1));
+        $result = CropCycle::paginated($page);
+        $this->view('crops/index', [
+            'pageTitle' => 'Crop Management',
+            'cycles' => $result['rows'],
+            'page' => $page,
+            'totalPages' => $result['totalPages'],
+        ]);
     }
 
     public function create(): void

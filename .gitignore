@@ -6,3 +6,7 @@
 .DS_Store
 *.swp
 composer.phar
+.phpunit.result.cache
+/storage/testing-uploads/*
+!/storage/testing-uploads/.gitkeep
+/storage/backups/

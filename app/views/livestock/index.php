@@ -34,3 +34,4 @@
         </table>
     </div>
 </div>
+<?php $baseUrl = '/livestock'; require __DIR__ . '/../partials/pagination.php'; ?>

@@ -12,7 +12,8 @@ class Database
     public static function connection(): PDO
     {
         if (self::$instance === null) {
-            $config = require __DIR__ . '/../config/config.php';
+            $configFile = getenv('APP_TESTING') ? 'config.testing.php' : 'config.php';
+            $config = require __DIR__ . "/../config/{$configFile}";
             $db = $config['db'];
 
             $dsn = sprintf(

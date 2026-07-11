@@ -19,6 +19,19 @@ class PurchaseOrder
         return Database::connection()->query(self::SELECT_BASE . ' ORDER BY po.order_date DESC, po.id DESC')->fetchAll();
     }
 
+    public static function paginated(int $page, int $perPage = 25): array
+    {
+        $pdo = Database::connection();
+        $total = (int) $pdo->query('SELECT COUNT(*) FROM purchase_orders')->fetchColumn();
+
+        $stmt = $pdo->prepare(self::SELECT_BASE . ' ORDER BY po.order_date DESC, po.id DESC LIMIT :limit OFFSET :offset');
+        $stmt->bindValue(':limit', $perPage, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', ($page - 1) * $perPage, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ['rows' => $stmt->fetchAll(), 'total' => $total, 'totalPages' => (int) ceil($total / $perPage)];
+    }
+
     public static function find(int $id): ?array
     {
         $stmt = Database::connection()->prepare(self::SELECT_BASE . ' WHERE po.id = :id');

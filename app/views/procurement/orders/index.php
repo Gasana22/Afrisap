@@ -33,3 +33,4 @@
         </table>
     </div>
 </div>
+<?php $baseUrl = '/purchase-orders'; require __DIR__ . '/../../partials/pagination.php'; ?>

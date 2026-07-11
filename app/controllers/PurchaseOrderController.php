@@ -17,7 +17,14 @@ class PurchaseOrderController extends Controller
 {
     public function index(): void
     {
-        $this->view('procurement/orders/index', ['pageTitle' => 'Purchase Orders', 'orders' => PurchaseOrder::all()]);
+        $page = max(1, (int) $this->input('page', 1));
+        $result = PurchaseOrder::paginated($page);
+        $this->view('procurement/orders/index', [
+            'pageTitle' => 'Purchase Orders',
+            'orders' => $result['rows'],
+            'page' => $page,
+            'totalPages' => $result['totalPages'],
+        ]);
     }
 
     public function create(): void
