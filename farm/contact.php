@@ -15,24 +15,32 @@ $pageTitle = 'Contact';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
-<section class="section">
-    <h1>Contact <?= e($companyName) ?></h1>
-    <p>Interested in onboarding your farm or organization, or have a question about a traceability result? Reach out and a member of the team will get back to you.</p>
+<div class="site-main">
+    <section class="section reveal">
+        <div class="section-head">
+            <span class="eyebrow">Get in touch</span>
+            <h1>Contact <?= e($companyName) ?></h1>
+            <p>Interested in onboarding your farm or organization, or have a question about a traceability result? Reach out and a member of the team will get back to you.</p>
+        </div>
 
-    <div class="card-grid">
-        <div class="card">
-            <h3>Sales &amp; onboarding</h3>
-            <p>sales@afrisap.example</p>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <span class="eyebrow">Sales &amp; onboarding</span>
+                <h3>Start a new organization</h3>
+                <p><a href="mailto:sales@afrisap.example">sales@afrisap.example</a></p>
+            </div>
+            <div class="contact-card">
+                <span class="eyebrow">Support</span>
+                <h3>Already running on Afrisap</h3>
+                <p><a href="mailto:support@afrisap.example">support@afrisap.example</a></p>
+            </div>
+            <div class="contact-card">
+                <span class="eyebrow">Already a customer?</span>
+                <h3>Reach your own team</h3>
+                <p><a href="<?= BASE_URL ?>/login.php">Sign in</a> to reach your organization's team directly, or ask your Farm Owner or Manager for help.</p>
+            </div>
         </div>
-        <div class="card">
-            <h3>Support</h3>
-            <p>support@afrisap.example</p>
-        </div>
-        <div class="card">
-            <h3>Already a customer?</h3>
-            <p><a href="<?= BASE_URL ?>/login.php">Sign in</a> to reach your organization's team directly, or ask your Farm Owner/Manager for help.</p>
-        </div>
-    </div>
-</section>
+    </section>
+</div>
 
 <?php require __DIR__ . '/includes/site_footer.php'; ?>

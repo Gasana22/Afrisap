@@ -67,29 +67,32 @@ if (APP_DEBUG) {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
-    <div class="auth-card">
-        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Enter verification code</h1>
-        <p class="muted">We sent a one-time code to your registered contact method.</p>
+    <?php $authHeadline = 'One more step.'; $authCopy = 'A short code confirms it&#8217;s really you signing in to your organization&#8217;s books.'; require __DIR__ . '/includes/auth_panel.php'; ?>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
+            <h1>Enter verification code</h1>
+            <p class="muted">We sent a one-time code to your registered contact method.</p>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= e($error) ?></div>
-        <?php endif; ?>
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= e($success) ?></div>
-        <?php endif; ?>
-        <?php if ($devCode): ?>
-            <div class="alert alert-success">Dev mode — no SMS/email provider yet. Your code is <strong><?= e($devCode) ?></strong> (also in storage/logs/otp.log).</div>
-        <?php endif; ?>
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= e($error) ?></div>
+            <?php endif; ?>
+            <?php if ($success): ?>
+                <div class="alert alert-success"><?= e($success) ?></div>
+            <?php endif; ?>
+            <?php if ($devCode): ?>
+                <div class="alert alert-success">Dev mode — no SMS/email provider yet. Your code is <strong><?= e($devCode) ?></strong> (also in storage/logs/otp.log).</div>
+            <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/verify-otp.php">
-            <input type="text" name="code" maxlength="10" class="otp-input" required autofocus>
-            <button type="submit">Verify</button>
-        </form>
-        <form method="POST" action="<?= BASE_URL ?>/verify-otp.php" style="margin-top:0.75rem;">
-            <input type="hidden" name="resend" value="1">
-            <button type="submit" class="btn" style="background:transparent;color:#2f5233;border:1px solid #2f5233;width:100%;">Resend code</button>
-        </form>
+            <form method="POST" action="<?= BASE_URL ?>/verify-otp.php">
+                <input type="text" name="code" maxlength="10" class="otp-input" required autofocus>
+                <button type="submit" style="width:100%; justify-content:center;">Verify</button>
+            </form>
+            <form method="POST" action="<?= BASE_URL ?>/verify-otp.php" style="margin-top:0.75rem;">
+                <input type="hidden" name="resend" value="1">
+                <button type="submit" class="btn btn-outline" style="width:100%; justify-content:center;">Resend code</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

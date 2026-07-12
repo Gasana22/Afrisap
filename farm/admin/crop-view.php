@@ -242,7 +242,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Record an input</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Record an input</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_input">
             <label>Type</label>
@@ -285,7 +285,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a nursery record</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a nursery record</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_nursery">
             <label>Date</label>
@@ -322,7 +322,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Log a field activity</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Log a field activity</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_activity">
             <label>Type</label>
@@ -365,7 +365,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a monitoring record</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a monitoring record</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_monitoring">
             <label>Type</label>
@@ -399,7 +399,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a forecast</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a forecast</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_forecast">
             <label>Date</label>
@@ -430,7 +430,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Record a harvest</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Record a harvest</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_harvest">
             <label>Date</label>
@@ -467,7 +467,7 @@ require __DIR__ . '/includes/header.php';
     </table>
     <?php if ($harvests): ?>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Record a sale</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Record a sale</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/crop-view.php?id=<?= $cropCycleId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_sale">
             <label>Harvest</label>

@@ -20,6 +20,7 @@ $unreadCount = (int) $unreadStmt->fetchColumn();
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css">
 </head>
 <body>
+<div class="sidebar-backdrop" data-sidebar-backdrop></div>
 <div class="layout">
     <aside class="sidebar">
         <div class="brand"><?= e(APP_NAME) ?></div>
@@ -54,10 +55,11 @@ $unreadCount = (int) $unreadStmt->fetchColumn();
     </aside>
     <div class="main">
         <div class="topbar">
-            <a href="<?= BASE_URL ?>/admin/notifications.php" style="color:#2f5233; text-decoration:none;">
+            <button class="sidebar-toggle" type="button" aria-label="Toggle menu" data-sidebar-toggle><span></span></button>
+            <a href="<?= BASE_URL ?>/admin/notifications.php">
                 Notifications<?= $unreadCount ? ' (' . $unreadCount . ')' : '' ?>
             </a>
-            <span><?= e($user['name'] ?? '') ?> · <?= e($_SESSION['role_slug'] ?? '') ?><?= is_platform_user() ? '' : ' · ' . e(current_organization_name() ?? '') ?></span>
+            <span><?= e($user['name'] ?? '') ?> &middot; <?= e($_SESSION['role_slug'] ?? '') ?><?= is_platform_user() ? '' : ' · ' . e(current_organization_name() ?? '') ?></span>
             <form method="POST" action="<?= BASE_URL ?>/logout.php">
                 <button type="submit" class="link">Log out</button>
             </form>

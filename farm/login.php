@@ -41,28 +41,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
-    <div class="auth-card">
-        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Farm Portal</h1>
-        <p class="muted">Sign in to manage your own farms, crops, livestock, workers, and records.</p>
+    <?php $authHeadline = 'Run your farm from one place.'; $authCopy = 'Crop cycles, livestock, workers, finance, and a QR trail buyers can follow back to the plot it grew on.'; require __DIR__ . '/includes/auth_panel.php'; ?>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
+            <h1>Farm Portal</h1>
+            <p class="muted">Sign in to manage your own farms, crops, livestock, workers, and records.</p>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= e($error) ?></div>
-        <?php endif; ?>
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= e($error) ?></div>
+            <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/login.php">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autofocus>
+            <form method="POST" action="<?= BASE_URL ?>/login.php">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required autofocus>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
 
-            <button type="submit">Sign in</button>
-        </form>
-        <p class="portal-switch"><a href="<?= BASE_URL ?>/forgot-password.php">Forgot your password?</a></p>
+                <button type="submit" style="width:100%; justify-content:center;">Sign in</button>
+            </form>
+            <p class="portal-switch"><a href="<?= BASE_URL ?>/forgot-password.php">Forgot your password?</a></p>
 
-        <p class="portal-switch">New farm/organization? <a href="<?= BASE_URL ?>/signup.php">Create an account</a>.</p>
-        <p class="portal-switch">Platform staff (Super Admin, Manager, Accountant)? <a href="<?= BASE_URL ?>/admin-login.php">Sign in to the Admin Portal</a>.</p>
+            <p class="portal-switch">New farm/organization? <a href="<?= BASE_URL ?>/signup.php">Create an account</a>.</p>
+            <p class="portal-switch">Platform staff (Super Admin, Manager, Accountant)? <a href="<?= BASE_URL ?>/admin-login.php">Sign in to the Admin Portal</a>.</p>
+        </div>
     </div>
 </body>
 </html>

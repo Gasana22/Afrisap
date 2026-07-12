@@ -31,23 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
-    <div class="auth-card">
-        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Forgot password</h1>
-        <p class="muted">Enter the email on your farm account and we'll send a reset link.</p>
+    <?php $authHeadline = 'Locked out happens.'; $authCopy = 'We&#8217;ll email a one-time link to the address on your farm account.'; require __DIR__ . '/includes/auth_panel.php'; ?>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
+            <h1>Forgot password</h1>
+            <p class="muted">Enter the email on your farm account and we'll send a reset link.</p>
 
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= e($success) ?></div>
-        <?php endif; ?>
+            <?php if ($success): ?>
+                <div class="alert alert-success"><?= e($success) ?></div>
+            <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/forgot-password.php">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autofocus>
+            <form method="POST" action="<?= BASE_URL ?>/forgot-password.php">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required autofocus>
 
-            <button type="submit">Send reset link</button>
-        </form>
+                <button type="submit" style="width:100%; justify-content:center;">Send reset link</button>
+            </form>
 
-        <p class="portal-switch"><a href="<?= BASE_URL ?>/login.php">Back to sign in</a></p>
+            <p class="portal-switch"><a href="<?= BASE_URL ?>/login.php">Back to sign in</a></p>
+        </div>
     </div>
 </body>
 </html>

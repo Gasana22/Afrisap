@@ -35,27 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
-    <div class="auth-card">
-        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Reset password</h1>
+    <?php $authHeadline = 'Choose a new password.'; $authCopy = 'This link is single-use and expires within the hour, for your account&#8217;s safety.'; require __DIR__ . '/includes/auth_panel.php'; ?>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
+            <h1>Reset password</h1>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= e($error) ?></div>
-        <?php endif; ?>
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= e($error) ?></div>
+            <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/reset-password.php">
-            <input type="hidden" name="token" value="<?= e($token) ?>">
+            <form method="POST" action="<?= BASE_URL ?>/reset-password.php">
+                <input type="hidden" name="token" value="<?= e($token) ?>">
 
-            <label for="password">New password</label>
-            <input type="password" id="password" name="password" minlength="8" required autofocus>
+                <label for="password">New password</label>
+                <input type="password" id="password" name="password" minlength="8" required autofocus>
 
-            <label for="password_confirm">Confirm new password</label>
-            <input type="password" id="password_confirm" name="password_confirm" minlength="8" required>
+                <label for="password_confirm">Confirm new password</label>
+                <input type="password" id="password_confirm" name="password_confirm" minlength="8" required>
 
-            <button type="submit">Reset password</button>
-        </form>
+                <button type="submit" style="width:100%; justify-content:center;">Reset password</button>
+            </form>
 
-        <p class="portal-switch"><a href="<?= BASE_URL ?>/login.php">Back to sign in</a></p>
+            <p class="portal-switch"><a href="<?= BASE_URL ?>/login.php">Back to sign in</a></p>
+        </div>
     </div>
 </body>
 </html>

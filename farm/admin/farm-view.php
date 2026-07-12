@@ -135,7 +135,7 @@ require __DIR__ . '/includes/header.php';
         </table>
 
         <details>
-            <summary style="cursor:pointer; color:#2f5233; font-size:0.9rem;">Add a plot to this block</summary>
+            <summary style="cursor:pointer; color:var(--gold-text); font-size:0.9rem;">Add a plot to this block</summary>
             <form method="POST" action="<?= BASE_URL ?>/admin/farm-view.php?id=<?= $farmId ?>" style="margin-top:0.75rem; max-width:420px;">
                 <input type="hidden" name="action" value="add_plot">
                 <input type="hidden" name="block_id" value="<?= (int) $block['id'] ?>">

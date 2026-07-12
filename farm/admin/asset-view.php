@@ -96,7 +96,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Log maintenance</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Log maintenance</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/asset-view.php?id=<?= $assetId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_maintenance">
             <label>Date</label>

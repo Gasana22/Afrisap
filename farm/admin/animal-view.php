@@ -179,7 +179,7 @@ require __DIR__ . '/includes/header.php';
     <h2 style="margin-top:0; font-size:1rem;">Outcome</h2>
     <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
         <details>
-            <summary style="cursor:pointer; color:#a33;">Record mortality</summary>
+            <summary style="cursor:pointer; color:var(--warn);">Record mortality</summary>
             <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:360px;">
                 <input type="hidden" name="action" value="record_mortality">
                 <label>Death date</label>
@@ -188,11 +188,11 @@ require __DIR__ . '/includes/header.php';
                 <input type="text" name="cause" style="width:100%; padding:0.5rem; margin-bottom:0.75rem;">
                 <label>Notes</label>
                 <input type="text" name="notes" style="width:100%; padding:0.5rem; margin-bottom:1rem;">
-                <button type="submit" class="btn" style="background:#a33;">Record</button>
+                <button type="submit" class="btn" style="background:var(--warn);">Record</button>
             </form>
         </details>
         <details>
-            <summary style="cursor:pointer; color:#2f5233;">Record sale</summary>
+            <summary style="cursor:pointer; color:var(--gold-text);">Record sale</summary>
             <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:360px;">
                 <input type="hidden" name="action" value="record_sale">
                 <label>Buyer name</label>
@@ -222,7 +222,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a vaccination</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a vaccination</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_vaccination">
             <label>Vaccine name</label>
@@ -250,7 +250,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a feeding</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a feeding</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_feeding">
             <label>Feed type</label>
@@ -280,7 +280,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a weight record</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a weight record</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_weight">
             <label>Weight (kg)</label>
@@ -306,7 +306,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a treatment</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a treatment</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_treatment">
             <label>Condition</label>
@@ -336,7 +336,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a breeding record</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a breeding record</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_breeding">
             <label>Mate description</label>
@@ -368,7 +368,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a production record</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a production record</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/animal-view.php?id=<?= $animalId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_production">
             <label>Type</label>

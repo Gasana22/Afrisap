@@ -129,7 +129,7 @@ require __DIR__ . '/includes/header.php';
 
 <p><a href="<?= BASE_URL ?>/admin/traceability.php">&larr; All trace batches</a></p>
 <h1><?= e($batch['crop_type_name'] ?? $batch['species'] ?? $batch['batch_type']) ?> — <?= e($batch['batch_code']) ?></h1>
-<p class="muted"><?= e($batch['farm_name'] ?? '—') ?> · Status: <?= e($batch['status']) ?></p>
+<p class="muted"><?= e($batch['farm_name'] ?? '—') ?> &middot; <span class="status-pill status-<?= e($batch['status']) ?>"><?= e($batch['status']) ?></span></p>
 
 <?php if ($error): ?><div class="alert alert-error"><?= e($error) ?></div><?php endif; ?>
 <?php if ($success): ?><div class="alert alert-success"><?= e($success) ?></div><?php endif; ?>
@@ -137,7 +137,7 @@ require __DIR__ . '/includes/header.php';
 <div class="card" style="margin-bottom:1.5rem;">
     <h2 style="margin-top:0;">Public QR code</h2>
     <?php if ($qr): ?>
-        <img src="<?= e($qr['qr_image_path']) ?>" alt="QR code" style="border:1px solid #eee; border-radius:4px;">
+        <img src="<?= e($qr['qr_image_path']) ?>" alt="QR code" style="border:1px solid var(--line); border-radius:6px;">
         <p class="muted">Public link: <a href="<?= BASE_URL ?>/trace.php?token=<?= e($qr['public_token']) ?>" target="_blank"><?= e(BASE_URL . '/trace.php?token=' . $qr['public_token']) ?></a></p>
     <?php else: ?>
         <p class="muted">No QR code generated yet.</p>
@@ -172,7 +172,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Attach a document</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Attach a document</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/trace-view.php?id=<?= $batchId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_document">
             <label>Type</label>
@@ -198,7 +198,7 @@ require __DIR__ . '/includes/header.php';
             <?php foreach ($approvals as $a): ?>
                 <tr>
                     <td><?= e($a['approval_type']) ?></td>
-                    <td><?= e($a['status']) ?></td>
+                    <td><span class="status-pill status-<?= e($a['status']) ?>"><?= e($a['status']) ?></span></td>
                     <td>
                         <?php if ($a['status'] === 'pending'): ?>
                             <form method="POST" action="<?= BASE_URL ?>/admin/trace-view.php?id=<?= $batchId ?>" style="display:inline;">
@@ -211,7 +211,7 @@ require __DIR__ . '/includes/header.php';
                                 <input type="hidden" name="action" value="decide_approval">
                                 <input type="hidden" name="approval_id" value="<?= (int) $a['id'] ?>">
                                 <input type="hidden" name="decision" value="rejected">
-                                <button type="submit" class="btn" style="padding:0.3rem 0.6rem; font-size:0.8rem; background:#a33;">Reject</button>
+                                <button type="submit" class="btn btn-danger" style="padding:0.3rem 0.6rem; font-size:0.8rem;">Reject</button>
                             </form>
                         <?php endif; ?>
                     </td>
@@ -220,7 +220,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add an approval requirement</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add an approval requirement</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/trace-view.php?id=<?= $batchId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_approval">
             <label>Approval type</label>
@@ -242,7 +242,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Log a journey stage</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Log a journey stage</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/trace-view.php?id=<?= $batchId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_journey">
             <label>Stage</label>

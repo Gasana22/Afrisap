@@ -46,36 +46,47 @@ $pageTitle = 'Track a Product';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
-<section class="section" style="max-width:560px;">
-    <h1>Track a Product</h1>
-    <p>Scan the QR code on the product, or enter its tracking code below.</p>
+<section class="trace-hero">
+    <div class="trace-hero-inner">
+        <span class="hero-eyebrow">Farm-to-buyer traceability</span>
+        <h1>Track a product</h1>
+        <p>Scan the QR code on the product, or type its tracking code below — no account needed.</p>
+        <form method="GET" action="<?= BASE_URL ?>/trace.php" class="trace-form">
+            <input type="text" name="token" value="<?= e($token) ?>" placeholder="e.g. 9F3C1A7B2E" required autofocus>
+            <button type="submit" class="btn btn-on-dark">Track</button>
+        </form>
+    </div>
+</section>
 
-    <form method="GET" action="<?= BASE_URL ?>/trace.php" class="trace-form">
-        <input type="text" name="token" value="<?= e($token) ?>" placeholder="Tracking code" required autofocus>
-        <button type="submit" class="btn">Track</button>
-    </form>
-
+<div class="site-main">
     <?php if ($searched): ?>
-        <div class="card" style="margin-top:1.5rem;">
-            <?php if (!$batch): ?>
-                <p class="muted">This tracking code isn't recognized. Double-check it and try again.</p>
-            <?php else: ?>
-                <?php $farmName = $batch['farm_name'] ?? $batch['farm_name2']; $district = $batch['district'] ?? $batch['district2']; ?>
-                <h2 style="margin-top:0;"><?= e($batch['crop_type_name'] ?? ($batch['species'] . ($batch['breed'] ? ' (' . $batch['breed'] . ')' : ''))) ?></h2>
-                <p class="muted">Batch <?= e($batch['batch_code']) ?> &middot; <?= e(ucfirst($batch['status'])) ?></p>
-                <p class="muted">Origin: <?= e($farmName ?? 'Unknown farm') ?><?= $district ? ', ' . e($district) : '' ?></p>
+        <div class="trace-result">
+            <div class="trace-result-card">
+                <?php if (!$batch): ?>
+                    <span class="status-pill status-recalled">Not found</span>
+                    <h2 style="margin-top:0.6rem;">This tracking code isn't recognized</h2>
+                    <p class="muted">Double-check the code and try again, or ask whoever gave you the product for the correct link.</p>
+                <?php else: ?>
+                    <?php $farmName = $batch['farm_name'] ?? $batch['farm_name2']; $district = $batch['district'] ?? $batch['district2']; ?>
+                    <span class="status-pill status-<?= e($batch['status']) ?>"><?= e($batch['status']) ?></span>
+                    <h2><?= e($batch['crop_type_name'] ?? ($batch['species'] . ($batch['breed'] ? ' (' . $batch['breed'] . ')' : ''))) ?></h2>
+                    <p class="muted">Batch <span class="trace-code"><?= e($batch['batch_code']) ?></span> &middot; Origin: <?= e($farmName ?? 'Unknown farm') ?><?= $district ? ', ' . e($district) : '' ?></p>
 
-                <?php if ($journey): ?>
-                    <h3 style="font-size:1rem;">Journey</h3>
-                    <ul class="journey-list">
-                        <?php foreach ($journey as $j): ?>
-                            <li><?= e(ucfirst($j['stage'])) ?> &mdash; <?= e($j['stage_date']) ?><?= $j['location'] ? ' (' . e($j['location']) . ')' : '' ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?php if ($journey): ?>
+                        <h3 style="font-size:1rem; margin-top:1.75rem;">Journey</h3>
+                        <ul class="journey-timeline">
+                            <?php foreach ($journey as $j): ?>
+                                <li>
+                                    <div class="journey-stage"><?= e(ucfirst($j['stage'])) ?></div>
+                                    <div class="journey-meta"><?= e($j['stage_date']) ?><?= $j['location'] ? ' &middot; ' . e($j['location']) : '' ?></div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
                 <?php endif; ?>
-            <?php endif; ?>
+            </div>
         </div>
     <?php endif; ?>
-</section>
+</div>
 
 <?php require __DIR__ . '/includes/site_footer.php'; ?>

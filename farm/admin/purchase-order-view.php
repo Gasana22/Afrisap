@@ -143,7 +143,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Add a line item</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Add a line item</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/purchase-order-view.php?id=<?= $poId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_item">
             <label>Item name</label>
@@ -171,7 +171,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Log a delivery</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Log a delivery</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/purchase-order-view.php?id=<?= $poId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_delivery">
             <label>Date</label>
@@ -197,7 +197,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Record a payment</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Record a payment</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/purchase-order-view.php?id=<?= $poId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_payment">
             <label>Amount</label>

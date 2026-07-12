@@ -23,34 +23,83 @@ require __DIR__ . '/includes/site_header.php';
 ?>
 
 <section class="hero">
-    <h1><?= e($companyName) ?> Farm Management</h1>
-    <p>A multi-tenant platform for running farm operations end to end -- crop cycles, livestock, workers, finance, procurement, inventory, assets, and full farm-to-buyer traceability.</p>
-    <div class="hero-actions">
-        <a href="<?= BASE_URL ?>/signup.php" class="btn">Start Your Farm Account</a>
-        <a href="<?= BASE_URL ?>/trace.php" class="btn btn-outline">Track a Product</a>
-        <a href="<?= BASE_URL ?>/login.php" class="btn btn-outline">Login</a>
-    </div>
-</section>
-
-<section class="stat-band">
-    <?php foreach ($stats as $label => $value): ?>
-        <div class="stat-tile">
-            <div class="stat-number"><?= $value ?></div>
-            <div class="stat-label"><?= e($label) ?></div>
+    <div class="hero-inner">
+        <div>
+            <span class="hero-eyebrow">Farm management &amp; traceability</span>
+            <h1><?= e($companyName) ?> runs the farm, and <em>proves</em> where it came from.</h1>
+            <p class="lede">One place for crop cycles, livestock, workers, finance, procurement, inventory and assets across every farm your organization runs — with a QR trail a buyer can follow back to the plot it grew on.</p>
+            <div class="hero-actions">
+                <a href="<?= BASE_URL ?>/signup.php" class="btn btn-on-dark">Start your farm account</a>
+                <a href="<?= BASE_URL ?>/trace.php" class="btn btn-ghost-on-dark">Track a product &rarr;</a>
+            </div>
         </div>
-    <?php endforeach; ?>
-</section>
-
-<section class="section">
-    <h2>What the platform covers</h2>
-    <div class="card-grid">
-        <div class="card"><h3>Farm Structure</h3><p>Farms, blocks and plots, organized per organization.</p></div>
-        <div class="card"><h3>Crop Cycles</h3><p>Planning through harvest and sale, with inputs, monitoring, and yield forecasts.</p></div>
-        <div class="card"><h3>Livestock</h3><p>Vaccinations, feedings, weights, treatments, breeding, and production records.</p></div>
-        <div class="card"><h3>Workers</h3><p>Attendance, task assignment, and payroll.</p></div>
-        <div class="card"><h3>Finance &amp; Procurement</h3><p>Income, expenses, suppliers, and purchase orders.</p></div>
-        <div class="card"><h3>Traceability</h3><p>Every crop cycle and animal gets a QR-code batch that buyers can scan to see its journey.</p></div>
+        <div class="hero-trail" data-reveal-trail>
+            <div class="hero-trail-label">Batch CYC-2C51 &middot; live example</div>
+            <?php $trailActive = 4; require __DIR__ . '/includes/trail_widget.php'; ?>
+        </div>
     </div>
 </section>
+
+<div class="ledger-strip">
+    <div class="ledger-strip-inner">
+        <?php foreach ($stats as $label => $value): ?>
+            <div class="ledger-item">
+                <div class="ledger-number tnum" data-count="<?= $value ?>">0</div>
+                <div class="ledger-label"><?= e($label) ?></div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<div class="site-main">
+    <section class="section reveal">
+        <div class="section-head">
+            <h2>Everything a farm office keeps track of</h2>
+            <p>Structured for one organization or fifty — each with its own farms, staff, and books, fully separated from the others.</p>
+        </div>
+        <div class="module-list">
+            <div class="module-featured">
+                <span class="module-tag">The signature feature</span>
+                <h3>Traceability, built in from day one</h3>
+                <p>Every crop cycle and every animal gets a trace batch automatically. Generate a QR code, log approvals and journey stages, and let anyone scan it to see exactly where a product came from — no account required.</p>
+            </div>
+            <div class="module-row">
+                <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M5 9v10h14V9"/><path d="M9 21V13h6v8"/></svg></div>
+                <div>
+                    <h3>Farm structure</h3>
+                    <p>Farms, blocks, and plots, organized per organization.</p>
+                </div>
+            </div>
+            <div class="module-row">
+                <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4.5 4-4.5 11 0 15 4.5-4 4.5-11 0-15z"/><path d="M12 18v3"/></svg></div>
+                <div>
+                    <h3>Crop cycles</h3>
+                    <p>Planning through harvest and sale, with inputs, monitoring, and yield forecasts.</p>
+                </div>
+            </div>
+            <div class="module-row">
+                <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="10" r="3"/><circle cx="17" cy="8" r="2.3"/><path d="M3 20c0-3 2.5-5 5-5s5 2 5 5"/><path d="M14 20c0-2.3 1.6-4 3.5-4s3.5 1.7 3.5 4"/></svg></div>
+                <div>
+                    <h3>Livestock</h3>
+                    <p>Vaccinations, feedings, weights, treatments, breeding, and production records.</p>
+                </div>
+            </div>
+            <div class="module-row">
+                <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3.5"/><path d="M5 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg></div>
+                <div>
+                    <h3>Workers</h3>
+                    <p>Attendance, task assignment, and payroll.</p>
+                </div>
+            </div>
+            <div class="module-row">
+                <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg></div>
+                <div>
+                    <h3>Finance &amp; procurement</h3>
+                    <p>Income, expenses, suppliers, and purchase orders, farm by farm.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 
 <?php require __DIR__ . '/includes/site_footer.php'; ?>

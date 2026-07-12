@@ -177,12 +177,26 @@ require __DIR__ . '/includes/header.php';
     <a class="btn btn-outline" href="<?= BASE_URL ?>/admin/reports.php?<?= http_build_query(array_merge($_GET, ['format' => 'print'])) ?>" target="_blank">Print / Save as PDF</a>
 </p>
 
-<table>
+<?php $barColumn = array_search('Yield/Hectare', $headers, true); ?>
+<table<?= $barColumn !== false ? ' data-mini-bar-group' : '' ?>>
     <thead><tr><?php foreach ($headers as $h): ?><th><?= e($h) ?></th><?php endforeach; ?></tr></thead>
     <tbody>
         <?php if (!$tableRows): ?><tr><td colspan="<?= count($headers) ?>">No data.</td></tr><?php endif; ?>
         <?php foreach ($tableRows as $row): ?>
-            <tr><?php foreach ($row as $cell): ?><td><?= e((string) $cell) ?></td><?php endforeach; ?></tr>
+            <tr>
+                <?php foreach ($row as $i => $cell): ?>
+                    <?php if ($i === $barColumn): ?>
+                        <td class="tnum">
+                            <div class="mini-bar-cell" data-mini-bar-value="<?= e((string) $cell) ?>">
+                                <div class="mini-bar-track"><div class="mini-bar-fill" style="width:0"></div></div>
+                                <span class="mini-bar-value"><?= e((string) $cell) ?></span>
+                            </div>
+                        </td>
+                    <?php else: ?>
+                        <td<?= is_numeric($cell) ? ' class="tnum"' : '' ?>><?= e((string) $cell) ?></td>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </tr>
         <?php endforeach; ?>
     </tbody>
 </table>

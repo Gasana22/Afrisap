@@ -175,7 +175,7 @@ require __DIR__ . '/includes/header.php';
                     <td><?= e($item['name']) ?></td>
                     <?php foreach ($farms as $f): ?>
                         <?php $qty = $stockByItemFarm[$item['id']][$f['id']] ?? 0; ?>
-                        <td<?= $item['reorder_level'] !== null && $qty < $item['reorder_level'] ? ' style="color:#a33; font-weight:bold;"' : '' ?>><?= e($qty) ?></td>
+                        <td<?= $item['reorder_level'] !== null && $qty < $item['reorder_level'] ? ' style="color:var(--warn); font-weight:bold;"' : '' ?>><?= e($qty) ?></td>
                     <?php endforeach; ?>
                     <td><?= e($item['reorder_level'] ?? '—') ?></td>
                 </tr>

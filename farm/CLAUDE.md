@@ -24,6 +24,16 @@ There are two separate login doors, matching two different audiences, both landi
 - No composer, no build step, no npm. Just PHP + MySQL, matching XAMPP defaults. The one exception: QR code images are rendered via a public QR image API (`api.qrserver.com`) called from an `<img src>` in the browser — no server-side dependency, no library.
 - Config lives in `includes/config.php` as plain `define()` constants (not `.env` — simpler for shared/local hosting where people are used to editing one config file directly).
 
+## Design system — "Ledger & Trail"
+
+The visual identity is deliberately not generic SaaS (no cream background, no default green-and-white-cards look): a soil-dark ink (`--ink`) crossed with a harvest-gold accent (`--gold`), a serif display face (Fraunces) for headings, Work Sans for body copy, and IBM Plex Mono for anything that's actually data — batch codes, tracking codes, table figures, stat numbers. The signature motif is the **provenance trail** (Planted → Growing → Harvested → Verified), since traceability is the product's real differentiator, not a generic hero-metric template. All of this lives in `assets/css/site.css` (public + auth pages) and `assets/css/admin.css` (admin panel), as CSS custom properties on `:root` — change the palette/type in one place, not per page. Both stylesheets `@import` the fonts from Google Fonts; if that's ever blocked (offline install, restrictive network), the `font-family` fallback stacks (`Georgia, serif` / `system-ui, sans-serif` / `ui-monospace, monospace`) keep the page readable, just less distinctive.
+
+- **`includes/trail_widget.php`**: renders the Planted/Growing/Harvested/Verified trail. Pass `$trailActive` (0-4) before requiring it — 0 for a decorative/inactive trail (auth pages), 4 for "fully verified" (homepage hero example). Reused at full size in the homepage hero and about page, and at a smaller size (`.trail-mini`) in the auth brand panel.
+- **`includes/auth_panel.php`**: the dark brand panel shown beside every auth form (`login.php`, `admin-login.php`, `signup.php`, `forgot-password.php`, `reset-password.php`, `verify-otp.php`). Set `$authHeadline` / `$authCopy` (raw HTML, not passed through `e()` — write it directly in the calling page) before requiring it. Hidden below 860px so it never competes with the form on a phone.
+- **`.status-pill`** (defined in both stylesheets): status text everywhere — trace batch status, approval status — gets a colored pill via `status-<value>` (e.g. `status-active`, `status-pending`, `status-recalled`), not plain text. The color buckets (verified/pending/closed/warn) are listed in the CSS; add a new bucket there if a new enum value needs one, don't invent an inline color.
+- **`.reveal`**: sections that should fade in on scroll (see `assets/js/site.js`'s IntersectionObserver). Respects `prefers-reduced-motion` — content is never gated behind the animation, it's just instant instead of eased when motion is reduced.
+- **Mini in-table bar charts** (`admin/reports.php`'s crop-yield report is the example): only ever used to compare values that share a real unit across rows of the *same* table — never two different measures on one scale, and never forced onto the dashboard stat tiles (those compare unrelated units — farms vs. crop cycles vs. workers — so they stay plain stat tiles, not a chart). Wire a new one by adding `data-mini-bar-group` to the `<table>` and `data-mini-bar-value="<raw number>"` to a `.mini-bar-cell` div per row; `assets/js/admin.js` scales all the bars in that group to the largest value present.
+
 ## Deployment path
 
 This whole folder is meant to sit at:
@@ -122,8 +132,13 @@ admin/
                                    operational data. This is what admins get instead of farms.php.
 
 assets/
-  css/site.css                Public site + auth pages (index, about, contact, trace, login, verify)
-  css/admin.css                Admin panel layout
+  css/site.css                Public site + auth pages design system: tokens, typography, all page components
+  css/admin.css                Admin panel design system, same identity dialed down for a tool that's scanned
+                                 not read (see "Design system" below)
+  js/site.js                   Mobile nav toggle, scroll-reveal, animated ledger-strip counters, provenance
+                                 trail fill-in, copy-to-clipboard on trace codes. Vanilla JS, no dependency.
+  js/admin.js                  Mobile sidebar toggle, dismissible/auto-fading flash alerts, mini in-table
+                                 bar charts (see reports.php below)
 
 database/
   migrations/                 20 numbered SQL files (000-019), each runs exactly once — none use IF NOT EXISTS
@@ -178,6 +193,8 @@ Then add a nav link for it in `admin/includes/header.php`.
 Everything in the original roadmap: migration runner + seed data, OTP delivery (dev-mode), farm/block/plot structure, crop cycle module (full lifecycle: inputs, nursery, field activities, monitoring, forecasts, harvests, sales), livestock module (vaccinations, feedings, weights, treatments, breeding, production, mortality, sales), workers module (attendance, tasks, payroll), finance, procurement (suppliers, POs, deliveries, payments), inventory (stock in/out/transfer with low-stock alerts), assets + maintenance, traceability (QR codes, documents, approvals, product journey, public verification page), notifications, media, and basic user management. Plus a separate public site (home, about, contact, product tracking) distinct from the admin panel, sharing only the database and CSS file, and two separate login portals (Admin Portal for platform staff, Farm Portal for tenant users) feeding the same panel.
 
 Also ported in from a reference MVC-style implementation of the same product, adapted to the flat-file/no-dependency conventions above: self-signup (`signup.php`), forgot/reset password (`forgot-password.php` / `reset-password.php`), audit logging (`audit_log()` + `admin/audit-log.php`), a roles/permissions editor (`admin/roles.php` / `admin/role-edit.php`), a reports module with CSV export and browser-print-to-PDF in place of a PDF library (`admin/reports.php`), and compliance reports for organic/GAP/export/food-safety/carbon (`admin/compliance.php`). QR codes still use the external image API rather than the reference implementation's self-hosted QR library, matching this project's no-composer-dependency stance.
+
+The public site, auth pages, and admin panel were redesigned from a generic green/white-card template into the "Ledger & Trail" identity described above, with vanilla JS added for a mobile nav/sidebar toggle, scroll-reveal, animated stat counters, dismissible flash alerts, and mini in-table bar charts — see "Design system" above and `assets/js/site.js` / `assets/js/admin.js`.
 
 All 20 migrations, the seed script, and every module above were exercised end-to-end against a real MySQL/MariaDB instance during development (login on both portals, wrong-portal rejection, MFA, farm→block→plot→crop cycle→harvest→sale, livestock, worker attendance, finance, procurement, inventory movements with low-stock notification, asset maintenance, trace QR generation + public lookup, permission enforcement, cross-tenant isolation across two seeded organizations, and the public site pages all verified working). The ported features were exercised the same way in a later round: signup → MFA → dashboard; forgot-password on a tenant account (reset link logged) vs a platform account (correctly no reset row created); full reset-password round trip including single-use token rejection on reuse; roles list + permission checkbox toggle/save/audit-log entry, with a hard platform-only check confirmed against a tenant account; all 4 reports in HTML/CSV/print across two organizations, including confirming CSV output is clean of PHP 8.4 deprecation-notice corruption; and all 5 compliance report types against both a crop-cycle batch and an animal batch, including a platform user viewing a tenant's report and a different tenant correctly getting 404 on it.
 

@@ -44,26 +44,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
-    <div class="auth-card">
-        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Admin Portal</h1>
-        <p class="muted">For Super Admins, Managers, and Accountants who keep the platform running.</p>
+    <?php $authHeadline = 'Keep the platform running.'; $authCopy = 'Oversight across every organization&#8217;s accounts, the shared role catalog, and the audit trail &mdash; never any farm&#8217;s operational data.'; require __DIR__ . '/includes/auth_panel.php'; ?>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
+            <h1>Admin Portal</h1>
+            <p class="muted">For Super Admins, Managers, and Accountants who keep the platform running.</p>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= e($error) ?></div>
-        <?php endif; ?>
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= e($error) ?></div>
+            <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/admin-login.php">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autofocus>
+            <form method="POST" action="<?= BASE_URL ?>/admin-login.php">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required autofocus>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
 
-            <button type="submit">Sign in</button>
-        </form>
+                <button type="submit" style="width:100%; justify-content:center;">Sign in</button>
+            </form>
 
-        <p class="portal-switch">Managing your own farm? <a href="<?= BASE_URL ?>/login.php">Sign in to the Farm Portal</a>.</p>
+            <p class="portal-switch">Managing your own farm? <a href="<?= BASE_URL ?>/login.php">Sign in to the Farm Portal</a>.</p>
+        </div>
     </div>
 </body>
 </html>

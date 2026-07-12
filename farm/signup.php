@@ -93,38 +93,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
-    <div class="auth-card" style="width:400px;">
-        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Create your farm account</h1>
-        <p class="muted">For farm owners setting up a new organization. Already have staff logging in for an existing farm? Ask your Farm Owner to invite you instead.</p>
+    <?php $authHeadline = 'Your organization, on its own ledger.'; $authCopy = 'Every organization&#8217;s farms, records, and finances stay fully separated from every other organization&#8217;s.'; require __DIR__ . '/includes/auth_panel.php'; ?>
+    <div class="auth-form-side">
+        <div class="auth-card" style="max-width:420px;">
+            <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
+            <h1>Create your farm account</h1>
+            <p class="muted">For farm owners setting up a new organization. Already have staff logging in for an existing farm? Ask your Farm Owner to invite you instead.</p>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= e($error) ?></div>
-        <?php endif; ?>
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= e($error) ?></div>
+            <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/signup.php">
-            <label for="organization_name">Farm / organization name</label>
-            <input type="text" id="organization_name" name="organization_name" value="<?= e($old['organization_name']) ?>" required autofocus>
+            <form method="POST" action="<?= BASE_URL ?>/signup.php">
+                <label for="organization_name">Farm / organization name</label>
+                <input type="text" id="organization_name" name="organization_name" value="<?= e($old['organization_name']) ?>" required autofocus>
 
-            <label for="name">Your name</label>
-            <input type="text" id="name" name="name" value="<?= e($old['name']) ?>" required>
+                <label for="name">Your name</label>
+                <input type="text" id="name" name="name" value="<?= e($old['name']) ?>" required>
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="<?= e($old['email']) ?>" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="<?= e($old['email']) ?>" required>
 
-            <label for="phone">Phone (optional)</label>
-            <input type="text" id="phone" name="phone" value="<?= e($old['phone']) ?>">
+                <label for="phone">Phone (optional)</label>
+                <input type="text" id="phone" name="phone" value="<?= e($old['phone']) ?>">
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" minlength="8" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" minlength="8" required>
 
-            <label for="password_confirm">Confirm password</label>
-            <input type="password" id="password_confirm" name="password_confirm" minlength="8" required>
+                <label for="password_confirm">Confirm password</label>
+                <input type="password" id="password_confirm" name="password_confirm" minlength="8" required>
 
-            <button type="submit">Create account</button>
-        </form>
+                <button type="submit" style="width:100%; justify-content:center;">Create account</button>
+            </form>
 
-        <p class="portal-switch">Already have an account? <a href="<?= BASE_URL ?>/login.php">Sign in</a>.</p>
+            <p class="portal-switch">Already have an account? <a href="<?= BASE_URL ?>/login.php">Sign in</a>.</p>
+        </div>
     </div>
 </body>
 </html>

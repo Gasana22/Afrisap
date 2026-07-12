@@ -179,7 +179,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Assign a task</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Assign a task</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/worker-view.php?id=<?= $workerId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_task">
             <label>Title</label>
@@ -229,7 +229,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <details>
-        <summary style="cursor:pointer; color:#2f5233;">Create a payroll draft</summary>
+        <summary style="cursor:pointer; color:var(--gold-text);">Create a payroll draft</summary>
         <form method="POST" action="<?= BASE_URL ?>/admin/worker-view.php?id=<?= $workerId ?>" style="margin-top:0.75rem; max-width:420px;">
             <input type="hidden" name="action" value="add_payroll">
             <label>Period start</label>
