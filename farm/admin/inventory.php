@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 function adjust_stock(int $itemId, int $farmId, float $delta): void
 {
@@ -25,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'add_item') {
-        $organizationId = is_platform_user() ? (int) ($_POST['organization_id'] ?? 0) : current_organization_id();
+        $organizationId = current_organization_id();
         $name = trim($_POST['name'] ?? '');
 
         if (!$organizationId || $name === '') {
@@ -110,15 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if (is_platform_user()) {
-    $items = db()->query('SELECT i.*, o.name AS organization_name FROM inventory_items i LEFT JOIN organizations o ON o.id = i.organization_id ORDER BY i.name')->fetchAll();
-    $organizations = db()->query('SELECT id, name FROM organizations ORDER BY name')->fetchAll();
-} else {
-    $stmt = db()->prepare('SELECT * FROM inventory_items WHERE organization_id = :org ORDER BY name');
-    $stmt->execute(['org' => current_organization_id()]);
-    $items = $stmt->fetchAll();
-    $organizations = [];
-}
+$stmt = db()->prepare('SELECT * FROM inventory_items WHERE organization_id = :org ORDER BY name');
+$stmt->execute(['org' => current_organization_id()]);
+$items = $stmt->fetchAll();
 
 $farms = [];
 $stockByItemFarm = [];
@@ -148,13 +143,6 @@ require __DIR__ . '/includes/header.php';
     <h2 style="margin-top:0; font-size:1rem;">Add an item</h2>
     <form method="POST" action="<?= BASE_URL ?>/admin/inventory.php">
         <input type="hidden" name="action" value="add_item">
-        <?php if (is_platform_user()): ?>
-            <label>Organization</label>
-            <select name="organization_id" required style="width:100%; padding:0.5rem; margin-bottom:0.75rem;">
-                <option value="">Select…</option>
-                <?php foreach ($organizations as $org): ?><option value="<?= (int) $org['id'] ?>"><?= e($org['name']) ?></option><?php endforeach; ?>
-            </select>
-        <?php endif; ?>
         <label>Name</label>
         <input type="text" name="name" required style="width:100%; padding:0.5rem; margin-bottom:0.75rem;">
         <label>Category</label>

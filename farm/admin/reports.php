@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 // Pure reads, tenant-scoped via visible_farm_ids() -- no permission gate
 // needed beyond being logged in, same as the rest of the read side of the

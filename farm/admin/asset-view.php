@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $assetId = (int) ($_GET['id'] ?? 0);
 
@@ -9,7 +10,7 @@ $stmt = db()->prepare(
 $stmt->execute(['id' => $assetId]);
 $asset = $stmt->fetch();
 
-if (!$asset || (!is_platform_user() && (int) $asset['organization_id'] !== (int) current_organization_id())) {
+if (!$asset || (int) $asset['organization_id'] !== (int) current_organization_id()) {
     http_response_code(404);
     exit('404 — asset not found.');
 }

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $poId = (int) ($_GET['id'] ?? 0);
 
@@ -11,7 +12,7 @@ $stmt = db()->prepare(
 $stmt->execute(['id' => $poId]);
 $po = $stmt->fetch();
 
-if (!$po || (!is_platform_user() && (int) $po['organization_id'] !== (int) current_organization_id())) {
+if (!$po || (int) $po['organization_id'] !== (int) current_organization_id()) {
     http_response_code(404);
     exit('404 — purchase order not found.');
 }

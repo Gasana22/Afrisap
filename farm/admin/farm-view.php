@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $farmId = (int) ($_GET['id'] ?? 0);
 $farm = farm_or_404($farmId);

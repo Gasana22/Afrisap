@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $cropCycleId = (int) ($_GET['id'] ?? 0);
 
@@ -17,7 +18,7 @@ $stmt = db()->prepare(
 $stmt->execute(['id' => $cropCycleId]);
 $cycle = $stmt->fetch();
 
-if (!$cycle || (!is_platform_user() && (int) $cycle['organization_id'] !== (int) current_organization_id())) {
+if (!$cycle || (int) $cycle['organization_id'] !== (int) current_organization_id()) {
     http_response_code(404);
     exit('404 — crop cycle not found.');
 }

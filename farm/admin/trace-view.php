@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $batchId = (int) ($_GET['id'] ?? 0);
 
@@ -19,7 +20,7 @@ $stmt = db()->prepare(
 $stmt->execute(['id' => $batchId]);
 $batch = $stmt->fetch();
 
-if (!$batch || (!is_platform_user() && (int) $batch['organization_id'] !== (int) current_organization_id())) {
+if (!$batch || (int) $batch['organization_id'] !== (int) current_organization_id()) {
     http_response_code(404);
     exit('404 — trace batch not found.');
 }

@@ -50,6 +50,23 @@ function require_permission(string $code): void
 }
 
 /**
+ * Stop the request with a 403 if the current user is platform staff (Super
+ * Admin, Manager, Accountant). Admin Portal staff keep the platform running
+ * -- they manage organizations' accounts and the shared role/permission
+ * catalog -- but they don't take part in any single organization's day-to-day
+ * farm operations. Require this at the top of every farm-operational module
+ * (farms, crops, livestock, workers, finance, procurement, inventory,
+ * assets, traceability, media, reports, compliance).
+ */
+function require_tenant_user(): void
+{
+    if (is_platform_user()) {
+        http_response_code(403);
+        exit('403 Forbidden — Admin Portal staff manage the platform, not farm operations. See Organizations for a read-only overview.');
+    }
+}
+
+/**
  * Insert a notification for a user. Used for things like task assignment,
  * low stock, or a newly generated trace batch.
  */
@@ -151,18 +168,14 @@ function audit_log(string $action, string $table, ?string $recordId = null, ?arr
 }
 
 /**
- * Fetch a farm the current user is allowed to see, or exit with 404.
- * Platform users can see any farm; tenant users only their own organization's.
+ * Fetch a farm in the current tenant's organization, or exit with 404.
+ * Only ever called from farm-operational pages, which call
+ * require_tenant_user() first -- platform staff never reach this.
  */
 function farm_or_404(int $farmId): array
 {
-    if (is_platform_user()) {
-        $stmt = db()->prepare('SELECT * FROM farms WHERE id = :id');
-        $stmt->execute(['id' => $farmId]);
-    } else {
-        $stmt = db()->prepare('SELECT * FROM farms WHERE id = :id AND organization_id = :org_id');
-        $stmt->execute(['id' => $farmId, 'org_id' => current_organization_id()]);
-    }
+    $stmt = db()->prepare('SELECT * FROM farms WHERE id = :id AND organization_id = :org_id');
+    $stmt->execute(['id' => $farmId, 'org_id' => current_organization_id()]);
     $farm = $stmt->fetch();
     if (!$farm) {
         http_response_code(404);
@@ -172,16 +185,15 @@ function farm_or_404(int $farmId): array
 }
 
 /**
- * Farm ids visible to the current user, for IN (...) scoping on pages that
- * span all of a tenant's farms at once (livestock, workers, inventory, ...).
- * Returns [] for a tenant user with no farms yet -- callers should treat an
- * empty array as "show nothing", not "show everything".
+ * Farm ids belonging to the current tenant, for IN (...) scoping on pages
+ * that span all of a tenant's farms at once (livestock, workers, inventory,
+ * ...). Returns [] for a tenant user with no farms yet -- callers should
+ * treat an empty array as "show nothing", not "show everything". Only ever
+ * called from farm-operational pages, which call require_tenant_user()
+ * first -- platform staff never reach this.
  */
 function visible_farm_ids(): array
 {
-    if (is_platform_user()) {
-        return array_map('intval', db()->query('SELECT id FROM farms')->fetchAll(PDO::FETCH_COLUMN));
-    }
     $stmt = db()->prepare('SELECT id FROM farms WHERE organization_id = :org_id');
     $stmt->execute(['org_id' => current_organization_id()]);
     return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));

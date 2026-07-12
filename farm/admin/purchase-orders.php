@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $farmIds = visible_farm_ids();
 $error = flash('error');
@@ -50,13 +51,9 @@ if ($farmIds) {
     $farms = $farmStmt->fetchAll();
 }
 
-if (is_platform_user()) {
-    $suppliers = db()->query('SELECT id, name FROM suppliers ORDER BY name')->fetchAll();
-} else {
-    $supplierStmt = db()->prepare('SELECT id, name FROM suppliers WHERE organization_id = :org ORDER BY name');
-    $supplierStmt->execute(['org' => current_organization_id()]);
-    $suppliers = $supplierStmt->fetchAll();
-}
+$supplierStmt = db()->prepare('SELECT id, name FROM suppliers WHERE organization_id = :org ORDER BY name');
+$supplierStmt->execute(['org' => current_organization_id()]);
+$suppliers = $supplierStmt->fetchAll();
 
 $statusLabels = [
     'draft' => 'Draft', 'ordered' => 'Ordered', 'partially_received' => 'Partially received',

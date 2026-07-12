@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 // Print-friendly full-page compliance report -- same tenant-ownership check
 // as admin/trace-view.php, since this exposes the same underlying batch
@@ -30,7 +31,7 @@ $stmt = db()->prepare(
 $stmt->execute(['id' => $batchId]);
 $batch = $stmt->fetch();
 
-if (!$batch || (!is_platform_user() && (int) $batch['organization_id'] !== (int) current_organization_id())) {
+if (!$batch || (int) $batch['organization_id'] !== (int) current_organization_id()) {
     http_response_code(404);
     exit('404 — trace batch not found.');
 }

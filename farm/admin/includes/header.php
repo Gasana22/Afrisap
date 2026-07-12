@@ -26,22 +26,27 @@ $unreadCount = (int) $unreadStmt->fetchColumn();
         <div class="portal-badge"><?= is_platform_user() ? 'Admin Portal' : 'Farm Portal' ?></div>
         <nav>
             <a href="<?= BASE_URL ?>/admin/dashboard.php" class="<?= $activePage === 'dashboard' ? 'active' : '' ?>">Dashboard</a>
-            <a href="<?= BASE_URL ?>/admin/farms.php" class="<?= $activePage === 'farms' ? 'active' : '' ?>">Farms</a>
-            <a href="<?= BASE_URL ?>/admin/crops.php" class="<?= $activePage === 'crops' ? 'active' : '' ?>">Crops</a>
+            <?php if (!is_platform_user()): ?>
+                <a href="<?= BASE_URL ?>/admin/farms.php" class="<?= $activePage === 'farms' ? 'active' : '' ?>">Farms</a>
+                <a href="<?= BASE_URL ?>/admin/crops.php" class="<?= $activePage === 'crops' ? 'active' : '' ?>">Crops</a>
+            <?php endif; ?>
             <a href="<?= BASE_URL ?>/admin/crop-types.php" class="<?= $activePage === 'crop-types' ? 'active' : '' ?>">Crop Types</a>
             <a href="<?= BASE_URL ?>/admin/seasons.php" class="<?= $activePage === 'seasons' ? 'active' : '' ?>">Seasons</a>
-            <a href="<?= BASE_URL ?>/admin/livestock.php" class="<?= $activePage === 'livestock' ? 'active' : '' ?>">Livestock</a>
-            <a href="<?= BASE_URL ?>/admin/workers.php" class="<?= $activePage === 'workers' ? 'active' : '' ?>">Workers</a>
-            <a href="<?= BASE_URL ?>/admin/finance.php" class="<?= $activePage === 'finance' ? 'active' : '' ?>">Finance</a>
-            <a href="<?= BASE_URL ?>/admin/suppliers.php" class="<?= $activePage === 'suppliers' ? 'active' : '' ?>">Suppliers</a>
-            <a href="<?= BASE_URL ?>/admin/purchase-orders.php" class="<?= $activePage === 'purchase-orders' ? 'active' : '' ?>">Purchase Orders</a>
-            <a href="<?= BASE_URL ?>/admin/inventory.php" class="<?= $activePage === 'inventory' ? 'active' : '' ?>">Inventory</a>
-            <a href="<?= BASE_URL ?>/admin/assets.php" class="<?= $activePage === 'assets' ? 'active' : '' ?>">Assets</a>
-            <a href="<?= BASE_URL ?>/admin/traceability.php" class="<?= $activePage === 'traceability' ? 'active' : '' ?>">Traceability</a>
-            <a href="<?= BASE_URL ?>/admin/media.php" class="<?= $activePage === 'media' ? 'active' : '' ?>">Media</a>
-            <a href="<?= BASE_URL ?>/admin/reports.php" class="<?= $activePage === 'reports' ? 'active' : '' ?>">Reports</a>
+            <?php if (!is_platform_user()): ?>
+                <a href="<?= BASE_URL ?>/admin/livestock.php" class="<?= $activePage === 'livestock' ? 'active' : '' ?>">Livestock</a>
+                <a href="<?= BASE_URL ?>/admin/workers.php" class="<?= $activePage === 'workers' ? 'active' : '' ?>">Workers</a>
+                <a href="<?= BASE_URL ?>/admin/finance.php" class="<?= $activePage === 'finance' ? 'active' : '' ?>">Finance</a>
+                <a href="<?= BASE_URL ?>/admin/suppliers.php" class="<?= $activePage === 'suppliers' ? 'active' : '' ?>">Suppliers</a>
+                <a href="<?= BASE_URL ?>/admin/purchase-orders.php" class="<?= $activePage === 'purchase-orders' ? 'active' : '' ?>">Purchase Orders</a>
+                <a href="<?= BASE_URL ?>/admin/inventory.php" class="<?= $activePage === 'inventory' ? 'active' : '' ?>">Inventory</a>
+                <a href="<?= BASE_URL ?>/admin/assets.php" class="<?= $activePage === 'assets' ? 'active' : '' ?>">Assets</a>
+                <a href="<?= BASE_URL ?>/admin/traceability.php" class="<?= $activePage === 'traceability' ? 'active' : '' ?>">Traceability</a>
+                <a href="<?= BASE_URL ?>/admin/media.php" class="<?= $activePage === 'media' ? 'active' : '' ?>">Media</a>
+                <a href="<?= BASE_URL ?>/admin/reports.php" class="<?= $activePage === 'reports' ? 'active' : '' ?>">Reports</a>
+            <?php endif; ?>
             <a href="<?= BASE_URL ?>/admin/users.php" class="<?= $activePage === 'users' ? 'active' : '' ?>">Users</a>
             <?php if (is_platform_user()): ?>
+                <a href="<?= BASE_URL ?>/admin/organizations.php" class="<?= $activePage === 'organizations' ? 'active' : '' ?>">Organizations</a>
                 <a href="<?= BASE_URL ?>/admin/roles.php" class="<?= $activePage === 'roles' ? 'active' : '' ?>">Roles</a>
                 <a href="<?= BASE_URL ?>/admin/audit-log.php" class="<?= $activePage === 'audit-log' ? 'active' : '' ?>">Audit Log</a>
             <?php endif; ?>

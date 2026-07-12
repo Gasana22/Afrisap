@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $error = flash('error');
 $success = flash('success');
@@ -12,12 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $district = trim($_POST['district'] ?? '');
     $village = trim($_POST['village'] ?? '');
     $sizeHectares = ($_POST['size_hectares'] ?? '') !== '' ? (float) $_POST['size_hectares'] : null;
-
-    // Tenant users can only ever create farms in their own organization.
-    // Platform staff must pick one explicitly (organizations don't own farms by default).
-    $organizationId = is_platform_user()
-        ? (int) ($_POST['organization_id'] ?? 0)
-        : current_organization_id();
+    $organizationId = current_organization_id();
 
     if ($name === '' || !$organizationId) {
         $error = 'Farm name and organization are required.';
@@ -47,28 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- Fetch farms list, scoped by tenant ---
-if (is_platform_user()) {
-    $farms = db()->query(
-        'SELECT f.*, o.name AS organization_name FROM farms f
-         LEFT JOIN organizations o ON o.id = f.organization_id
-         ORDER BY f.created_at DESC'
-    )->fetchAll();
-} else {
-    $stmt = db()->prepare(
-        'SELECT f.*, o.name AS organization_name FROM farms f
-         LEFT JOIN organizations o ON o.id = f.organization_id
-         WHERE f.organization_id = :org_id
-         ORDER BY f.created_at DESC'
-    );
-    $stmt->execute(['org_id' => current_organization_id()]);
-    $farms = $stmt->fetchAll();
-}
-
-// Platform users need an organization picker for the add form.
-$organizations = is_platform_user()
-    ? db()->query('SELECT id, name FROM organizations ORDER BY name')->fetchAll()
-    : [];
+$stmt = db()->prepare(
+    'SELECT f.*, o.name AS organization_name FROM farms f
+     LEFT JOIN organizations o ON o.id = f.organization_id
+     WHERE f.organization_id = :org_id
+     ORDER BY f.created_at DESC'
+);
+$stmt->execute(['org_id' => current_organization_id()]);
+$farms = $stmt->fetchAll();
 
 $pageTitle = 'Farms';
 $activePage = 'farms';
@@ -90,16 +72,6 @@ require __DIR__ . '/includes/header.php';
         <label for="name">Name</label>
         <input type="text" id="name" name="name" required style="width:100%; padding:0.5rem; margin-bottom:0.75rem;">
 
-        <?php if (is_platform_user()): ?>
-            <label for="organization_id">Organization</label>
-            <select id="organization_id" name="organization_id" required style="width:100%; padding:0.5rem; margin-bottom:0.75rem;">
-                <option value="">Select…</option>
-                <?php foreach ($organizations as $org): ?>
-                    <option value="<?= (int) $org['id'] ?>"><?= e($org['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        <?php endif; ?>
-
         <label for="district">District</label>
         <input type="text" id="district" name="district" style="width:100%; padding:0.5rem; margin-bottom:0.75rem;">
 
@@ -118,7 +90,6 @@ require __DIR__ . '/includes/header.php';
         <tr>
             <th>Code</th>
             <th>Name</th>
-            <?php if (is_platform_user()): ?><th>Organization</th><?php endif; ?>
             <th>District</th>
             <th>Size (ha)</th>
             <th>Status</th>
@@ -127,13 +98,12 @@ require __DIR__ . '/includes/header.php';
     </thead>
     <tbody>
         <?php if (!$farms): ?>
-            <tr><td colspan="7">No farms yet.</td></tr>
+            <tr><td colspan="6">No farms yet.</td></tr>
         <?php endif; ?>
         <?php foreach ($farms as $farm): ?>
             <tr>
                 <td><?= e($farm['code']) ?></td>
                 <td><?= e($farm['name']) ?></td>
-                <?php if (is_platform_user()): ?><td><?= e($farm['organization_name']) ?></td><?php endif; ?>
                 <td><?= e($farm['district']) ?></td>
                 <td><?= $farm['size_hectares'] !== null ? e((string) $farm['size_hectares']) : '—' ?></td>
                 <td><?= e($farm['status']) ?></td>

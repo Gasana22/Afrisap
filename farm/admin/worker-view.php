@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth-check.php';
+require_tenant_user();
 
 $workerId = (int) ($_GET['id'] ?? 0);
 
@@ -9,7 +10,7 @@ $stmt = db()->prepare(
 $stmt->execute(['id' => $workerId]);
 $worker = $stmt->fetch();
 
-if (!$worker || (!is_platform_user() && (int) $worker['organization_id'] !== (int) current_organization_id())) {
+if (!$worker || (int) $worker['organization_id'] !== (int) current_organization_id()) {
     http_response_code(404);
     exit('404 — worker not found.');
 }
