@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $farmId = (int) ($_POST['farm_id'] ?? 0);
     $supplierId = (int) ($_POST['supplier_id'] ?? 0);
-    $orderDate = $_POST['order_date'] ?: date('Y-m-d');
-    $expectedDate = $_POST['expected_date'] ?: null;
+    $orderDate = ($_POST['order_date'] ?? '') ?: date('Y-m-d');
+    $expectedDate = ($_POST['expected_date'] ?? '') ?: null;
 
     if (!in_array($farmId, $farmIds, true) || !$supplierId) {
         $error = 'A valid farm and supplier are required.';

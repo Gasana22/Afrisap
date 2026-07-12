@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              VALUES (:po, :date, :received_by, :notes)'
         )->execute([
             'po' => $poId,
-            'date' => $_POST['delivery_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['delivery_date'] ?? '') ?: date('Y-m-d'),
             'received_by' => trim($_POST['received_by'] ?? '') ?: null,
             'notes' => trim($_POST['condition_notes'] ?? '') ?: null,
         ]);
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'po' => $poId,
             'amount' => (float) ($_POST['amount'] ?? 0),
-            'date' => $_POST['payment_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['payment_date'] ?? '') ?: date('Y-m-d'),
             'method' => $_POST['method'] ?? 'cash',
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);

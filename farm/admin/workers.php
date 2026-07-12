@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
     $roleTitle = trim($_POST['role_title'] ?? '');
-    $hireDate = $_POST['hire_date'] ?: null;
-    $payRate = $_POST['pay_rate'] !== '' ? (float) $_POST['pay_rate'] : null;
+    $hireDate = ($_POST['hire_date'] ?? '') ?: null;
+    $payRate = ($_POST['pay_rate'] ?? '') !== '' ? (float) $_POST['pay_rate'] : null;
     $payRateType = $_POST['pay_rate_type'] ?? 'daily';
 
     if (!in_array($farmId, $farmIds, true) || $name === '') {

@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'type' => $_POST['type'] ?? 'equipment',
             'name' => $name,
             'identifier' => trim($_POST['identifier'] ?? '') ?: null,
-            'purchase_date' => $_POST['purchase_date'] ?: null,
-            'value' => $_POST['purchase_value'] !== '' ? (float) $_POST['purchase_value'] : null,
+            'purchase_date' => ($_POST['purchase_date'] ?? '') ?: null,
+            'value' => ($_POST['purchase_value'] ?? '') !== '' ? (float) $_POST['purchase_value'] : null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Asset added.');

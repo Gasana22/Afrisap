@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $farmId = (int) ($_POST['farm_id'] ?? 0);
     $description = trim($_POST['description'] ?? '');
     $amount = (float) ($_POST['amount'] ?? 0);
-    $date = $_POST['record_date'] ?: date('Y-m-d');
+    $date = ($_POST['record_date'] ?? '') ?: date('Y-m-d');
     $notes = trim($_POST['notes'] ?? '') ?: null;
 
     if (!in_array($farmId, $farmIds, true) || $description === '' || $amount <= 0) {

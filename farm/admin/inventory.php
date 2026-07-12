@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'name' => $name,
                 'category' => $_POST['category'] ?? 'other',
                 'unit' => trim($_POST['unit'] ?? '') ?: null,
-                'reorder' => $_POST['reorder_level'] !== '' ? (float) $_POST['reorder_level'] : null,
+                'reorder' => ($_POST['reorder_level'] ?? '') !== '' ? (float) $_POST['reorder_level'] : null,
             ]);
             flash('success', 'Item added.');
             redirect('/admin/inventory.php');
@@ -51,10 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $farmId = (int) ($_POST['farm_id'] ?? 0);
         $type = $_POST['type'] ?? '';
         $quantity = (float) ($_POST['quantity'] ?? 0);
-        $relatedFarmId = $_POST['related_farm_id'] !== '' ? (int) $_POST['related_farm_id'] : null;
+        $relatedFarmId = ($_POST['related_farm_id'] ?? '') !== '' ? (int) $_POST['related_farm_id'] : null;
         $reference = trim($_POST['reference'] ?? '') ?: null;
         $notes = trim($_POST['notes'] ?? '') ?: null;
-        $movementDate = $_POST['movement_date'] ?: date('Y-m-d');
+        $movementDate = ($_POST['movement_date'] ?? '') ?: date('Y-m-d');
 
         if (!in_array($farmId, $farmIds, true) || $quantity <= 0 || !in_array($type, ['in', 'out', 'transfer'], true)) {
             $error = 'A valid farm, quantity, and movement type are required.';

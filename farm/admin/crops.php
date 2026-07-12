@@ -10,10 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $plotId = (int) ($_POST['plot_id'] ?? 0);
     $cropTypeId = (int) ($_POST['crop_type_id'] ?? 0);
-    $seasonId = $_POST['season_id'] !== '' ? (int) $_POST['season_id'] : null;
-    $budget = $_POST['budget'] !== '' ? (float) $_POST['budget'] : null;
-    $expectedYield = $_POST['expected_yield'] !== '' ? (float) $_POST['expected_yield'] : null;
-    $startDate = $_POST['start_date'] ?: null;
+    $seasonId = ($_POST['season_id'] ?? '') !== '' ? (int) $_POST['season_id'] : null;
+    $budget = ($_POST['budget'] ?? '') !== '' ? (float) $_POST['budget'] : null;
+    $expectedYield = ($_POST['expected_yield'] ?? '') !== '' ? (float) $_POST['expected_yield'] : null;
+    $startDate = ($_POST['start_date'] ?? '') ?: null;
 
     // Confirm the plot belongs to a farm this user can see.
     $plotCheck = null;

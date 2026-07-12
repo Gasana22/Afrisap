@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'a' => $animalId,
             'name' => trim($_POST['vaccine_name'] ?? ''),
-            'date' => $_POST['date_administered'] ?: date('Y-m-d'),
-            'next' => $_POST['next_due_date'] ?: null,
+            'date' => ($_POST['date_administered'] ?? '') ?: date('Y-m-d'),
+            'next' => ($_POST['next_due_date'] ?? '') ?: null,
             'by' => trim($_POST['administered_by'] ?? '') ?: null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
@@ -44,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'a' => $animalId,
             'type' => trim($_POST['feed_type'] ?? ''),
-            'qty' => $_POST['quantity'] !== '' ? (float) $_POST['quantity'] : null,
+            'qty' => ($_POST['quantity'] ?? '') !== '' ? (float) $_POST['quantity'] : null,
             'unit' => trim($_POST['unit'] ?? '') ?: null,
-            'date' => $_POST['feeding_date'] ?: date('Y-m-d'),
-            'cost' => $_POST['cost'] !== '' ? (float) $_POST['cost'] : null,
+            'date' => ($_POST['feeding_date'] ?? '') ?: date('Y-m-d'),
+            'cost' => ($_POST['cost'] ?? '') !== '' ? (float) $_POST['cost'] : null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Feeding recorded.');
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'a' => $animalId,
             'weight' => (float) ($_POST['weight_kg'] ?? 0),
-            'date' => $_POST['recorded_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['recorded_date'] ?? '') ?: date('Y-m-d'),
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Weight recorded.');
@@ -75,9 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'a' => $animalId,
             'condition' => trim($_POST['condition_name'] ?? ''),
             'treatment' => trim($_POST['treatment'] ?? ''),
-            'date' => $_POST['treatment_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['treatment_date'] ?? '') ?: date('Y-m-d'),
             'by' => trim($_POST['administered_by'] ?? '') ?: null,
-            'cost' => $_POST['cost'] !== '' ? (float) $_POST['cost'] : null,
+            'cost' => ($_POST['cost'] ?? '') !== '' ? (float) $_POST['cost'] : null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Treatment recorded.');
@@ -91,10 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'a' => $animalId,
             'mate' => trim($_POST['mate_description'] ?? '') ?: null,
-            'date' => $_POST['breeding_date'] ?: date('Y-m-d'),
-            'due' => $_POST['expected_due_date'] ?: null,
+            'date' => ($_POST['breeding_date'] ?? '') ?: date('Y-m-d'),
+            'due' => ($_POST['expected_due_date'] ?? '') ?: null,
             'outcome' => $_POST['outcome'] ?? 'pending',
-            'offspring' => $_POST['offspring_count'] !== '' ? (int) $_POST['offspring_count'] : null,
+            'offspring' => ($_POST['offspring_count'] ?? '') !== '' ? (int) $_POST['offspring_count'] : null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Breeding record added.');
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'type' => trim($_POST['production_type'] ?? ''),
             'qty' => (float) ($_POST['quantity'] ?? 0),
             'unit' => trim($_POST['unit'] ?? '') ?: null,
-            'date' => $_POST['production_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['production_date'] ?? '') ?: date('Y-m-d'),
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Production recorded.');
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         db()->prepare('INSERT INTO animal_mortality (animal_id, death_date, cause, notes) VALUES (:a, :date, :cause, :notes)')
             ->execute([
                 'a' => $animalId,
-                'date' => $_POST['death_date'] ?: date('Y-m-d'),
+                'date' => ($_POST['death_date'] ?? '') ?: date('Y-m-d'),
                 'cause' => trim($_POST['cause'] ?? '') ?: null,
                 'notes' => trim($_POST['notes'] ?? '') ?: null,
             ]);
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'a' => $animalId,
                 'buyer' => trim($_POST['buyer_name'] ?? ''),
                 'price' => (float) ($_POST['sale_price'] ?? 0),
-                'date' => $_POST['sale_date'] ?: date('Y-m-d'),
+                'date' => ($_POST['sale_date'] ?? '') ?: date('Y-m-d'),
                 'notes' => trim($_POST['notes'] ?? '') ?: null,
             ]);
         db()->prepare('UPDATE animals SET status = "sold" WHERE id = :id')->execute(['id' => $animalId]);

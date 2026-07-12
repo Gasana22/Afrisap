@@ -27,10 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              VALUES (:asset, :date, :description, :cost, :next_due, :performed_by)'
         )->execute([
             'asset' => $assetId,
-            'date' => $_POST['maintenance_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['maintenance_date'] ?? '') ?: date('Y-m-d'),
             'description' => trim($_POST['description'] ?? ''),
-            'cost' => $_POST['cost'] !== '' ? (float) $_POST['cost'] : null,
-            'next_due' => $_POST['next_due_date'] ?: null,
+            'cost' => ($_POST['cost'] ?? '') !== '' ? (float) $_POST['cost'] : null,
+            'next_due' => ($_POST['next_due_date'] ?? '') ?: null,
             'performed_by' => trim($_POST['performed_by'] ?? '') ?: null,
         ]);
         flash('success', 'Maintenance recorded.');

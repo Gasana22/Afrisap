@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'add_plot') {
         $blockId = (int) ($_POST['block_id'] ?? 0);
         $plotCode = trim($_POST['plot_code'] ?? '');
-        $sizeHectares = $_POST['size_hectares'] !== '' ? (float) $_POST['size_hectares'] : null;
-        $gpsLat = $_POST['gps_lat'] !== '' ? (float) $_POST['gps_lat'] : null;
-        $gpsLng = $_POST['gps_lng'] !== '' ? (float) $_POST['gps_lng'] : null;
+        $sizeHectares = ($_POST['size_hectares'] ?? '') !== '' ? (float) $_POST['size_hectares'] : null;
+        $gpsLat = ($_POST['gps_lat'] ?? '') !== '' ? (float) $_POST['gps_lat'] : null;
+        $gpsLng = ($_POST['gps_lng'] ?? '') !== '' ? (float) $_POST['gps_lng'] : null;
         $cropType = trim($_POST['current_crop_type'] ?? '');
 
         // Confirm the block actually belongs to this (already tenant-checked) farm.

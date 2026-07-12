@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $district = trim($_POST['district'] ?? '');
     $village = trim($_POST['village'] ?? '');
-    $sizeHectares = $_POST['size_hectares'] !== '' ? (float) $_POST['size_hectares'] : null;
+    $sizeHectares = ($_POST['size_hectares'] ?? '') !== '' ? (float) $_POST['size_hectares'] : null;
 
     // Tenant users can only ever create farms in their own organization.
     // Platform staff must pick one explicitly (organizations don't own farms by default).

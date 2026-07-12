@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_permission('media.manage');
 
     $organizationId = is_platform_user() ? (int) ($_POST['organization_id'] ?? 0) : current_organization_id();
-    $farmId = $_POST['farm_id'] !== '' ? (int) $_POST['farm_id'] : null;
+    $farmId = ($_POST['farm_id'] ?? '') !== '' ? (int) $_POST['farm_id'] : null;
     $title = trim($_POST['title'] ?? '');
     $filePath = trim($_POST['file_path'] ?? '');
 

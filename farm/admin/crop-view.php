@@ -52,11 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cc' => $cropCycleId,
             'type' => $_POST['input_type'] ?? 'seed',
             'supplier' => trim($_POST['supplier_name'] ?? '') ?: null,
-            'qty' => $_POST['quantity'] !== '' ? (float) $_POST['quantity'] : null,
+            'qty' => ($_POST['quantity'] ?? '') !== '' ? (float) $_POST['quantity'] : null,
             'unit' => trim($_POST['unit'] ?? '') ?: null,
-            'cost' => $_POST['cost'] !== '' ? (float) $_POST['cost'] : null,
-            'purchase' => $_POST['purchase_date'] ?: null,
-            'expiry' => $_POST['expiry_date'] ?: null,
+            'cost' => ($_POST['cost'] ?? '') !== '' ? (float) $_POST['cost'] : null,
+            'purchase' => ($_POST['purchase_date'] ?? '') ?: null,
+            'expiry' => ($_POST['expiry_date'] ?? '') ?: null,
         ]);
         flash('success', 'Input recorded.');
         redirect('/admin/crop-view.php?id=' . $cropCycleId);
@@ -68,10 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              VALUES (:cc, :date, :germ, :treatment, :survival, :notes)'
         )->execute([
             'cc' => $cropCycleId,
-            'date' => $_POST['record_date'] ?: date('Y-m-d'),
-            'germ' => $_POST['germination_rate'] !== '' ? (float) $_POST['germination_rate'] : null,
+            'date' => ($_POST['record_date'] ?? '') ?: date('Y-m-d'),
+            'germ' => ($_POST['germination_rate'] ?? '') !== '' ? (float) $_POST['germination_rate'] : null,
             'treatment' => trim($_POST['treatment'] ?? '') ?: null,
-            'survival' => $_POST['survival_rate'] !== '' ? (float) $_POST['survival_rate'] : null,
+            'survival' => ($_POST['survival_rate'] ?? '') !== '' ? (float) $_POST['survival_rate'] : null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
         flash('success', 'Nursery record added.');
@@ -85,11 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'cc' => $cropCycleId,
             'type' => $_POST['activity_type'] ?? 'other',
-            'date' => $_POST['activity_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['activity_date'] ?? '') ?: date('Y-m-d'),
             'worker' => trim($_POST['worker_name'] ?? '') ?: null,
-            'lat' => $_POST['gps_lat'] !== '' ? (float) $_POST['gps_lat'] : null,
-            'lng' => $_POST['gps_lng'] !== '' ? (float) $_POST['gps_lng'] : null,
-            'cost' => $_POST['cost'] !== '' ? (float) $_POST['cost'] : null,
+            'lat' => ($_POST['gps_lat'] ?? '') !== '' ? (float) $_POST['gps_lat'] : null,
+            'lng' => ($_POST['gps_lng'] ?? '') !== '' ? (float) $_POST['gps_lng'] : null,
+            'cost' => ($_POST['cost'] ?? '') !== '' ? (float) $_POST['cost'] : null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
             'status' => $_POST['status'] ?? 'pending',
         ]);
@@ -104,9 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'cc' => $cropCycleId,
             'type' => $_POST['type'] ?? 'growth',
-            'date' => $_POST['record_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['record_date'] ?? '') ?: date('Y-m-d'),
             'description' => trim($_POST['description'] ?? '') ?: null,
-            'severity' => $_POST['severity'] !== '' ? $_POST['severity'] : null,
+            'severity' => ($_POST['severity'] ?? '') !== '' ? $_POST['severity'] : null,
             'photo' => trim($_POST['photo_path'] ?? '') ?: null,
         ]);
         flash('success', 'Monitoring record added.');
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              VALUES (:cc, :date, :yield, :notes)'
         )->execute([
             'cc' => $cropCycleId,
-            'date' => $_POST['forecast_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['forecast_date'] ?? '') ?: date('Y-m-d'),
             'yield' => (float) ($_POST['estimated_yield'] ?? 0),
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              VALUES (:cc, :date, :qty, :unit, :grade, :notes)'
         )->execute([
             'cc' => $cropCycleId,
-            'date' => $_POST['harvest_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['harvest_date'] ?? '') ?: date('Y-m-d'),
             'qty' => (float) ($_POST['quantity'] ?? 0),
             'unit' => trim($_POST['unit'] ?? '') ?: null,
             'grade' => trim($_POST['quality_grade'] ?? '') ?: null,
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'qty' => $quantity,
                 'price' => $unitPrice,
                 'revenue' => $quantity * $unitPrice,
-                'date' => $_POST['sale_date'] ?: date('Y-m-d'),
+                'date' => ($_POST['sale_date'] ?? '') ?: date('Y-m-d'),
                 'notes' => trim($_POST['notes'] ?? '') ?: null,
             ]);
             flash('success', 'Sale recorded.');

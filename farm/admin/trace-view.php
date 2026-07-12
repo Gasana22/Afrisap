@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )->execute([
             'batch' => $batchId,
             'stage' => $_POST['stage'] ?? 'storage',
-            'date' => $_POST['stage_date'] ?: date('Y-m-d'),
+            'date' => ($_POST['stage_date'] ?? '') ?: date('Y-m-d'),
             'location' => trim($_POST['location'] ?? '') ?: null,
             'by' => current_user()['id'],
             'notes' => trim($_POST['notes'] ?? '') ?: null,

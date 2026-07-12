@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'by' => current_user()['id'],
                 'title' => $title,
                 'description' => trim($_POST['description'] ?? '') ?: null,
-                'due' => $_POST['due_date'] ?: null,
+                'due' => ($_POST['due_date'] ?? '') ?: null,
             ]);
             if ($worker['user_id']) {
                 notify((int) $worker['user_id'], 'New task assigned', $title, 'info');

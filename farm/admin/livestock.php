@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $breed = trim($_POST['breed'] ?? '');
     $tagNumber = trim($_POST['tag_number'] ?? '');
     $gender = $_POST['gender'] ?? 'female';
-    $birthDate = $_POST['birth_date'] ?: null;
+    $birthDate = ($_POST['birth_date'] ?? '') ?: null;
 
     if (!in_array($farmId, $farmIds, true) || $species === '') {
         $error = 'A valid farm and species are required.';
