@@ -26,7 +26,8 @@ require __DIR__ . '/includes/site_header.php';
     <h1><?= e($companyName) ?> Farm Management</h1>
     <p>A multi-tenant platform for running farm operations end to end -- crop cycles, livestock, workers, finance, procurement, inventory, assets, and full farm-to-buyer traceability.</p>
     <div class="hero-actions">
-        <a href="<?= BASE_URL ?>/trace.php" class="btn">Track a Product</a>
+        <a href="<?= BASE_URL ?>/signup.php" class="btn">Start Your Farm Account</a>
+        <a href="<?= BASE_URL ?>/trace.php" class="btn btn-outline">Track a Product</a>
         <a href="<?= BASE_URL ?>/login.php" class="btn btn-outline">Login</a>
     </div>
 </section>

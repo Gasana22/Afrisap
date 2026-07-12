@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'rate' => $payRate,
             'rate_type' => $payRateType,
         ]);
+        audit_log('create', 'workers', (string) db()->lastInsertId(), null, ['farm_id' => $farmId, 'name' => $name]);
         flash('success', 'Worker added.');
         redirect('/admin/workers.php');
     }

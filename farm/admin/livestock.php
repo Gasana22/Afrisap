@@ -34,7 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'birth' => $birthDate,
         ]);
 
-        create_trace_batch('livestock', $animalCode, null, (int) db()->lastInsertId());
+        $newAnimalId = (int) db()->lastInsertId();
+        create_trace_batch('livestock', $animalCode, null, $newAnimalId);
+        audit_log('create', 'animals', (string) $newAnimalId, null, ['farm_id' => $farmId, 'animal_code' => $animalCode]);
 
         flash('success', 'Animal added.');
         redirect('/admin/livestock.php');

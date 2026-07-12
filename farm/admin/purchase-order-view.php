@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($statusLabels[$status])) {
             db()->prepare('UPDATE purchase_orders SET status = :status WHERE id = :id')
                 ->execute(['status' => $status, 'id' => $poId]);
+            audit_log('update_status', 'purchase_orders', (string) $poId, ['status' => $po['status']], ['status' => $status]);
             flash('success', 'Status updated.');
         }
         redirect('/admin/purchase-order-view.php?id=' . $poId);
@@ -78,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'method' => $_POST['method'] ?? 'cash',
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
+        audit_log('create', 'supplier_payments', (string) db()->lastInsertId(), null, ['purchase_order_id' => $poId, 'amount' => (float) ($_POST['amount'] ?? 0)]);
         flash('success', 'Payment recorded.');
         redirect('/admin/purchase-order-view.php?id=' . $poId);
     }

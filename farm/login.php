@@ -59,7 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <button type="submit">Sign in</button>
         </form>
+        <p class="portal-switch"><a href="<?= BASE_URL ?>/forgot-password.php">Forgot your password?</a></p>
 
+        <p class="portal-switch">New farm/organization? <a href="<?= BASE_URL ?>/signup.php">Create an account</a>.</p>
         <p class="portal-switch">Platform staff (Super Admin, Manager, Accountant)? <a href="<?= BASE_URL ?>/admin-login.php">Sign in to the Admin Portal</a>.</p>
     </div>
 </body>

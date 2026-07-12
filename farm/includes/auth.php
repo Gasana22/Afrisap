@@ -185,3 +185,74 @@ function deliver_otp(int $userId, string $code): void
     $line = sprintf("[%s] OTP for user #%d: %s (expires in %d min)\n", date('Y-m-d H:i:s'), $userId, $code, OTP_TTL_MINUTES);
     @file_put_contents(__DIR__ . '/../storage/logs/otp.log', $line, FILE_APPEND);
 }
+
+const PASSWORD_RESET_TTL_MINUTES = 60;
+
+/**
+ * Starts a password-reset flow. Tenant accounts only -- this is the Farm
+ * Portal's forgot-password.php, and reset-password.php has no scope check
+ * of its own (the token alone identifies the account), so scoping the
+ * lookup here is what keeps this from being usable to reset a platform
+ * (Admin Portal) account's password through the wrong door.
+ *
+ * Always call this even when no matching account exists, and always show
+ * the same "check your email" message either way (see forgot-password.php)
+ * -- that's what keeps this from being usable to enumerate registered
+ * emails.
+ */
+function request_password_reset(string $email): void
+{
+    $stmt = db()->prepare(
+        'SELECT u.id FROM users u JOIN roles r ON r.id = u.role_id WHERE u.email = :email AND r.scope = "tenant"'
+    );
+    $stmt->execute(['email' => $email]);
+    $userId = $stmt->fetchColumn();
+
+    if (!$userId) {
+        return;
+    }
+
+    $token = bin2hex(random_bytes(32));
+    db()->prepare('INSERT INTO password_resets (user_id, token, expires_at) VALUES (:user_id, :token, :expires_at)')
+        ->execute([
+            'user_id' => $userId,
+            'token' => $token,
+            'expires_at' => date('Y-m-d H:i:s', time() + PASSWORD_RESET_TTL_MINUTES * 60),
+        ]);
+
+    deliver_password_reset((int) $userId, $token);
+}
+
+/** Same dev-mode stand-in as deliver_otp() -- swap for real email when a provider is chosen. */
+function deliver_password_reset(int $userId, string $token): void
+{
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $link = $scheme . '://' . $host . BASE_URL . '/reset-password.php?token=' . $token;
+    $line = sprintf("[%s] Password reset link for user #%d: %s (expires in %d min)\n", date('Y-m-d H:i:s'), $userId, $link, PASSWORD_RESET_TTL_MINUTES);
+    @file_put_contents(__DIR__ . '/../storage/logs/otp.log', $line, FILE_APPEND);
+}
+
+/**
+ * Validates a reset token and, if valid, sets the new password and marks
+ * the token used (single-use). Returns false for an invalid, expired, or
+ * already-used token without revealing which.
+ */
+function verify_and_reset_password(string $token, string $newPassword): bool
+{
+    $stmt = db()->prepare(
+        'SELECT * FROM password_resets WHERE token = :token AND used_at IS NULL AND expires_at > NOW() ORDER BY id DESC LIMIT 1'
+    );
+    $stmt->execute(['token' => $token]);
+    $reset = $stmt->fetch();
+
+    if (!$reset) {
+        return false;
+    }
+
+    db()->prepare('UPDATE users SET password_hash = :hash WHERE id = :id')
+        ->execute(['hash' => password_hash($newPassword, PASSWORD_DEFAULT), 'id' => $reset['user_id']]);
+    db()->prepare('UPDATE password_resets SET used_at = NOW() WHERE id = :id')->execute(['id' => $reset['id']]);
+
+    return true;
+}

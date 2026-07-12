@@ -125,6 +125,32 @@ function current_organization_name(): ?string
 }
 
 /**
+ * Records one row in audit_logs. Called after a mutating action succeeds --
+ * $old/$new are the record's state before/after (omit either for a pure
+ * create or delete). Wired into the major create/update/delete/status-change
+ * actions across every module; not every single nested sub-action has a
+ * call (e.g. individual crop-cycle input/nursery/monitoring rows don't) --
+ * those are lower-value entries and can be added the same way if needed.
+ */
+function audit_log(string $action, string $table, ?string $recordId = null, ?array $old = null, ?array $new = null): void
+{
+    db()->prepare(
+        'INSERT INTO audit_logs (user_id, organization_id, action, table_name, record_id, old_value, new_value, ip_address, device)
+         VALUES (:user_id, :organization_id, :action, :table_name, :record_id, :old_value, :new_value, :ip_address, :device)'
+    )->execute([
+        'user_id' => is_logged_in() ? current_user()['id'] : null,
+        'organization_id' => current_organization_id(),
+        'action' => $action,
+        'table_name' => $table,
+        'record_id' => $recordId,
+        'old_value' => $old !== null ? json_encode($old) : null,
+        'new_value' => $new !== null ? json_encode($new) : null,
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+        'device' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+    ]);
+}
+
+/**
  * Fetch a farm the current user is allowed to see, or exit with 404.
  * Platform users can see any farm; tenant users only their own organization's.
  */

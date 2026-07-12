@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'net' => $basePay + $bonuses - $deductions,
                 'by' => current_user()['id'],
             ]);
+            audit_log('create', 'worker_payroll', (string) db()->lastInsertId(), null, ['worker_id' => $workerId, 'net_pay' => $basePay + $bonuses - $deductions]);
             flash('success', 'Payroll draft created.');
             redirect('/admin/worker-view.php?id=' . $workerId);
         }
@@ -105,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 db()->prepare('UPDATE worker_payroll SET status = :status WHERE id = :id')
                     ->execute(['status' => $next, 'id' => $payrollId]);
             }
+            audit_log('update_status', 'worker_payroll', (string) $payrollId, ['status' => $current], ['status' => $next]);
             flash('success', 'Payroll status updated.');
         }
         redirect('/admin/worker-view.php?id=' . $workerId);

@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($statusLabels[$status])) {
             db()->prepare('UPDATE crop_cycles SET status = :status WHERE id = :id')
                 ->execute(['status' => $status, 'id' => $cropCycleId]);
+            audit_log('update_status', 'crop_cycles', (string) $cropCycleId, ['status' => $cycle['status']], ['status' => $status]);
             flash('success', 'Status updated.');
         }
         redirect('/admin/crop-view.php?id=' . $cropCycleId);
@@ -139,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'grade' => trim($_POST['quality_grade'] ?? '') ?: null,
             'notes' => trim($_POST['notes'] ?? '') ?: null,
         ]);
+        audit_log('create', 'harvests', (string) db()->lastInsertId(), null, ['crop_cycle_id' => $cropCycleId]);
         flash('success', 'Harvest recorded.');
         redirect('/admin/crop-view.php?id=' . $cropCycleId);
     }
@@ -167,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'date' => ($_POST['sale_date'] ?? '') ?: date('Y-m-d'),
                 'notes' => trim($_POST['notes'] ?? '') ?: null,
             ]);
+            audit_log('create', 'crop_sales', (string) db()->lastInsertId(), null, ['harvest_id' => $harvestId, 'revenue' => $quantity * $unitPrice]);
             flash('success', 'Sale recorded.');
             redirect('/admin/crop-view.php?id=' . $cropCycleId);
         }

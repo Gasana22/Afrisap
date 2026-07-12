@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         db()->prepare(
             'INSERT INTO income (farm_id, description, amount, income_date, notes, recorded_by) VALUES (:farm, :desc, :amount, :date, :notes, :by)'
         )->execute(['farm' => $farmId, 'desc' => $description, 'amount' => $amount, 'date' => $date, 'notes' => $notes, 'by' => current_user()['id']]);
+        audit_log('create', 'income', (string) db()->lastInsertId(), null, ['farm_id' => $farmId, 'amount' => $amount]);
         flash('success', 'Income recorded.');
         redirect('/admin/finance.php');
     } elseif ($type === 'expense') {
@@ -36,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'INSERT INTO expenses (farm_id, category, description, amount, expense_date, notes, recorded_by)
              VALUES (:farm, :category, :desc, :amount, :date, :notes, :by)'
         )->execute(['farm' => $farmId, 'category' => $category, 'desc' => $description, 'amount' => $amount, 'date' => $date, 'notes' => $notes, 'by' => current_user()['id']]);
+        audit_log('create', 'expenses', (string) db()->lastInsertId(), null, ['farm_id' => $farmId, 'amount' => $amount, 'category' => $category]);
         flash('success', 'Expense recorded.');
         redirect('/admin/finance.php');
     } else {

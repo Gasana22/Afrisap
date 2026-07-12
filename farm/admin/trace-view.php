@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              ON DUPLICATE KEY UPDATE public_token = VALUES(public_token), qr_image_path = VALUES(qr_image_path), generated_at = NOW()'
         )->execute(['batch' => $batchId, 'token' => $token, 'path' => $qrImagePath]);
 
+        audit_log('generate_qr', 'trace_batches', (string) $batchId);
         flash('success', 'QR code generated.');
         redirect('/admin/trace-view.php?id=' . $batchId);
     }
@@ -81,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE trace_approvals SET status = :status, approved_by = :by, approved_at = NOW()
                  WHERE id = :id AND trace_batch_id = :batch'
             )->execute(['status' => $decision, 'by' => current_user()['id'], 'id' => $approvalId, 'batch' => $batchId]);
+            audit_log('update_status', 'trace_approvals', (string) $approvalId, null, ['status' => $decision]);
             flash('success', 'Approval updated.');
         }
         redirect('/admin/trace-view.php?id=' . $batchId);
@@ -143,6 +145,18 @@ require __DIR__ . '/includes/header.php';
         <input type="hidden" name="action" value="generate_qr">
         <button type="submit" class="btn"><?= $qr ? 'Regenerate' : 'Generate' ?> QR code</button>
     </form>
+</div>
+
+<div class="card" style="margin-bottom:1.5rem;">
+    <h2 style="margin-top:0;">Compliance reports</h2>
+    <p class="muted">Print-friendly reports, ready to save as PDF from the browser's print dialog.</p>
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <a class="btn btn-outline" target="_blank" href="<?= BASE_URL ?>/admin/compliance.php?id=<?= $batchId ?>&type=organic">Organic</a>
+        <a class="btn btn-outline" target="_blank" href="<?= BASE_URL ?>/admin/compliance.php?id=<?= $batchId ?>&type=gap">GAP</a>
+        <a class="btn btn-outline" target="_blank" href="<?= BASE_URL ?>/admin/compliance.php?id=<?= $batchId ?>&type=export">Export Docs</a>
+        <a class="btn btn-outline" target="_blank" href="<?= BASE_URL ?>/admin/compliance.php?id=<?= $batchId ?>&type=food_safety">Food Safety</a>
+        <a class="btn btn-outline" target="_blank" href="<?= BASE_URL ?>/admin/compliance.php?id=<?= $batchId ?>&type=carbon">Carbon</a>
+    </div>
 </div>
 
 <div class="card" style="margin-bottom:1.5rem;">

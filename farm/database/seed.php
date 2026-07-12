@@ -89,6 +89,7 @@ $permissions = [
     'traceability.manage'  => ['traceability', 'Manage trace batches, documents, approvals'],
     'users.manage'         => ['users', 'Manage user accounts within your pool (platform staff, or your organization)'],
     'media.manage'         => ['media', 'Upload and manage media files'],
+    'roles.manage'         => ['roles', 'Edit which permissions each role has'],
 ];
 
 $permissionIds = [];
@@ -100,17 +101,21 @@ $allPermissions = array_keys($permissions);
 
 $grants = [
     // Platform pool: Super Admin can do everything, including managing
-    // platform staff accounts. Manager gets the same operational reach
-    // (support across every tenant) but not users.manage, so only Super
-    // Admin can create/remove platform staff. Accountant is scoped to
-    // platform-wide finance oversight only.
+    // platform staff accounts and the role/permission catalog itself.
+    // Manager gets the same operational reach (support across every
+    // tenant) but not users.manage or roles.manage -- editing who can do
+    // what, or who's on the platform team, stays Super-Admin-only.
+    // Accountant is scoped to platform-wide finance oversight only.
     $superAdminRole   => $allPermissions,
-    $managerRole      => array_values(array_diff($allPermissions, ['users.manage'])),
+    $managerRole      => array_values(array_diff($allPermissions, ['users.manage', 'roles.manage'])),
     $accountantRole   => ['finance.manage', 'procurement.manage'],
 
     // Tenant pool: Farm Owner can do everything within their own
-    // organization. The rest are narrower, matching their job.
-    $farmOwnerRole        => $allPermissions,
+    // organization -- but never roles.manage. Roles and their permissions
+    // are shared, global infrastructure (every organization's "Farm
+    // Manager" is the same role row), not a per-tenant resource, so that
+    // stays platform-only regardless of what else a tenant role is granted.
+    $farmOwnerRole        => array_values(array_diff($allPermissions, ['roles.manage'])),
     $farmManagerRole      => ['crops.manage', 'livestock.manage', 'workers.manage', 'inventory.manage', 'assets.manage', 'traceability.manage', 'media.manage'],
     $agronomistRole       => ['crops.manage', 'traceability.manage'],
     $livestockManagerRole => ['livestock.manage', 'traceability.manage'],

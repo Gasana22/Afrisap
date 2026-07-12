@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? '';
         if (in_array($status, ['active', 'under_maintenance', 'retired'], true)) {
             db()->prepare('UPDATE assets SET status = :status WHERE id = :id')->execute(['status' => $status, 'id' => $assetId]);
+            audit_log('update_status', 'assets', (string) $assetId, ['status' => $asset['status']], ['status' => $status]);
             flash('success', 'Status updated.');
         }
         redirect('/admin/asset-view.php?id=' . $assetId);

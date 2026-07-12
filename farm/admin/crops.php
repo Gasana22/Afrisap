@@ -43,7 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'start_date' => $startDate,
         ]);
 
-        create_trace_batch('crop', $batchCode, (int) db()->lastInsertId());
+        $newCycleId = (int) db()->lastInsertId();
+        create_trace_batch('crop', $batchCode, $newCycleId);
+        audit_log('create', 'crop_cycles', (string) $newCycleId, null, ['plot_id' => $plotId, 'batch_code' => $batchCode]);
 
         flash('success', 'Crop cycle created.');
         redirect('/admin/crops.php');

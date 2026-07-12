@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'role_id' => $roleId,
                 'org_id' => is_platform_user() ? null : current_organization_id(),
             ]);
+            audit_log('create', 'users', (string) db()->lastInsertId(), null, ['name' => $name, 'email' => $email, 'role_id' => $roleId]);
             flash('success', 'User created.');
             redirect('/admin/users.php');
         } catch (PDOException $e) {

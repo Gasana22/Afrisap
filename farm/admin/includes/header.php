@@ -39,7 +39,12 @@ $unreadCount = (int) $unreadStmt->fetchColumn();
             <a href="<?= BASE_URL ?>/admin/assets.php" class="<?= $activePage === 'assets' ? 'active' : '' ?>">Assets</a>
             <a href="<?= BASE_URL ?>/admin/traceability.php" class="<?= $activePage === 'traceability' ? 'active' : '' ?>">Traceability</a>
             <a href="<?= BASE_URL ?>/admin/media.php" class="<?= $activePage === 'media' ? 'active' : '' ?>">Media</a>
+            <a href="<?= BASE_URL ?>/admin/reports.php" class="<?= $activePage === 'reports' ? 'active' : '' ?>">Reports</a>
             <a href="<?= BASE_URL ?>/admin/users.php" class="<?= $activePage === 'users' ? 'active' : '' ?>">Users</a>
+            <?php if (is_platform_user()): ?>
+                <a href="<?= BASE_URL ?>/admin/roles.php" class="<?= $activePage === 'roles' ? 'active' : '' ?>">Roles</a>
+                <a href="<?= BASE_URL ?>/admin/audit-log.php" class="<?= $activePage === 'audit-log' ? 'active' : '' ?>">Audit Log</a>
+            <?php endif; ?>
         </nav>
     </aside>
     <div class="main">

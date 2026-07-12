@@ -40,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         db()->prepare('UPDATE farms SET code = :code WHERE id = :id')
             ->execute(['code' => 'FARM' . str_pad((string) $newId, 2, '0', STR_PAD_LEFT), 'id' => $newId]);
 
+        audit_log('create', 'farms', (string) $newId, null, ['name' => $name, 'organization_id' => $organizationId]);
+
         flash('success', 'Farm created.');
         redirect('/admin/farms.php');
     }

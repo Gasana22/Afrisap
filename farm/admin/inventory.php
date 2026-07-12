@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            audit_log($type, 'stock_movements', null, null, ['item_id' => $itemId, 'farm_id' => $farmId, 'quantity' => $quantity]);
             flash('success', 'Stock movement recorded.');
             redirect('/admin/inventory.php');
         }

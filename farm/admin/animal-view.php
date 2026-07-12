@@ -126,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'notes' => trim($_POST['notes'] ?? '') ?: null,
             ]);
         db()->prepare('UPDATE animals SET status = "deceased" WHERE id = :id')->execute(['id' => $animalId]);
+        audit_log('mortality', 'animals', (string) $animalId, ['status' => $animal['status']], ['status' => 'deceased']);
         flash('success', 'Mortality recorded.');
         redirect('/admin/animal-view.php?id=' . $animalId);
     }
@@ -140,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'notes' => trim($_POST['notes'] ?? '') ?: null,
             ]);
         db()->prepare('UPDATE animals SET status = "sold" WHERE id = :id')->execute(['id' => $animalId]);
+        audit_log('sale', 'animals', (string) $animalId, ['status' => $animal['status']], ['status' => 'sold']);
         flash('success', 'Sale recorded.');
         redirect('/admin/animal-view.php?id=' . $animalId);
     }
