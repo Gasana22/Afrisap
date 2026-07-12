@@ -1,0 +1,13 @@
+[12-Jul-2026 12:44:15 Africa/Kigali] PHP Warning:  Undefined array key "gps_lat" in /home/user/Afrisap/farm/admin/farm-view.php on line 30
+[12-Jul-2026 12:44:15 Africa/Kigali] PHP Warning:  Undefined array key "gps_lat" in /home/user/Afrisap/farm/admin/farm-view.php on line 30
+[12-Jul-2026 12:44:15 Africa/Kigali] PHP Warning:  Undefined array key "gps_lng" in /home/user/Afrisap/farm/admin/farm-view.php on line 31
+[12-Jul-2026 12:44:15 Africa/Kigali] PHP Warning:  Undefined array key "gps_lng" in /home/user/Afrisap/farm/admin/farm-view.php on line 31
+[12-Jul-2026 12:44:27 Africa/Kigali] PHP Warning:  Undefined array key "expiry_date" in /home/user/Afrisap/farm/admin/crop-view.php on line 59
+[12-Jul-2026 12:44:36 Africa/Kigali] PHP Warning:  Undefined array key "next_due_date" in /home/user/Afrisap/farm/admin/animal-view.php on line 32
+[12-Jul-2026 12:44:36 Africa/Kigali] PHP Warning:  Undefined array key "hire_date" in /home/user/Afrisap/farm/admin/workers.php on line 15
+[12-Jul-2026 12:44:52 Africa/Kigali] PHP Warning:  Undefined array key "related_farm_id" in /home/user/Afrisap/farm/admin/inventory.php on line 54
+[12-Jul-2026 12:44:52 Africa/Kigali] PHP Warning:  Undefined array key "related_farm_id" in /home/user/Afrisap/farm/admin/inventory.php on line 54
+[12-Jul-2026 12:44:52 Africa/Kigali] PHP Warning:  Undefined array key "related_farm_id" in /home/user/Afrisap/farm/admin/inventory.php on line 54
+[12-Jul-2026 12:44:52 Africa/Kigali] PHP Warning:  Undefined array key "related_farm_id" in /home/user/Afrisap/farm/admin/inventory.php on line 54
+[12-Jul-2026 12:45:02 Africa/Kigali] PHP Warning:  Undefined array key "purchase_date" in /home/user/Afrisap/farm/admin/assets.php on line 25
+[12-Jul-2026 12:45:02 Africa/Kigali] PHP Warning:  Undefined array key "next_due_date" in /home/user/Afrisap/farm/admin/asset-view.php on line 33
