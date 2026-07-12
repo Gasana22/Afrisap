@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/bootstrap.php';
 
 if (!isset($_SESSION['mfa_pending_user_id'])) {
-    redirect('/index.php');
+    redirect('/login.php');
 }
 
 $error = flash('error');
@@ -68,6 +68,7 @@ if (APP_DEBUG) {
 </head>
 <body class="auth-page">
     <div class="auth-card">
+        <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
         <h1>Enter verification code</h1>
         <p class="muted">We sent a one-time code to your registered contact method.</p>
 

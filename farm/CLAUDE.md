@@ -29,15 +29,20 @@ So the site loads at `http://localhost/farm/`. If deployed anywhere else, update
 4. Apply the schema: `php database/migrate.php` (reads `database/migrations/*.sql` in order, tracks progress in the `migrations` table, safe to re-run).
 5. Seed base data: `php database/seed.php` (roles, permissions, a demo organization, a platform Super Admin, a tenant Farm Owner, crop types, a season). Prints the seeded login credentials — change them before any shared use. Safe to re-run.
 6. Edit `includes/config.php` if your DB credentials differ from XAMPP defaults (`root` / empty password).
-7. Visit `http://localhost/farm/` — the login page.
+7. Visit `http://localhost/farm/` — the public homepage.
 
 ## Project structure
 
+The app has three distinct zones, all under this one folder: the **public site** (no login), **auth** (login/verify/logout, also no login required to reach them), and the **admin panel** (`admin/`, login required). Nothing in `admin/` is reachable without a session; nothing in the public site touches tenant-private data.
+
 ```
-index.php                 Public entry point — login page. Redirects to admin/dashboard.php if already logged in.
+index.php                 Public homepage — company blurb, aggregate stats (from settings/organizations/farms/etc.), module overview.
+about.php                  Public — platform description + aggregate stats + how traceability works.
+contact.php                Public — static contact info (no submission form; there's no table for storing messages yet).
+trace.php                  Public — QR-scan / manual-code lookup landing page: batch info + product journey by public_token.
+login.php                  Login form. Redirects to admin/dashboard.php if already logged in.
 verify-otp.php             MFA one-time-code step (shown when a user's mfa_enabled = 1)
-logout.php                 Destroys session, redirects to /index.php
-trace.php                  Public (no login) QR-scan landing page — batch info + product journey by public_token
+logout.php                 Destroys session, redirects to /login.php
 
 includes/
   config.php                Constants: BASE_URL, DB_*, APP_*. Session start. Edit this per environment.
@@ -47,6 +52,9 @@ includes/
   functions.php              e(), redirect(), flash(), require_permission(), notify(), notify_organization(),
                               create_trace_batch(), farm_or_404(), visible_farm_ids(), in_placeholders()
   bootstrap.php              Requires the four files above, in order — every page requires just this one file
+  site_header.php / site_footer.php  Shared layout for the public site pages (nav: Home/About/Track a Product/Contact
+                                       + Login-or-Dashboard link). login.php/verify-otp.php don't use these — they keep
+                                       their own minimal auth-card layout with just a "back to home" link.
 
 admin/
   includes/
@@ -73,7 +81,7 @@ admin/
   users.php                     Add/list users within your pool (platform staff, or your tenant's staff)
 
 assets/
-  css/site.css                Public pages (login, verify, trace)
+  css/site.css                Public site + auth pages (index, about, contact, trace, login, verify)
   css/admin.css                Admin panel layout
 
 database/
@@ -118,12 +126,13 @@ Then add a nav link for it in `admin/includes/header.php`.
 - **Rate limiting**: login attempts are logged to `login_attempts` and checked in `attempt_login()` (5 attempts / 15 min window, by email or IP).
 - **Trace batches**: there's no DB trigger (flat-file app) linking crop_cycles/animals to trace_batches, so every insert path that creates a crop cycle or an animal must call `create_trace_batch()` right after — see `admin/crops.php` and `admin/livestock.php`.
 - **BASE_URL**: always link/redirect using `BASE_URL . '/path'` (or the `redirect()` helper, which does this for you) — don't hardcode `/farm/...` directly, so the app still works if moved to a different subfolder or a domain root later.
+- **Public site stays public-safe.** Pages outside `admin/` (index.php, about.php, contact.php, trace.php) never require `admin/includes/auth-check.php` — they're meant to be reachable by anyone. Only ever query aggregate/anonymized counts (`COUNT(*)` totals) or data that's explicitly designed to be public (a trace batch's info via its `public_token`, which a farm team generates and shares on purpose). Never list or name individual farms, organizations, users, or any other tenant-private record on a public page — that's a cross-tenant/public data leak, same severity as missing an `organization_id` filter in the admin panel.
 
 ## What's built
 
-Everything in the original roadmap: migration runner + seed data, OTP delivery (dev-mode), farm/block/plot structure, crop cycle module (full lifecycle: inputs, nursery, field activities, monitoring, forecasts, harvests, sales), livestock module (vaccinations, feedings, weights, treatments, breeding, production, mortality, sales), workers module (attendance, tasks, payroll), finance, procurement (suppliers, POs, deliveries, payments), inventory (stock in/out/transfer with low-stock alerts), assets + maintenance, traceability (QR codes, documents, approvals, product journey, public verification page), notifications, media, and basic user management.
+Everything in the original roadmap: migration runner + seed data, OTP delivery (dev-mode), farm/block/plot structure, crop cycle module (full lifecycle: inputs, nursery, field activities, monitoring, forecasts, harvests, sales), livestock module (vaccinations, feedings, weights, treatments, breeding, production, mortality, sales), workers module (attendance, tasks, payroll), finance, procurement (suppliers, POs, deliveries, payments), inventory (stock in/out/transfer with low-stock alerts), assets + maintenance, traceability (QR codes, documents, approvals, product journey, public verification page), notifications, media, and basic user management. Plus a separate public site (home, about, contact, product tracking) distinct from the admin panel, sharing only the database and CSS file.
 
-All 20 migrations, the seed script, and every module above were exercised end-to-end against a real MySQL/MariaDB instance during development (login, MFA, farm→block→plot→crop cycle→harvest→sale, livestock, worker attendance, finance, procurement, inventory movements with low-stock notification, asset maintenance, trace QR generation + public lookup, permission enforcement, and cross-tenant isolation all verified working).
+All 20 migrations, the seed script, and every module above were exercised end-to-end against a real MySQL/MariaDB instance during development (login, MFA, farm→block→plot→crop cycle→harvest→sale, livestock, worker attendance, finance, procurement, inventory movements with low-stock notification, asset maintenance, trace QR generation + public lookup, permission enforcement, cross-tenant isolation, and the public site pages all verified working).
 
 ## Things to flag rather than silently decide
 

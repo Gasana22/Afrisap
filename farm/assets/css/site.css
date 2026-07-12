@@ -23,3 +23,50 @@ button, .btn {
 .alert { padding: 0.5rem 0.75rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.85rem; }
 .alert-error { background: #fdecea; color: #a33; }
 .alert-success { background: #e8f5e9; color: #2e7d32; }
+
+.back-home { display: inline-block; font-size: 0.8rem; color: #666; text-decoration: none; margin-bottom: 1rem; }
+.back-home:hover { color: #2f5233; }
+
+/* Public site pages (index.php, about.php, contact.php, trace.php) */
+.site-page { background: #f4f6f4; }
+
+.site-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem; background: #fff; border-bottom: 1px solid #e2e2e2;
+    flex-wrap: wrap; gap: 1rem;
+}
+.site-brand { font-weight: bold; font-size: 1.1rem; color: #2f5233; text-decoration: none; }
+.site-nav nav { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+.site-nav nav a:not(.btn) { color: #444; text-decoration: none; font-size: 0.9rem; }
+.site-nav nav a:not(.btn):hover { color: #2f5233; }
+
+.site-main { max-width: 1000px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+.hero { text-align: center; padding: 2rem 0 3rem; }
+.hero h1 { font-size: 2rem; color: #2f5233; margin: 0 0 1rem; }
+.hero p { max-width: 640px; margin: 0 auto 1.5rem; color: #555; font-size: 1.05rem; }
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn-outline { background: transparent; color: #2f5233; border: 1px solid #2f5233; }
+
+.stat-band { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+.stat-tile { background: #fff; border-radius: 8px; padding: 1.25rem 1.5rem; text-align: center; min-width: 140px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.stat-number { font-size: 1.75rem; font-weight: bold; color: #2f5233; }
+.stat-label { font-size: 0.85rem; color: #666; }
+
+.section { margin-bottom: 3rem; }
+.section h1 { color: #2f5233; }
+.section h2 { color: #2f5233; font-size: 1.25rem; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+.card { background: #fff; padding: 1.25rem; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.card h3 { margin-top: 0; font-size: 1rem; color: #2f5233; }
+.card p { margin-bottom: 0; font-size: 0.9rem; color: #555; }
+
+.trace-form { display: flex; gap: 0.75rem; }
+.trace-form input { flex: 1; margin-bottom: 0; }
+.journey-list { padding-left: 1.2rem; font-size: 0.9rem; }
+
+.site-footer { text-align: center; padding: 2rem; color: #777; font-size: 0.85rem; border-top: 1px solid #e2e2e2; }
+.site-footer a { color: #2f5233; text-decoration: none; }
+.site-footer p { margin: 0.25rem 0; }

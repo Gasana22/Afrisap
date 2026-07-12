@@ -1,57 +1,55 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
 
-if (is_logged_in()) {
-    redirect('/admin/dashboard.php');
-}
+// Public homepage -- no auth-check.php on purpose, this is the public site,
+// separate from the admin panel under /admin. Logged-in visitors aren't
+// redirected away; they just get a "Dashboard" link in the nav instead.
 
-$error = flash('error');
+$companyStmt = db()->prepare('SELECT setting_value FROM settings WHERE organization_id IS NULL AND setting_key = "company_name"');
+$companyStmt->execute();
+$companyName = $companyStmt->fetchColumn() ?: APP_NAME;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = (string) ($_POST['password'] ?? '');
-    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+// Aggregate, non-sensitive counts only -- individual farms/organizations are
+// tenant-private data and never surfaced on the public site.
+$stats = [
+    'Organizations' => (int) db()->query('SELECT COUNT(*) FROM organizations')->fetchColumn(),
+    'Farms managed' => (int) db()->query('SELECT COUNT(*) FROM farms')->fetchColumn(),
+    'Crop types tracked' => (int) db()->query('SELECT COUNT(*) FROM crop_types')->fetchColumn(),
+    'Traceable batches' => (int) db()->query('SELECT COUNT(*) FROM trace_batches')->fetchColumn(),
+];
 
-    if ($email === '' || $password === '') {
-        $error = 'Email and password are required.';
-    } else {
-        $result = attempt_login($email, $password, $ip);
-
-        if (!$result['ok']) {
-            $error = $result['error'];
-        } elseif ($result['mfa_required']) {
-            redirect('/verify-otp.php');
-        } else {
-            redirect('/admin/dashboard.php');
-        }
-    }
-}
+$pageTitle = 'Home';
+require __DIR__ . '/includes/site_header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login — <?= e(APP_NAME) ?></title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
-</head>
-<body class="auth-page">
-    <div class="auth-card">
-        <h1><?= e(APP_NAME) ?></h1>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= e($error) ?></div>
-        <?php endif; ?>
-
-        <form method="POST" action="<?= BASE_URL ?>/index.php">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autofocus>
-
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-
-            <button type="submit">Sign in</button>
-        </form>
+<section class="hero">
+    <h1><?= e($companyName) ?> Farm Management</h1>
+    <p>A multi-tenant platform for running farm operations end to end -- crop cycles, livestock, workers, finance, procurement, inventory, assets, and full farm-to-buyer traceability.</p>
+    <div class="hero-actions">
+        <a href="<?= BASE_URL ?>/trace.php" class="btn">Track a Product</a>
+        <a href="<?= BASE_URL ?>/login.php" class="btn btn-outline">Login</a>
     </div>
-</body>
-</html>
+</section>
+
+<section class="stat-band">
+    <?php foreach ($stats as $label => $value): ?>
+        <div class="stat-tile">
+            <div class="stat-number"><?= $value ?></div>
+            <div class="stat-label"><?= e($label) ?></div>
+        </div>
+    <?php endforeach; ?>
+</section>
+
+<section class="section">
+    <h2>What the platform covers</h2>
+    <div class="card-grid">
+        <div class="card"><h3>Farm Structure</h3><p>Farms, blocks and plots, organized per organization.</p></div>
+        <div class="card"><h3>Crop Cycles</h3><p>Planning through harvest and sale, with inputs, monitoring, and yield forecasts.</p></div>
+        <div class="card"><h3>Livestock</h3><p>Vaccinations, feedings, weights, treatments, breeding, and production records.</p></div>
+        <div class="card"><h3>Workers</h3><p>Attendance, task assignment, and payroll.</p></div>
+        <div class="card"><h3>Finance &amp; Procurement</h3><p>Income, expenses, suppliers, and purchase orders.</p></div>
+        <div class="card"><h3>Traceability</h3><p>Every crop cycle and animal gets a QR-code batch that buyers can scan to see its journey.</p></div>
+    </div>
+</section>
+
+<?php require __DIR__ . '/includes/site_footer.php'; ?>

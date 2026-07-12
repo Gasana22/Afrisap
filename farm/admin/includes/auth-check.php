@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../includes/bootstrap.php';
 
 if (!is_logged_in()) {
-    redirect('/index.php');
+    redirect('/login.php');
 }
 
 // All admin-panel pages are reachable by both platform staff and tenant
