@@ -3,8 +3,10 @@ body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f4; color
 
 .auth-page { display: flex; align-items: center; justify-content: center; height: 100vh; }
 .auth-card { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); width: 320px; }
-.auth-card h1 { font-size: 1.25rem; margin: 0 0 1rem; color: #2f5233; }
+.auth-card h1 { font-size: 1.25rem; margin: 0.5rem 0 0.5rem; color: #2f5233; }
 .auth-card .muted { font-size: 0.85rem; color: #666; margin-bottom: 1rem; }
+.portal-switch { font-size: 0.8rem; color: #666; text-align: center; margin: 1rem 0 0; }
+.portal-switch a { color: #2f5233; }
 
 label { display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: #444; }
 input[type=email], input[type=password], input[type=text] {

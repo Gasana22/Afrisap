@@ -23,6 +23,7 @@ $unreadCount = (int) $unreadStmt->fetchColumn();
 <div class="layout">
     <aside class="sidebar">
         <div class="brand"><?= e(APP_NAME) ?></div>
+        <div class="portal-badge"><?= is_platform_user() ? 'Admin Portal' : 'Farm Portal' ?></div>
         <nav>
             <a href="<?= BASE_URL ?>/admin/dashboard.php" class="<?= $activePage === 'dashboard' ? 'active' : '' ?>">Dashboard</a>
             <a href="<?= BASE_URL ?>/admin/farms.php" class="<?= $activePage === 'farms' ? 'active' : '' ?>">Farms</a>
@@ -46,7 +47,7 @@ $unreadCount = (int) $unreadStmt->fetchColumn();
             <a href="<?= BASE_URL ?>/admin/notifications.php" style="color:#2f5233; text-decoration:none;">
                 Notifications<?= $unreadCount ? ' (' . $unreadCount . ')' : '' ?>
             </a>
-            <span><?= e($user['name'] ?? '') ?> · <?= e($_SESSION['role_slug'] ?? '') ?></span>
+            <span><?= e($user['name'] ?? '') ?> · <?= e($_SESSION['role_slug'] ?? '') ?><?= is_platform_user() ? '' : ' · ' . e(current_organization_name() ?? '') ?></span>
             <form method="POST" action="<?= BASE_URL ?>/logout.php">
                 <button type="submit" class="link">Log out</button>
             </form>

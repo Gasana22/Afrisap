@@ -104,6 +104,27 @@ function create_trace_batch(string $batchType, string $batchCode, ?int $cropCycl
 }
 
 /**
+ * Name of the current tenant user's organization, for display (e.g. the
+ * admin topbar) -- helps make it visible that this is one of potentially
+ * many organizations on the platform, not the only one. Null for platform
+ * users (organization_id is null for them) or a logged-out request.
+ */
+function current_organization_name(): ?string
+{
+    $organizationId = current_organization_id();
+    if ($organizationId === null) {
+        return null;
+    }
+    static $cache = [];
+    if (array_key_exists($organizationId, $cache)) {
+        return $cache[$organizationId];
+    }
+    $stmt = db()->prepare('SELECT name FROM organizations WHERE id = :id');
+    $stmt->execute(['id' => $organizationId]);
+    return $cache[$organizationId] = $stmt->fetchColumn() ?: null;
+}
+
+/**
  * Fetch a farm the current user is allowed to see, or exit with 404.
  * Platform users can see any farm; tenant users only their own organization's.
  */

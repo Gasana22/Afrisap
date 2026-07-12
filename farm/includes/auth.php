@@ -58,9 +58,15 @@ function has_permission(string $code): bool
 }
 
 /**
+ * $requiredScope, when set ('platform' or 'tenant'), rejects a correct
+ * password if the account belongs to the other portal -- the Admin Portal
+ * (Super Admin / Manager / Accountant, who keep the platform operational)
+ * and the Farm Portal (Farm Owner and their own tenant staff, who manage
+ * their own farms) are separate login doors into the same admin/ panel.
+ *
  * @return array{ok: bool, error?: string, mfa_required?: bool}
  */
-function attempt_login(string $email, string $password, string $ip): array
+function attempt_login(string $email, string $password, string $ip, ?string $requiredScope = null): array
 {
     if (is_rate_limited($email, $ip)) {
         return ['ok' => false, 'error' => 'Too many attempts. Try again in a few minutes.'];
@@ -80,6 +86,11 @@ function attempt_login(string $email, string $password, string $ip): array
 
     if (!$user || !password_verify($password, $user['password_hash'])) {
         return ['ok' => false, 'error' => 'Invalid email or password.'];
+    }
+
+    if ($requiredScope !== null && $user['role_scope'] !== $requiredScope) {
+        $otherPortal = $requiredScope === 'platform' ? 'Farm Portal' : 'Admin Portal';
+        return ['ok' => false, 'error' => "This account isn't for this portal. Try the $otherPortal login instead."];
     }
 
     if ((bool) $user['mfa_enabled']) {

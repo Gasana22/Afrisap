@@ -1,10 +1,13 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
 
-// Farm Portal login -- for Farm Owners and their own tenant staff, who use
-// the site to manage their own farms. Platform staff (Super Admin, Manager,
-// Accountant, who keep the platform itself operational) use admin-login.php
-// instead; attempt_login()'s scope check keeps the two logins from crossing.
+// Admin Portal login -- for platform staff (Super Admin, Manager,
+// Accountant) who keep the platform itself operational: oversight across
+// every tenant, platform-wide finance visibility, and platform user
+// management. This is deliberately a separate login door from login.php
+// (the Farm Portal, for Farm Owners and their own tenant staff) even
+// though both land in the same admin/ panel afterward -- the panel already
+// adapts per request based on is_platform_user().
 
 if (is_logged_in()) {
     redirect('/admin/dashboard.php');
@@ -20,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === '' || $password === '') {
         $error = 'Email and password are required.';
     } else {
-        $result = attempt_login($email, $password, $ip, 'tenant');
+        $result = attempt_login($email, $password, $ip, 'platform');
 
         if (!$result['ok']) {
             $error = $result['error'];
@@ -37,20 +40,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Farm Portal Login — <?= e(APP_NAME) ?></title>
+    <title>Admin Portal Login — <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css">
 </head>
 <body class="auth-page">
     <div class="auth-card">
         <a href="<?= BASE_URL ?>/index.php" class="back-home">&larr; <?= e(APP_NAME) ?></a>
-        <h1>Farm Portal</h1>
-        <p class="muted">Sign in to manage your own farms, crops, livestock, workers, and records.</p>
+        <h1>Admin Portal</h1>
+        <p class="muted">For Super Admins, Managers, and Accountants who keep the platform running.</p>
 
         <?php if ($error): ?>
             <div class="alert alert-error"><?= e($error) ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/login.php">
+        <form method="POST" action="<?= BASE_URL ?>/admin-login.php">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required autofocus>
 
@@ -60,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Sign in</button>
         </form>
 
-        <p class="portal-switch">Platform staff (Super Admin, Manager, Accountant)? <a href="<?= BASE_URL ?>/admin-login.php">Sign in to the Admin Portal</a>.</p>
+        <p class="portal-switch">Managing your own farm? <a href="<?= BASE_URL ?>/login.php">Sign in to the Farm Portal</a>.</p>
     </div>
 </body>
 </html>
