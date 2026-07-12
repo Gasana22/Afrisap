@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 db()->prepare(
                     'INSERT INTO users (name, email, phone, password_hash, role_id, organization_id, status, mfa_enabled)
-                     VALUES (:name, :email, :phone, :hash, :role_id, :org_id, "active", 1)'
+                     VALUES (:name, :email, :phone, :hash, :role_id, :org_id, "active", 0)'
                 )->execute([
                     'name' => $old['name'],
                     'email' => strtolower($old['email']),
