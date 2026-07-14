@@ -75,7 +75,7 @@ require __DIR__ . '/includes/site_header.php';
       <aside class="detail-side">
         <?php if ($activity['operator_name'] || $activity['phone'] || $activity['email'] || $activity['destination_name']): ?>
           <div class="side-card">
-            <p class="side-card__title">Details</p>
+            <p class="side-card__title"><?= render_nav_glyph('tag') ?>Details</p>
             <?php if ($activity['operator_name']): ?><p class="side-card__body"><strong><?= h($activity['operator_name']) ?></strong></p><?php endif; ?>
             <?php if ($activity['phone']): ?><p class="side-card__body"><?= h($activity['phone']) ?></p><?php endif; ?>
             <?php if ($activity['email']): ?><p class="side-card__body"><?= h($activity['email']) ?></p><?php endif; ?>

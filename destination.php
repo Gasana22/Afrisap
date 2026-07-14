@@ -77,11 +77,14 @@ require __DIR__ . '/includes/site_header.php';
               $activityGallery = get_media('destination_activity', $activity['id']);
             ?>
               <div class="activity-item">
-                <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
-                <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
-                <?php if ($activityGallery): ?>
-                  <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
-                <?php endif; ?>
+                <div class="activity-item__icon"><?= render_nav_glyph(nav_icon_for($activity['title'])) ?></div>
+                <div class="activity-item__content">
+                  <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
+                  <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
+                  <?php if ($activityGallery): ?>
+                    <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+                  <?php endif; ?>
+                </div>
               </div>
             <?php endforeach; ?>
           </div>
@@ -101,7 +104,7 @@ require __DIR__ . '/includes/site_header.php';
       <aside class="detail-side">
         <?php if ($animals): ?>
           <div class="side-card">
-            <p class="side-card__title">Animals found here</p>
+            <p class="side-card__title"><?= render_nav_glyph('paw') ?>Animals found here</p>
             <div class="tag-list">
               <?php foreach ($animals as $a): ?><span class="tag-static"><?= h($a['name']) ?></span><?php endforeach; ?>
             </div>
@@ -109,7 +112,7 @@ require __DIR__ . '/includes/site_header.php';
         <?php endif; ?>
         <?php if ($birds): ?>
           <div class="side-card">
-            <p class="side-card__title">Birds found here</p>
+            <p class="side-card__title"><?= render_nav_glyph('bird') ?>Birds found here</p>
             <div class="tag-list">
               <?php foreach ($birds as $b): ?><span class="tag-static"><?= h($b['name']) ?></span><?php endforeach; ?>
             </div>

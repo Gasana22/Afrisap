@@ -94,11 +94,14 @@ require __DIR__ . '/includes/site_header.php';
               $activityGallery = get_media('tour_activity', $activity['id']);
             ?>
               <div class="activity-item">
-                <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
-                <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
-                <?php if ($activityGallery): ?>
-                  <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
-                <?php endif; ?>
+                <div class="activity-item__icon"><?= render_nav_glyph(nav_icon_for($activity['title'])) ?></div>
+                <div class="activity-item__content">
+                  <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
+                  <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
+                  <?php if ($activityGallery): ?>
+                    <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+                  <?php endif; ?>
+                </div>
               </div>
             <?php endforeach; ?>
           </div>
@@ -161,12 +164,12 @@ require __DIR__ . '/includes/site_header.php';
             <li><span>Group size</span><span><?= (int) $tour['min_pax'] ?>–<?= (int) $tour['max_pax'] ?> people</span></li>
             <li><span>Budget tier</span><span><?= h($tour['budget_type']) ?></span></li>
           </ul>
-          <a href="#enquire" class="btn btn--primary" style="width:100%;justify-content:center;">Enquire About This Tour</a>
+          <a href="#enquire" class="btn btn--primary btn--pill" style="width:100%;justify-content:center;">Enquire About This Tour <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
 
         <?php if ($tour['operator_name']): ?>
           <div class="side-card">
-            <p class="side-card__title">Tour operator</p>
+            <p class="side-card__title"><?= render_nav_glyph('briefcase') ?>Tour operator</p>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
               <?php if ($tour['operator_logo']): ?><img src="<?= h(url('/' . $tour['operator_logo'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><?php endif; ?>
               <strong><?= h($tour['operator_name']) ?></strong>

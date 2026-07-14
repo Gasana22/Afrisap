@@ -82,8 +82,11 @@ require __DIR__ . '/includes/site_header.php';
           <div class="activity-list">
             <?php foreach ($activities as $activity): ?>
               <div class="activity-item">
-                <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
-                <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
+                <div class="activity-item__icon"><?= render_nav_glyph(nav_icon_for($activity['title'])) ?></div>
+                <div class="activity-item__content">
+                  <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
+                  <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
+                </div>
               </div>
             <?php endforeach; ?>
           </div>
@@ -103,7 +106,7 @@ require __DIR__ . '/includes/site_header.php';
             <li><span>Group size</span><span><?= (int) $tour['min_pax'] ?>–<?= (int) $tour['max_pax'] ?> people</span></li>
             <li><span>Type</span><span><?= h($tour['type_name']) ?></span></li>
           </ul>
-          <a href="#enquire" class="btn btn--primary" style="width:100%;justify-content:center;">Enquire About This Tour</a>
+          <a href="#enquire" class="btn btn--primary btn--pill" style="width:100%;justify-content:center;">Enquire About This Tour <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
       </aside>
     </div>

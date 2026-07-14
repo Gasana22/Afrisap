@@ -1091,7 +1091,10 @@ a.hero-stat:hover {
   border: 1px solid var(--savanna-line);
   border-radius: var(--radius);
   padding: 18px;
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow);
 }
+
+.side-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
 
 .side-card__title {
   display: flex;
@@ -1121,11 +1124,12 @@ a.hero-stat:hover {
    tier seal up top, a dashed perforation before the facts list, echoing
    the real permit paperwork gorilla trekking and park entry require. */
 .side-card--price {
-  background: var(--canopy-dark);
+  background: radial-gradient(160% 140% at 15% 0%, var(--canopy-light) 0%, var(--canopy-dark) 60%);
   color: var(--white);
   border: none;
   position: relative;
   padding-top: 20px;
+  box-shadow: var(--shadow-card);
 }
 
 .side-card__permit-no {
@@ -1173,7 +1177,20 @@ a.hero-stat:hover {
   margin: 14px 0 4px;
 }
 
-.gallery-strip img { width: 100%; height: 120px; object-fit: cover; border-radius: 5px; }
+.gallery-strip img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow);
+}
+
+.gallery-strip img:hover {
+  transform: scale(1.04);
+  position: relative;
+  z-index: 2;
+  box-shadow: var(--shadow-card-hover);
+}
 
 .gallery-strip--hero {
   grid-template-columns: 2fr 1fr 1fr;
@@ -1183,11 +1200,37 @@ a.hero-stat:hover {
 
 .gallery-strip--hero img { height: 100%; border-radius: 8px; }
 
-/* Activities list on detail pages */
+/* Activities list on detail pages -- each item carries an icon badge (a
+   generic one, or matched to the activity name via nav_icon_for()) rather
+   than being a bare left-border list, and lifts slightly on hover. */
 
-.activity-list { display: flex; flex-direction: column; gap: 20px; }
+.activity-list { display: flex; flex-direction: column; gap: 12px; }
 
-.activity-item { border-left: 2px solid var(--murram); padding-left: 16px; }
+.activity-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  transition: background-color var(--motion-fast), transform var(--motion-fast);
+}
+
+.activity-item:hover { background: var(--savanna); transform: translateX(2px); }
+
+.activity-item__icon {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(181, 80, 43, 0.12);
+  color: var(--murram-dark);
+}
+
+.activity-item__icon .nav-icon { width: 19px; height: 19px; opacity: 1; }
+
+.activity-item__content { flex: 1; min-width: 0; }
 
 .activity-item__title { font-family: var(--font-display); font-size: 16.5px; font-weight: 600; margin: 0 0 4px; }
 .activity-item__body { font-size: 14px; opacity: 0.78; margin: 0; }
@@ -1236,9 +1279,38 @@ a.list-row:hover { border-color: var(--murram); }
   border: 1px solid var(--savanna-line);
   border-radius: var(--radius);
   padding: 14px 16px;
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
 }
 
-.faq-item summary { cursor: pointer; font-weight: 600; font-size: 14.5px; }
+.faq-item:hover { border-color: var(--murram); }
+.faq-item[open] { box-shadow: var(--shadow-card); }
+
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14.5px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--murram-dark);
+  border-bottom: 2px solid var(--murram-dark);
+  transform: rotate(45deg);
+  transition: transform var(--motion-fast);
+}
+
+.faq-item[open] summary::after { transform: rotate(225deg); }
+
 .faq-item p { font-size: 14px; opacity: 0.78; margin: 10px 0 0; }
 
 /* Static tag chips (public, read-only) */
