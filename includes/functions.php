@@ -117,6 +117,32 @@ function redirectBack(): never
 // DATE HELPERS
 // ============================================================
 
+function time_ago(string $datetime): string
+{
+    $diff = time() - strtotime($datetime);
+
+    if ($diff < 60) {
+        return 'just now';
+    }
+
+    $steps = [
+        31536000 => 'y',
+        2592000 => 'mo',
+        86400 => 'd',
+        3600 => 'h',
+        60 => 'm',
+    ];
+
+    foreach ($steps as $seconds => $label) {
+        $count = intdiv($diff, $seconds);
+        if ($count >= 1) {
+            return $count . $label . ' ago';
+        }
+    }
+
+    return 'just now';
+}
+
 function formatDate(?string $date, string $format = 'F j, Y'): string
 {
     if (empty($date)) {

@@ -24,6 +24,67 @@ $inboxStats = [
     ['label' => 'New messages', 'value' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'new'")->fetchColumn(), 'href' => '/admin/messages/index.php', 'icon' => 'mail'],
 ];
 
+// ---- Enquiries trend: bookings vs quote requests, last 6 months ----
+$trendMonthKeys = [];
+$trendMonthLabels = [];
+for ($i = 5; $i >= 0; $i--) {
+    $ts = strtotime("-{$i} months");
+    $trendMonthKeys[] = date('Y-m', $ts);
+    $trendMonthLabels[] = date('M', $ts);
+}
+
+$bookingsByMonth = array_fill_keys($trendMonthKeys, 0);
+foreach (db()->query("SELECT DATE_FORMAT(created_at, '%Y-%m') AS ym, COUNT(*) AS c FROM bookings WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) GROUP BY ym")->fetchAll() as $row) {
+    if (isset($bookingsByMonth[$row['ym']])) {
+        $bookingsByMonth[$row['ym']] = (int) $row['c'];
+    }
+}
+
+$quotesByMonth = array_fill_keys($trendMonthKeys, 0);
+foreach (db()->query("SELECT DATE_FORMAT(created_at, '%Y-%m') AS ym, COUNT(*) AS c FROM quote_requests WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) GROUP BY ym")->fetchAll() as $row) {
+    if (isset($quotesByMonth[$row['ym']])) {
+        $quotesByMonth[$row['ym']] = (int) $row['c'];
+    }
+}
+
+$trendMax = max(1, max($bookingsByMonth), max($quotesByMonth));
+
+// ---- Recent activity: latest enquiries across every public form, merged ----
+$activityFeed = [];
+foreach (db()->query('SELECT customer_name AS label, created_at FROM bookings ORDER BY created_at DESC LIMIT 5')->fetchAll() as $row) {
+    $activityFeed[] = ['icon' => 'calendar', 'variant' => 'emerald', 'text' => h($row['label']) . ' made a booking enquiry', 'created_at' => $row['created_at'], 'href' => '/admin/bookings/index.php'];
+}
+foreach (db()->query("SELECT full_name AS label, quote_type, created_at FROM quote_requests ORDER BY created_at DESC LIMIT 5")->fetchAll() as $row) {
+    $activityFeed[] = ['icon' => 'tag', 'variant' => 'turquoise', 'text' => h($row['label']) . ' requested a ' . h($row['quote_type']) . ' quote', 'created_at' => $row['created_at'], 'href' => '/admin/quotes/index.php'];
+}
+foreach (db()->query('SELECT name AS label, created_at FROM contact_messages ORDER BY created_at DESC LIMIT 5')->fetchAll() as $row) {
+    $activityFeed[] = ['icon' => 'mail', 'variant' => '', 'text' => h($row['label']) . ' sent a message', 'created_at' => $row['created_at'], 'href' => '/admin/messages/index.php'];
+}
+foreach (db()->query('SELECT full_name AS label, created_at FROM custom_tour_requests ORDER BY created_at DESC LIMIT 5')->fetchAll() as $row) {
+    $activityFeed[] = ['icon' => 'sliders', 'variant' => 'olive', 'text' => h($row['label']) . ' requested a custom tour', 'created_at' => $row['created_at'], 'href' => '/admin/custom-tours/index.php'];
+}
+foreach (db()->query('SELECT full_name AS label, created_at FROM agents ORDER BY created_at DESC LIMIT 5')->fetchAll() as $row) {
+    $activityFeed[] = ['icon' => 'users', 'variant' => '', 'text' => h($row['label']) . ' applied to join the agent pool', 'created_at' => $row['created_at'], 'href' => '/admin/agents/index.php'];
+}
+usort($activityFeed, fn (array $a, array $b) => strtotime($b['created_at']) <=> strtotime($a['created_at']));
+$activityFeed = array_slice($activityFeed, 0, 8);
+
+// ---- Recent bookings (mirrors admin/bookings/index.php's query, capped) ----
+$recentBookings = db()->query("SELECT b.*,
+        CASE b.bookable_type WHEN 'tour' THEN t.title ELSE et.title END AS item_title
+    FROM bookings b
+    LEFT JOIN tours t ON t.id = b.bookable_id AND b.bookable_type = 'tour'
+    LEFT JOIN experience_tours et ON et.id = b.bookable_id AND b.bookable_type = 'experience_tour'
+    ORDER BY b.created_at DESC
+    LIMIT 5")->fetchAll();
+
+// ---- Upcoming scheduled departures ----
+$upcomingTours = db()->query("SELECT id, title, scheduled_date, price, days
+    FROM tours
+    WHERE status = 'published' AND scheduled_date IS NOT NULL AND scheduled_date >= CURDATE()
+    ORDER BY scheduled_date ASC
+    LIMIT 5")->fetchAll();
+
 require __DIR__ . '/includes/header.php';
 ?>
 
@@ -37,6 +98,64 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
   <?php endforeach; ?>
+</div>
+
+<div class="dash-grid">
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__title">Enquiries trend</div>
+      <div class="chart-legend">
+        <span class="chart-legend__item"><i class="chart-legend__dot chart-legend__dot--bookings"></i>Bookings</span>
+        <span class="chart-legend__item"><i class="chart-legend__dot chart-legend__dot--quotes"></i>Quote requests</span>
+      </div>
+    </div>
+    <div class="panel__body">
+      <?php if (array_sum($bookingsByMonth) === 0 && array_sum($quotesByMonth) === 0): ?>
+        <div class="empty-state">
+          <div class="empty-state__title">No enquiries yet</div>
+          <div class="empty-state__body">Bookings and quote requests from the public site will chart here.</div>
+        </div>
+      <?php else: ?>
+        <div class="bar-chart">
+          <?php foreach ($trendMonthKeys as $i => $key): ?>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bars">
+                <div class="bar-chart__bar bar-chart__bar--bookings" style="height:<?= max(4, (int) round($bookingsByMonth[$key] / $trendMax * 130)) ?>px" title="<?= (int) $bookingsByMonth[$key] ?> bookings in <?= h($trendMonthLabels[$i]) ?>"></div>
+                <div class="bar-chart__bar bar-chart__bar--quotes" style="height:<?= max(4, (int) round($quotesByMonth[$key] / $trendMax * 130)) ?>px" title="<?= (int) $quotesByMonth[$key] ?> quote requests in <?= h($trendMonthLabels[$i]) ?>"></div>
+              </div>
+              <div class="bar-chart__label"><?= h($trendMonthLabels[$i]) ?></div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__title">Recent activity</div>
+    </div>
+    <div class="panel__body panel__body--flush">
+      <?php if (!$activityFeed): ?>
+        <div class="empty-state">
+          <div class="empty-state__title">Nothing yet</div>
+          <div class="empty-state__body">New enquiries will show up here as they arrive.</div>
+        </div>
+      <?php else: ?>
+        <div class="activity-feed">
+          <?php foreach ($activityFeed as $item): ?>
+            <a class="activity-row" href="<?= h(url($item['href'])) ?>">
+              <div class="activity-row__icon<?= $item['variant'] ? ' stat-tile__icon--' . $item['variant'] : '' ?>"><?= render_nav_glyph($item['icon']) ?></div>
+              <div class="activity-row__body">
+                <div class="activity-row__text"><?= $item['text'] ?></div>
+                <div class="activity-row__time"><?= h(time_ago($item['created_at'])) ?></div>
+              </div>
+            </a>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
 </div>
 
 <div class="panel">
@@ -54,6 +173,66 @@ require __DIR__ . '/includes/header.php';
           <a class="btn btn--<?= $item['value'] > 0 ? 'primary' : 'ghost' ?> btn--sm" href="<?= h(url($item['href'])) ?>"><?= $item['value'] ?> &rarr;</a>
         </div>
       <?php endforeach; ?>
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid">
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__title">Recent bookings</div>
+      <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/bookings/index.php')) ?>">View all &rarr;</a>
+    </div>
+    <?php if (!$recentBookings): ?>
+      <div class="empty-state">
+        <div class="empty-state__title">No bookings here yet</div>
+        <div class="empty-state__body">Enquiries submitted from a tour or experience page will show up here.</div>
+      </div>
+    <?php else: ?>
+      <table class="table table--compact">
+        <thead>
+          <tr><th>Customer</th><th>Item</th><th>Received</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <?php foreach ($recentBookings as $booking): ?>
+            <tr>
+              <td><?= h($booking['customer_name']) ?></td>
+              <td><?= h($booking['item_title'] ?: 'Deleted') ?></td>
+              <td class="table__meta"><?= h(time_ago($booking['created_at'])) ?></td>
+              <td><span class="status-pill status-pill--<?= h($booking['status']) ?>"><?= h(ucfirst($booking['status'])) ?></span></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    <?php endif; ?>
+  </div>
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__title">Upcoming departures</div>
+      <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/tours/index.php')) ?>">Manage tours &rarr;</a>
+    </div>
+    <div class="panel__body">
+      <?php if (!$upcomingTours): ?>
+        <div class="empty-state">
+          <div class="empty-state__title">Nothing scheduled</div>
+          <div class="empty-state__body">Set a scheduled date on a published tour to see it here.</div>
+        </div>
+      <?php else: ?>
+        <div class="sub-list">
+          <?php foreach ($upcomingTours as $tour): ?>
+            <a class="sub-row" href="<?= h(url('/admin/tours/manage.php?id=' . $tour['id'])) ?>">
+              <div class="sub-row__body">
+                <div class="sub-row__icon"><?= render_nav_glyph('calendar') ?></div>
+                <div>
+                  <div class="sub-row__title"><?= h($tour['title']) ?></div>
+                  <div class="sub-row__meta"><?= h(formatDate($tour['scheduled_date'], 'M j, Y')) ?> &middot; <?= (int) $tour['days'] ?> days</div>
+                </div>
+              </div>
+            </a>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>
