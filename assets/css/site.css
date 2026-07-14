@@ -1115,6 +1115,17 @@ a.list-row:hover { border-color: var(--murram); }
 
 .site-form { display: flex; flex-direction: column; gap: 20px; }
 
+.site-form__section-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--murram-dark);
+  border-top: 1px solid var(--savanna-line);
+  padding-top: 20px;
+  margin: 0;
+}
+
 .site-form__row label {
   display: block;
   font-family: var(--font-mono);
@@ -1148,6 +1159,34 @@ a.list-row:hover { border-color: var(--murram); }
 
 .site-form__row textarea { resize: vertical; border: 1px solid var(--savanna-line); padding: 10px 12px; background: var(--white); }
 .site-form__row textarea:focus { border-color: var(--murram); }
+
+/* Checkbox groups (public forms with multi-select options, e.g. Create
+   Your Own Tour) -- a bordered, scrollable box rather than a bare list of
+   inputs, so a long destination/activity list doesn't run the page on. */
+
+.check-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px 16px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--savanna-line);
+  border-radius: 5px;
+  padding: 12px 14px;
+  background: var(--white);
+}
+
+.check-group__empty { font-size: 13.5px; opacity: 0.6; margin: 0; }
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 14px;
+}
+
+.check-row input { width: auto; }
 
 .flash {
   padding: 12px 16px;

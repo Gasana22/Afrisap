@@ -354,6 +354,44 @@ INSERT INTO `countries` VALUES (5,'Burundi'),(7,'DR Congo'),(2,'Kenya'),(4,'Rwan
 UNLOCK TABLES;
 
 --
+-- Table structure for table `custom_tour_requests`
+--
+-- "Create Your Own Tour" leads. A request record, not a bookable entity,
+-- so the destination/activity/experience-type selections are stored as
+-- plain text rather than normalized join tables.
+
+DROP TABLE IF EXISTS `custom_tour_requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `custom_tour_requests` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tour_name` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `full_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `pax` int unsigned NOT NULL DEFAULT '1',
+  `days` int unsigned NOT NULL,
+  `budget_type` enum('Luxury','Mid-Range','Budget') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Mid-Range',
+  `destinations` text COLLATE utf8mb4_general_ci,
+  `activities` text COLLATE utf8mb4_general_ci,
+  `experience_types` text COLLATE utf8mb4_general_ci,
+  `notes` text COLLATE utf8mb4_general_ci,
+  `status` enum('new','contacted','closed') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'new',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `custom_tour_requests`
+--
+
+LOCK TABLES `custom_tour_requests` WRITE;
+/*!40000 ALTER TABLE `custom_tour_requests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `custom_tour_requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `destination_activities`
 --
 
@@ -951,6 +989,7 @@ CREATE TABLE `tours` (
   `price` decimal(12,2) NOT NULL,
   `discount_percent` decimal(5,2) NOT NULL DEFAULT '0.00',
   `days` int unsigned NOT NULL,
+  `scheduled_date` date DEFAULT NULL,
   `min_pax` int unsigned NOT NULL DEFAULT '1',
   `max_pax` int unsigned NOT NULL,
   `short_overview` text COLLATE utf8mb4_general_ci,
@@ -980,6 +1019,35 @@ CREATE TABLE `tours` (
 LOCK TABLES `tours` WRITE;
 /*!40000 ALTER TABLE `tours` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tours` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `virtual_experience_signups`
+--
+-- Interest waitlist for the (not-yet-built) Virtual Experience live-stream
+-- product -- see includes note in create-your-own-tour/virtual-experience
+-- migrations for why this stops short of payments/streaming.
+
+DROP TABLE IF EXISTS `virtual_experience_signups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `virtual_experience_signups` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `notes` text COLLATE utf8mb4_general_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `virtual_experience_signups`
+--
+
+LOCK TABLES `virtual_experience_signups` WRITE;
+/*!40000 ALTER TABLE `virtual_experience_signups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `virtual_experience_signups` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

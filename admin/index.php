@@ -18,6 +18,7 @@ $stats = [
 $inboxStats = [
     ['label' => 'Pending bookings', 'value' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'pending'")->fetchColumn(), 'href' => '/admin/bookings/index.php'],
     ['label' => 'New quote requests', 'value' => (int) db()->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn(), 'href' => '/admin/quotes/index.php'],
+    ['label' => 'New custom tour requests', 'value' => (int) db()->query("SELECT COUNT(*) FROM custom_tour_requests WHERE status = 'new'")->fetchColumn(), 'href' => '/admin/custom-tours/index.php'],
     ['label' => 'New agent applications', 'value' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'new'")->fetchColumn(), 'href' => '/admin/agents/index.php'],
     ['label' => 'Career applications', 'value' => (int) db()->query('SELECT COUNT(*) FROM career_applications')->fetchColumn(), 'href' => '/admin/career-applications/index.php'],
     ['label' => 'New messages', 'value' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'new'")->fetchColumn(), 'href' => '/admin/messages/index.php'],

@@ -155,6 +155,9 @@ require __DIR__ . '/includes/site_header.php';
           </div>
           <ul class="side-card__facts">
             <li><span>Duration</span><span><?= (int) $tour['days'] ?> days</span></li>
+            <?php if ($tour['scheduled_date']): ?>
+              <li><span>Departs</span><span><?= h(formatDate($tour['scheduled_date'], 'M j, Y')) ?></span></li>
+            <?php endif; ?>
             <li><span>Group size</span><span><?= (int) $tour['min_pax'] ?>–<?= (int) $tour['max_pax'] ?> people</span></li>
             <li><span>Budget tier</span><span><?= h($tour['budget_type']) ?></span></li>
           </ul>

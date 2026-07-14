@@ -7,7 +7,7 @@ require_login();
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $tour = [
     'title' => '', 'category_id' => '', 'budget_type' => 'Mid-Range', 'price' => '', 'discount_percent' => 0,
-    'days' => '', 'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '',
+    'days' => '', 'scheduled_date' => '', 'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '',
     'top_highlights' => '', 'hotel_info' => '', 'vehicle_info' => '', 'flight_info' => '',
     'includes' => '', 'excludes' => '', 'operator_id' => '', 'status' => 'draft',
 ];
@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tour['price'] = $_POST['price'] ?? '';
     $tour['discount_percent'] = $_POST['discount_percent'] ?? 0;
     $tour['days'] = $_POST['days'] ?? '';
+    $tour['scheduled_date'] = trim($_POST['scheduled_date'] ?? '') ?: null;
     $tour['min_pax'] = $_POST['min_pax'] ?? 1;
     $tour['max_pax'] = $_POST['max_pax'] ?? '';
     $tour['short_overview'] = trim($_POST['short_overview'] ?? '');
@@ -64,6 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($tour['days'] === '' || !ctype_digit((string) $tour['days']) || (int) $tour['days'] < 1) {
         $errors['days'] = 'Enter the number of days.';
     }
+    if ($tour['scheduled_date'] !== null && !DateTime::createFromFormat('Y-m-d', $tour['scheduled_date'])) {
+        $errors['scheduled_date'] = 'Enter a valid date.';
+    }
     if ($tour['max_pax'] === '' || !ctype_digit((string) $tour['max_pax']) || (int) $tour['max_pax'] < 1) {
         $errors['max_pax'] = 'Enter the maximum group size.';
     }
@@ -77,16 +81,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
         $params = [
             $tour['title'], $tour['category_id'], $tour['budget_type'], $tour['price'], $tour['discount_percent'],
-            $tour['days'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'], $tour['full_overview'],
+            $tour['days'], $tour['scheduled_date'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'], $tour['full_overview'],
             $tour['top_highlights'], $tour['hotel_info'], $tour['vehicle_info'], $tour['flight_info'],
             $tour['includes'], $tour['excludes'], $tour['operator_id'], $tour['status'],
         ];
 
         if ($id) {
-            db()->prepare('UPDATE tours SET title=?, category_id=?, budget_type=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, hotel_info=?, vehicle_info=?, flight_info=?, includes=?, excludes=?, operator_id=?, status=? WHERE id=?')
+            db()->prepare('UPDATE tours SET title=?, category_id=?, budget_type=?, price=?, discount_percent=?, days=?, scheduled_date=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, hotel_info=?, vehicle_info=?, flight_info=?, includes=?, excludes=?, operator_id=?, status=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO tours (title, category_id, budget_type, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, hotel_info, vehicle_info, flight_info, includes, excludes, operator_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO tours (title, category_id, budget_type, price, discount_percent, days, scheduled_date, min_pax, max_pax, short_overview, full_overview, top_highlights, hotel_info, vehicle_info, flight_info, includes, excludes, operator_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -151,6 +155,12 @@ require __DIR__ . '/../includes/header.php';
           <label for="days">Number of days</label>
           <input type="number" min="1" id="days" name="days" value="<?= h((string) $tour['days']) ?>" required>
           <?php if (isset($errors['days'])): ?><span class="error-text"><?= h($errors['days']) ?></span><?php endif; ?>
+        </div>
+        <div class="form-field<?= isset($errors['scheduled_date']) ? ' has-error' : '' ?>">
+          <label for="scheduled_date">Scheduled date</label>
+          <input type="date" id="scheduled_date" name="scheduled_date" value="<?= h((string) ($tour['scheduled_date'] ?? '')) ?>">
+          <span class="hint">Optional. Set this to list the tour under Scheduled Tours with a fixed departure date.</span>
+          <?php if (isset($errors['scheduled_date'])): ?><span class="error-text"><?= h($errors['scheduled_date']) ?></span><?php endif; ?>
         </div>
         <div class="form-field<?= isset($errors['min_pax']) ? ' has-error' : '' ?>">
           <label for="min_pax">Minimum group size</label>

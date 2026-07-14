@@ -87,6 +87,11 @@ INSERT INTO `countries` VALUES
 /*!40000 ALTER TABLE `countries` ENABLE KEYS */;
 UNLOCK TABLES;
 
+LOCK TABLES `custom_tour_requests` WRITE;
+/*!40000 ALTER TABLE `custom_tour_requests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `custom_tour_requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
 LOCK TABLES `destination_activities` WRITE;
 /*!40000 ALTER TABLE `destination_activities` DISABLE KEYS */;
 /*!40000 ALTER TABLE `destination_activities` ENABLE KEYS */;
@@ -209,7 +214,7 @@ UNLOCK TABLES;
 LOCK TABLES `site_settings` WRITE;
 /*!40000 ALTER TABLE `site_settings` DISABLE KEYS */;
 INSERT INTO `site_settings` VALUES
-(1,NULL,NULL,NULL,NULL,'2026-07-14 10:12:50');
+(1,NULL,NULL,NULL,NULL,'2026-07-14 10:24:38');
 /*!40000 ALTER TABLE `site_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,6 +262,11 @@ UNLOCK TABLES;
 LOCK TABLES `tours` WRITE;
 /*!40000 ALTER TABLE `tours` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tours` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `virtual_experience_signups` WRITE;
+/*!40000 ALTER TABLE `virtual_experience_signups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `virtual_experience_signups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

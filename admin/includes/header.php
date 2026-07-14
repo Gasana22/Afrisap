@@ -19,6 +19,8 @@ $counts = [
     'blog' => (int) db()->query('SELECT COUNT(*) FROM blog_posts')->fetchColumn(),
     'bookings' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'pending'")->fetchColumn(),
     'quotes' => (int) db()->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn(),
+    'custom-tours' => (int) db()->query("SELECT COUNT(*) FROM custom_tour_requests WHERE status = 'new'")->fetchColumn(),
+    'virtual-experience-signups' => (int) db()->query('SELECT COUNT(*) FROM virtual_experience_signups')->fetchColumn(),
     'agents' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'new'")->fetchColumn(),
     'career-applications' => (int) db()->query('SELECT COUNT(*) FROM career_applications')->fetchColumn(),
     'messages' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'new'")->fetchColumn(),
@@ -109,6 +111,12 @@ $active_nav = $active_nav ?? '';
         </a>
         <a class="nav-link<?= $active_nav === 'quotes' ? ' is-active' : '' ?>" href="<?= h(url('/admin/quotes/index.php')) ?>">
           Quote Requests <span class="nav-link__count"><?= $counts['quotes'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'custom-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/custom-tours/index.php')) ?>">
+          Custom Tour Requests <span class="nav-link__count"><?= $counts['custom-tours'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'virtual-experience-signups' ? ' is-active' : '' ?>" href="<?= h(url('/admin/virtual-experience-signups/index.php')) ?>">
+          Virtual Experience Waitlist <span class="nav-link__count"><?= $counts['virtual-experience-signups'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'agents' ? ' is-active' : '' ?>" href="<?= h(url('/admin/agents/index.php')) ?>">
           Agent Applications <span class="nav-link__count"><?= $counts['agents'] ?></span>
