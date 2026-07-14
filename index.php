@@ -247,14 +247,17 @@ require __DIR__ . '/includes/site_header.php';
     </div>
     <div class="why-grid">
       <div class="why-item">
+        <div class="why-item__icon"><?= render_nav_glyph('briefcase') ?></div>
         <h3 class="why-item__title">Licensed operators, not middlemen</h3>
         <p class="why-item__body">Every tour is run by a named, contactable operator: you know exactly who's guiding you before you book.</p>
       </div>
       <div class="why-item">
+        <div class="why-item__icon"><?= render_nav_glyph('compass') ?></div>
         <h3 class="why-item__title">Beyond the wildlife circuit</h3>
         <p class="why-item__body">We're one of the few platforms built around experiential tourism too: real farms, real neighbourhoods, real people.</p>
       </div>
       <div class="why-item">
+        <div class="why-item__icon"><?= render_nav_glyph('pin') ?></div>
         <h3 class="why-item__title">Branches across the region</h3>
         <p class="why-item__body">Kampala, Nairobi, Addis Ababa and London, supporting you in your timezone, on the ground where it matters.</p>
       </div>

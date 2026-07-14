@@ -49,14 +49,17 @@ require __DIR__ . '/includes/site_header.php';
     </div>
     <div class="why-grid">
       <div class="why-item">
+        <div class="why-item__icon"><?= render_nav_glyph('compass') ?></div>
         <h3 class="why-item__title">01. Pick a type</h3>
         <p class="why-item__body">Choose the world you want in: a tribe's culture, a working farm, local sport, a factory floor, or a neighbourhood.</p>
       </div>
       <div class="why-item">
+        <div class="why-item__icon"><?= render_nav_glyph('pin') ?></div>
         <h3 class="why-item__title">02. Choose a destination</h3>
         <p class="why-item__body">Each type has its own set of real places and communities -- browse them and see what they offer.</p>
       </div>
       <div class="why-item">
+        <div class="why-item__icon"><?= render_nav_glyph('briefcase') ?></div>
         <h3 class="why-item__title">03. Book with a local provider</h3>
         <p class="why-item__body">Every experience is run by a named service provider on the ground, not a call centre.</p>
       </div>
@@ -118,7 +121,7 @@ $tours = $stmt->fetchAll();
       <form class="filter-bar" method="get" style="grid-template-columns: 1fr auto;">
         <input type="hidden" name="type" value="<?= h($typeSlug) ?>">
         <div class="filter-bar__field">
-          <label for="f-destination">Destination</label>
+          <label for="f-destination"><?= render_nav_glyph('pin') ?>Destination</label>
           <select id="f-destination" name="destination">
             <option value="">Any destination</option>
             <?php foreach ($typeDestinations as $dest): ?>

@@ -143,13 +143,13 @@ require __DIR__ . '/includes/site_header.php';
       <aside class="detail-side">
         <?php if ($categoryPage['when_to_visit']): ?>
           <div class="side-card">
-            <p class="side-card__title">When to visit</p>
+            <p class="side-card__title"><?= render_nav_glyph('calendar') ?>When to visit</p>
             <p class="side-card__body"><?= nl2br(h($categoryPage['when_to_visit'])) ?></p>
           </div>
         <?php endif; ?>
         <?php if ($categoryParks): ?>
           <div class="side-card">
-            <p class="side-card__title">National parks</p>
+            <p class="side-card__title"><?= render_nav_glyph('pin') ?>National parks</p>
             <?php foreach ($categoryParks as $park): ?>
               <a href="<?= h(url('/destination.php?id=' . $park['id'])) ?>" class="side-card__link"><?= h($park['name']) ?></a>
             <?php endforeach; ?>
@@ -157,7 +157,7 @@ require __DIR__ . '/includes/site_header.php';
         <?php endif; ?>
         <?php if ($categoryPage['more_activities']): ?>
           <div class="side-card">
-            <p class="side-card__title">More activities available</p>
+            <p class="side-card__title"><?= render_nav_glyph('sliders') ?>More activities available</p>
             <p class="side-card__body"><?= nl2br(h($categoryPage['more_activities'])) ?></p>
           </div>
         <?php endif; ?>
@@ -178,7 +178,7 @@ require __DIR__ . '/includes/site_header.php';
       <?php if ($categorySlug !== ''): ?><input type="hidden" name="category" value="<?= h($categorySlug) ?>"><?php endif; ?>
       <?php if ($group !== ''): ?><input type="hidden" name="group" value="<?= h($group) ?>"><?php endif; ?>
       <div class="filter-bar__field">
-        <label for="f-budget">Budget</label>
+        <label for="f-budget"><?= render_nav_glyph('tag') ?>Budget</label>
         <select id="f-budget" name="budget">
           <option value="">Any budget</option>
           <?php foreach (['Luxury', 'Mid-Range', 'Budget'] as $opt): ?>
@@ -187,7 +187,7 @@ require __DIR__ . '/includes/site_header.php';
         </select>
       </div>
       <div class="filter-bar__field">
-        <label for="f-country">Country</label>
+        <label for="f-country"><?= render_nav_glyph('compass') ?>Country</label>
         <select id="f-country" name="country">
           <option value="">Any country</option>
           <?php foreach (db()->query('SELECT id, name FROM countries ORDER BY name')->fetchAll() as $c): ?>
@@ -196,7 +196,7 @@ require __DIR__ . '/includes/site_header.php';
         </select>
       </div>
       <div class="filter-bar__field">
-        <label for="f-days">Days</label>
+        <label for="f-days"><?= render_nav_glyph('calendar') ?>Days</label>
         <select id="f-days" name="days">
           <option value="">Any length</option>
           <option value="1-3" <?= $daysBucket === '1-3' ? 'selected' : '' ?>>1–3 days</option>
@@ -205,7 +205,7 @@ require __DIR__ . '/includes/site_header.php';
         </select>
       </div>
       <div class="filter-bar__field">
-        <label for="f-destination">Destination</label>
+        <label for="f-destination"><?= render_nav_glyph('pin') ?>Destination</label>
         <select id="f-destination" name="destination">
           <option value="">Any national park</option>
           <?php foreach (db()->query('SELECT id, name FROM destinations ORDER BY name')->fetchAll() as $d): ?>

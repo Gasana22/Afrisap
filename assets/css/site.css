@@ -833,6 +833,21 @@ a.hero-stat:hover {
   gap: 32px;
 }
 
+.why-item__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--murram-dark);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 14px;
+}
+
+.why-item__icon .nav-icon { width: 22px; height: 22px; opacity: 1; }
+
 .why-item__title {
   font-family: var(--font-display);
   font-size: 19px;
@@ -990,10 +1005,43 @@ a.hero-stat:hover {
 /* ---------- Inner page header ---------- */
 
 .page-header {
-  background: var(--canopy);
+  position: relative;
+  background: radial-gradient(120% 180% at 12% 0%, var(--canopy-light) 0%, var(--canopy) 55%);
   color: var(--white);
   padding: 44px 0 36px;
+  overflow: hidden;
 }
+
+/* Faint concentric waypoint mark echoing the homepage hero's map motif,
+   so inner pages don't feel like a completely different site once you
+   click through from the hero. */
+.page-header::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 130, 60, 0.18);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 130, 60, 0.22);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.page-header > .wrap { position: relative; z-index: 1; }
 
 .page-header__eyebrow {
   font-family: var(--font-mono);
@@ -1046,6 +1094,9 @@ a.hero-stat:hover {
 }
 
 .side-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -1053,6 +1104,8 @@ a.hero-stat:hover {
   color: var(--murram-dark);
   margin: 0 0 10px;
 }
+
+.side-card__title .nav-icon { width: 15px; height: 15px; color: var(--murram-dark); opacity: 1; }
 
 .side-card__body { font-size: 13.5px; opacity: 0.8; margin: 0 0 4px; }
 
@@ -1212,10 +1265,13 @@ a.list-row:hover { border-color: var(--murram); }
   border: 1px solid var(--savanna-line);
   border-radius: var(--radius);
   padding: 16px;
+  box-shadow: var(--shadow-card);
 }
 
 .filter-bar__field label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: 10.5px;
   letter-spacing: 0.06em;
@@ -1223,6 +1279,8 @@ a.list-row:hover { border-color: var(--murram); }
   color: var(--canopy);
   margin-bottom: 6px;
 }
+
+.filter-bar__field label .nav-icon { width: 14px; height: 14px; color: var(--murram-dark); opacity: 1; }
 
 .filter-bar select {
   width: 100%;
