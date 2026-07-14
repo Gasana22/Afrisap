@@ -7,14 +7,14 @@ $stmt = db()->prepare('SELECT * FROM pages WHERE slug = ?');
 $stmt->execute(['uganda-travel-tips']);
 $page = $stmt->fetch();
 
-$page_title = ($page['title'] ?? 'Uganda Travel Tips') . ' — Safarisap';
+$page_title = ($page['title'] ?? 'Travel Tips') . ' — Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
 <header class="page-header">
   <div class="wrap">
     <p class="page-header__eyebrow">Travel Tips</p>
-    <h1 class="page-header__title"><?= h($page['title'] ?? 'Uganda Travel Tips') ?></h1>
+    <h1 class="page-header__title"><?= h($page['title'] ?? 'Travel Tips') ?></h1>
   </div>
 </header>
 

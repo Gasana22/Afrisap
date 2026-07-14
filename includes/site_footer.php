@@ -40,5 +40,6 @@
     </div>
   </div>
 </footer>
+<script src="<?= h(assetUrl('js/site.js')) ?>"></script>
 </body>
 </html>

@@ -766,6 +766,37 @@ LOCK TABLES `service_providers` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `site_settings`
+--
+-- Singleton row (id is always 1) holding the editable homepage hero copy
+-- and an optional hero background photo, so the client can run seasonal
+-- promotions (e.g. low/high season messaging) without a code change.
+
+DROP TABLE IF EXISTS `site_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `site_settings` (
+  `id` tinyint unsigned NOT NULL,
+  `hero_eyebrow` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `hero_title` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `hero_subtitle` text COLLATE utf8mb4_general_ci,
+  `hero_background_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `site_settings`
+--
+
+LOCK TABLES `site_settings` WRITE;
+/*!40000 ALTER TABLE `site_settings` DISABLE KEYS */;
+INSERT INTO `site_settings` VALUES (1,NULL,NULL,NULL,NULL,CURRENT_TIMESTAMP);
+/*!40000 ALTER TABLE `site_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tour_activities`
 --
 

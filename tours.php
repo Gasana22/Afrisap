@@ -8,6 +8,11 @@ $categorySlug = $_GET['category'] ?? '';
 $category = null;
 $categoryPage = null;
 
+$group = $_GET['group'] ?? '';
+if (!in_array($group, ['safari', 'trip'], true)) {
+    $group = '';
+}
+
 if ($categorySlug !== '') {
     $stmt = db()->prepare('SELECT * FROM tour_categories WHERE slug = ?');
     $stmt->execute([$categorySlug]);
@@ -32,6 +37,10 @@ $params = [];
 if ($category) {
     $where[] = 't.category_id = ?';
     $params[] = $category['id'];
+} elseif ($group === 'safari') {
+    $where[] = "c.menu_group = 'safari'";
+} elseif ($group === 'trip') {
+    $where[] = "c.menu_group IN ('trip', 'school')";
 }
 if (in_array($budget, ['Luxury', 'Mid-Range', 'Budget'], true)) {
     $where[] = 't.budget_type = ?';
@@ -60,6 +69,22 @@ $stmt = db()->prepare($sql);
 $stmt->execute($params);
 $tours = $stmt->fetchAll();
 
+// National parks featured across the tours currently listed, so a filtered
+// or empty result still points the visitor at the parks these tours visit.
+$tourParks = [];
+if ($tours) {
+    $tourIds = array_column($tours, 'id');
+    $placeholders = implode(',', array_fill(0, count($tourIds), '?'));
+    $parksStmt = db()->prepare("SELECT DISTINCT d.id, d.name, c.name AS country_name
+        FROM tour_destinations td
+        JOIN destinations d ON d.id = td.destination_id
+        JOIN countries c ON c.id = d.country_id
+        WHERE td.tour_id IN ($placeholders)
+        ORDER BY d.name");
+    $parksStmt->execute($tourIds);
+    $tourParks = $parksStmt->fetchAll();
+}
+
 $categoryGallery = $category ? get_media('category_page', $category['id']) : [];
 $categoryParks = [];
 if ($categoryPage) {
@@ -68,14 +93,15 @@ if ($categoryPage) {
     $categoryParks = $parkStmt->fetchAll();
 }
 
-$page_title = ($category ? $category['name'] : 'Safari Tours') . ' — Safarisap';
+$groupTitle = $group === 'trip' ? 'Trip Tours' : ($group === 'safari' ? 'Safari Tours' : 'Safari Tours');
+$page_title = ($category ? $category['name'] : $groupTitle) . ' — Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow">Safari Tours</p>
-    <h1 class="page-header__title"><?= h($category ? $category['name'] : 'Safari Tours') ?></h1>
+    <p class="page-header__eyebrow"><?= h($groupTitle) ?></p>
+    <h1 class="page-header__title"><?= h($category ? $category['name'] : $groupTitle) ?></h1>
     <?php if ($categoryPage && $categoryPage['brief_overview']): ?>
       <p class="page-header__lead"><?= h($categoryPage['brief_overview']) ?></p>
     <?php elseif (!$category): ?>
@@ -145,11 +171,12 @@ require __DIR__ . '/includes/site_header.php';
   <div class="wrap">
     <div class="section__header" style="margin-bottom:28px;">
       <p class="section__eyebrow">Itineraries</p>
-      <h2 class="section__title"><?= h($category ? $category['name'] . ' Tours' : 'All Safari Tours') ?></h2>
+      <h2 class="section__title"><?= h($category ? $category['name'] . ' Tours' : 'All ' . $groupTitle) ?></h2>
     </div>
 
     <form class="filter-bar" method="get">
       <?php if ($categorySlug !== ''): ?><input type="hidden" name="category" value="<?= h($categorySlug) ?>"><?php endif; ?>
+      <?php if ($group !== ''): ?><input type="hidden" name="group" value="<?= h($group) ?>"><?php endif; ?>
       <div class="filter-bar__field">
         <label for="f-budget">Budget</label>
         <select id="f-budget" name="budget">
@@ -211,6 +238,21 @@ require __DIR__ . '/includes/site_header.php';
                 <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View</span>
               </div>
             </div>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if ($tourParks): ?>
+      <div class="section__header" style="margin:36px 0 20px;">
+        <p class="section__eyebrow">On The Ground</p>
+        <h2 class="section__title" style="font-size:20px;">National parks featured in these tours</h2>
+      </div>
+      <div class="tile-rail">
+        <?php foreach ($tourParks as $park): ?>
+          <a href="<?= h(url('/destination.php?id=' . $park['id'])) ?>" class="tile">
+            <h3 class="tile__title"><?= h($park['name']) ?></h3>
+            <p class="tile__meta"><?= h($park['country_name']) ?></p>
           </a>
         <?php endforeach; ?>
       </div>

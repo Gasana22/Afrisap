@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/site_bootstrap.php';
 require_once __DIR__ . '/includes/site_svg.php';
+require_once __DIR__ . '/includes/media.php';
 
 $featuredTours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.discount_percent, t.days, t.short_overview,
         c.name AS category_name
@@ -20,21 +21,66 @@ $destinations = db()->query('SELECT d.id, d.name, c.name AS country_name
 
 $experienceTypes = db()->query('SELECT id, name, slug FROM experience_types ORDER BY name')->fetchAll();
 
+$siteSettings = db()->query('SELECT * FROM site_settings WHERE id = 1')->fetch() ?: [];
+$heroEyebrowCountries = [
+    ['label' => 'East Africa', 'href' => null],
+    ['label' => 'Uganda', 'href' => 'tours.php?country=1'],
+    ['label' => 'Kenya', 'href' => 'tours.php?country=2'],
+    ['label' => 'Tanzania', 'href' => 'tours.php?country=3'],
+    ['label' => 'Rwanda', 'href' => 'tours.php?country=4'],
+    ['label' => 'DR Congo', 'href' => 'tours.php?country=7'],
+];
+$heroTitle = $siteSettings['hero_title'] ?? '' ?: 'Explore. Experience. Belong.';
+$heroSubtitle = $siteSettings['hero_subtitle'] ?? '' ?: "Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village. Safarisap plans East Africa on your terms.";
+$heroBackground = $siteSettings['hero_background_path'] ?? null;
+
+$statSafariTours = (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group = 'safari' AND t.status = 'published'")->fetchColumn();
+$statExperienceTours = (int) db()->query("SELECT COUNT(*) FROM experience_tours WHERE status = 'published'")->fetchColumn();
+$statActivities = (int) db()->query('SELECT COUNT(*) FROM activities')->fetchColumn();
+$statTripTours = (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group IN ('trip', 'school') AND t.status = 'published'")->fetchColumn();
+
 $page_title = 'Safarisap — Explore. Experience. Belong.';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
-<header class="hero">
-  <?= render_hero_illustration() ?>
+<header class="hero<?= $heroBackground ? ' hero--photo' : '' ?>">
+  <?php if ($heroBackground): ?>
+    <img class="hero__photo" src="<?= h(url('/' . $heroBackground)) ?>" alt="">
+  <?php else: ?>
+    <?= render_hero_illustration() ?>
+  <?php endif; ?>
   <div class="wrap hero__content">
-    <p class="hero__eyebrow">East Africa &middot; Uganda &middot; Kenya &middot; Tanzania &middot; Rwanda &middot; DR Congo</p>
-    <h1 class="hero__title">Explore. Experience. Belong.</h1>
-    <p class="hero__subtitle">Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village. Safarisap plans East Africa on your terms.</p>
+    <p class="hero__eyebrow">
+      <?php foreach ($heroEyebrowCountries as $i => $country): ?>
+        <?php if ($i > 0): ?><span aria-hidden="true"> &middot; </span><?php endif; ?>
+        <?php if ($country['href']): ?><a href="<?= h(url('/' . $country['href'])) ?>"><?= h($country['label']) ?></a><?php else: ?><?= h($country['label']) ?><?php endif; ?>
+      <?php endforeach; ?>
+    </p>
+    <h1 class="hero__title"><?= h($heroTitle) ?></h1>
+    <p class="hero__subtitle"><?= h($heroSubtitle) ?></p>
     <p class="hero__coords">01&deg;04'S, 29&deg;40'E &mdash; BWINDI IMPENETRABLE FOREST</p>
     <div class="hero__actions">
       <a href="<?= h(url('/tours.php')) ?>" class="btn btn--primary">Plan a Safari</a>
       <a href="<?= h(url('/experiences.php')) ?>" class="btn btn--outline">Discover Experiences</a>
     </div>
+  </div>
+  <div class="hero__stats">
+    <a href="<?= h(url('/tours.php?group=safari')) ?>" class="hero-stat">
+      <span class="hero-stat__label">Safari Tours</span>
+      <span class="hero-stat__value"><?= $statSafariTours ?></span>
+    </a>
+    <a href="<?= h(url('/experiences.php')) ?>" class="hero-stat">
+      <span class="hero-stat__label">Experiential Tours</span>
+      <span class="hero-stat__value"><?= $statExperienceTours ?></span>
+    </a>
+    <div class="hero-stat">
+      <span class="hero-stat__label">Activities</span>
+      <span class="hero-stat__value"><?= $statActivities ?></span>
+    </div>
+    <a href="<?= h(url('/tours.php?group=trip')) ?>" class="hero-stat">
+      <span class="hero-stat__label">Trip Tours</span>
+      <span class="hero-stat__value"><?= $statTripTours ?></span>
+    </a>
   </div>
 </header>
 

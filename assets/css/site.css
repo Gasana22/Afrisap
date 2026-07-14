@@ -26,11 +26,16 @@
   --danger-bg: #fbeeec;
   --danger-line: #eec9c2;
 
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Poppins', 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  --drum: #8a5a2b;
+  --drum-dark: #6e4621;
+
   --radius: 3px;
+  --radius-lg: 14px;
   --shadow-card: 0 1px 2px rgba(20, 32, 27, 0.06), 0 8px 24px rgba(20, 32, 27, 0.06);
   --max-width: 1200px;
 }
@@ -183,9 +188,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .mega-menu--wide { grid-template-columns: repeat(3, 1fr); min-width: 720px; }
+.mega-menu--narrow { grid-template-columns: 1fr; min-width: 240px; }
 
 .mega-menu a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 8px 10px;
   border-radius: 5px;
   color: var(--ink);
@@ -193,6 +201,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .mega-menu a:hover { background: var(--savanna); color: var(--murram-dark); }
+
+.nav-icon { flex: none; width: 18px; height: 18px; opacity: 0.75; }
 
 .mega-menu__group-label {
   font-family: var(--font-mono);
@@ -221,11 +231,35 @@ a { color: inherit; text-decoration: none; }
   height: 100%;
 }
 
+.hero__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Photo hero still needs the same dusk-to-ember read for white text/stat
+   boxes, so lay the usual gradient over the uploaded photo rather than
+   trying to guess a readable overlay per image. */
+.hero--photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(36, 27, 52, 0.82) 0%, rgba(74, 52, 84, 0.55) 45%, rgba(232, 130, 60, 0.35) 100%);
+}
+
 .hero__content {
   position: relative;
   z-index: 1;
   padding-bottom: 56px;
   color: var(--white);
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero__coords {
@@ -252,7 +286,14 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   color: var(--ember);
   margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
 }
+
+.hero__eyebrow a { color: var(--ember); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(232, 130, 60, 0.45); }
+.hero__eyebrow a:hover { color: var(--white); text-decoration-color: currentColor; }
 
 .hero__title {
   font-family: var(--font-display);
@@ -261,7 +302,7 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.05;
   margin: 0 0 18px;
   letter-spacing: -0.01em;
-  max-width: 11ch;
+  max-width: 14ch;
 }
 
 .hero__subtitle {
@@ -276,7 +317,60 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+  justify-content: center;
   margin-bottom: 0;
+}
+
+/* Stat boxes -- floated over the hero on wide viewports (right-aligned,
+   stacked), stacked in normal flow under the content on narrower ones. */
+
+.hero__stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 24px 40px;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 18px;
+  background: rgba(20, 32, 27, 0.4);
+  border: 1px solid rgba(232, 221, 188, 0.25);
+  border-radius: var(--radius-lg);
+  color: var(--white);
+  backdrop-filter: blur(2px);
+}
+
+a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 221, 188, 0.45); }
+
+.hero-stat__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.hero-stat__value {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--ember);
+}
+
+@media (min-width: 981px) {
+  .hero__stats {
+    position: absolute;
+    top: 96px;
+    right: 24px;
+    width: 220px;
+    padding: 0;
+  }
 }
 
 .btn {
@@ -445,7 +539,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .door--safari { background: var(--canopy-light); }
-.door--experiential { background: var(--murram-dark); }
+.door--experiential { background: var(--drum); }
 
 .door__seal {
   position: absolute;
@@ -611,7 +705,7 @@ a { color: inherit; text-decoration: none; }
 .experience-tile {
   background: var(--canopy);
   color: var(--white);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 22px 16px;
   text-align: center;
 }
@@ -623,6 +717,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 .experience-tile__title { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+
+.experience-tile__number {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ember);
+  opacity: 0.85;
+  margin-top: 10px;
+}
 
 /* Why us */
 
@@ -931,7 +1033,7 @@ a { color: inherit; text-decoration: none; }
 
 .list-rows { display: flex; flex-direction: column; gap: 12px; }
 
-a.list-row {
+.list-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1056,6 +1158,20 @@ a.list-row:hover { border-color: var(--murram); }
 
 .flash--success { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-line); }
 .flash--error { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-line); }
+
+/* ---------- Scroll reveal ---------- */
+/* Populated by assets/js/site.js (IntersectionObserver); .reveal starts
+   faded/offset, .reveal--visible plays it in once as the element enters
+   the viewport. Reduced-motion users get the instant-transition rule
+   already set globally above, so this never fights that preference. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal--visible { opacity: 1; transform: none; }
 
 /* ---------- Responsive ---------- */
 

@@ -17,8 +17,9 @@ define('DB_PASS', getenv('DB_PASS') ?: 'root');
 
 // Since all your PHP files are in the root directory (htdocs/safarisap/)
 // and you access the site at http://localhost/safarisap/
-// BASE_PATH should be '/safarisap'
-define('BASE_PATH', '/safarisap');
+// BASE_PATH should be '/safarisap'. Override with the APP_BASE_PATH env
+// var when serving from a different subfolder (or the domain root).
+define('BASE_PATH', getenv('APP_BASE_PATH') !== false ? getenv('APP_BASE_PATH') : '/safarisap');
 
 // ============================================================
 // MAIL CONFIGURATION
