@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/svg.php';
+require_once __DIR__ . '/../../includes/site_svg.php';
 
 $admin = current_admin();
 $counts = [
@@ -51,88 +52,88 @@ $active_nav = $active_nav ?? '';
     <nav class="sidebar__nav">
       <div class="nav-group">
         <div class="nav-group__label">Core</div>
-        <a class="nav-link<?= $active_nav === 'dashboard' ? ' is-active' : '' ?>" href="<?= h(url('/admin/index.php')) ?>">Dashboard</a>
+        <a class="nav-link<?= $active_nav === 'dashboard' ? ' is-active' : '' ?>" href="<?= h(url('/admin/index.php')) ?>"><?= render_nav_glyph('compass') ?>Dashboard</a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Lookups</div>
         <a class="nav-link<?= $active_nav === 'countries' ? ' is-active' : '' ?>" href="<?= h(url('/admin/countries/index.php')) ?>">
-          Countries <span class="nav-link__count"><?= $counts['countries'] ?></span>
+          <?= render_nav_glyph('pin') ?>Countries <span class="nav-link__count"><?= $counts['countries'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'categories' ? ' is-active' : '' ?>" href="<?= h(url('/admin/categories/index.php')) ?>">
-          Tour Categories <span class="nav-link__count"><?= $counts['categories'] ?></span>
+          <?= render_nav_glyph('tag') ?>Tour Categories <span class="nav-link__count"><?= $counts['categories'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'operators' ? ' is-active' : '' ?>" href="<?= h(url('/admin/operators/index.php')) ?>">
-          Tour Operators <span class="nav-link__count"><?= $counts['operators'] ?></span>
+          <?= render_nav_glyph('briefcase') ?>Tour Operators <span class="nav-link__count"><?= $counts['operators'] ?></span>
         </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Safari</div>
         <a class="nav-link<?= $active_nav === 'destinations' ? ' is-active' : '' ?>" href="<?= h(url('/admin/destinations/index.php')) ?>">
-          Destinations <span class="nav-link__count"><?= $counts['destinations'] ?></span>
+          <?= render_nav_glyph('pin') ?>Destinations <span class="nav-link__count"><?= $counts['destinations'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/tours/index.php')) ?>">
-          Tours <span class="nav-link__count"><?= $counts['tours'] ?></span>
+          <?= render_nav_glyph('compass') ?>Tours <span class="nav-link__count"><?= $counts['tours'] ?></span>
         </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Activities</div>
         <a class="nav-link<?= $active_nav === 'activities' ? ' is-active' : '' ?>" href="<?= h(url('/admin/activities/index.php')) ?>">
-          Activities <span class="nav-link__count"><?= $counts['activities'] ?></span>
+          <?= render_nav_glyph('sliders') ?>Activities <span class="nav-link__count"><?= $counts['activities'] ?></span>
         </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Experiential</div>
         <a class="nav-link<?= $active_nav === 'providers' ? ' is-active' : '' ?>" href="<?= h(url('/admin/providers/index.php')) ?>">
-          Service Providers <span class="nav-link__count"><?= $counts['providers'] ?></span>
+          <?= render_nav_glyph('briefcase') ?>Service Providers <span class="nav-link__count"><?= $counts['providers'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'experience-destinations' ? ' is-active' : '' ?>" href="<?= h(url('/admin/experience-destinations/index.php')) ?>">
-          Experience Destinations <span class="nav-link__count"><?= $counts['experience-destinations'] ?></span>
+          <?= render_nav_glyph('pin') ?>Experience Destinations <span class="nav-link__count"><?= $counts['experience-destinations'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'experience-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/experience-tours/index.php')) ?>">
-          Experience Tours <span class="nav-link__count"><?= $counts['experience-tours'] ?></span>
+          <?= render_nav_glyph('mask') ?>Experience Tours <span class="nav-link__count"><?= $counts['experience-tours'] ?></span>
         </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">About Us</div>
         <a class="nav-link<?= $active_nav === 'pages' ? ' is-active' : '' ?>" href="<?= h(url('/admin/pages/index.php')) ?>">
-          Pages <span class="nav-link__count"><?= $counts['pages'] ?></span>
+          <?= render_nav_glyph('doc') ?>Pages <span class="nav-link__count"><?= $counts['pages'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'careers' ? ' is-active' : '' ?>" href="<?= h(url('/admin/careers/index.php')) ?>">
-          Careers <span class="nav-link__count"><?= $counts['careers'] ?></span>
+          <?= render_nav_glyph('briefcase') ?>Careers <span class="nav-link__count"><?= $counts['careers'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'blog' ? ' is-active' : '' ?>" href="<?= h(url('/admin/blog/index.php')) ?>">
-          Blog <span class="nav-link__count"><?= $counts['blog'] ?></span>
+          <?= render_nav_glyph('doc') ?>Blog <span class="nav-link__count"><?= $counts['blog'] ?></span>
         </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Inbox</div>
         <a class="nav-link<?= $active_nav === 'bookings' ? ' is-active' : '' ?>" href="<?= h(url('/admin/bookings/index.php')) ?>">
-          Bookings <span class="nav-link__count"><?= $counts['bookings'] ?></span>
+          <?= render_nav_glyph('calendar') ?>Bookings <span class="nav-link__count"><?= $counts['bookings'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'quotes' ? ' is-active' : '' ?>" href="<?= h(url('/admin/quotes/index.php')) ?>">
-          Quote Requests <span class="nav-link__count"><?= $counts['quotes'] ?></span>
+          <?= render_nav_glyph('tag') ?>Quote Requests <span class="nav-link__count"><?= $counts['quotes'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'custom-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/custom-tours/index.php')) ?>">
-          Custom Tour Requests <span class="nav-link__count"><?= $counts['custom-tours'] ?></span>
+          <?= render_nav_glyph('sliders') ?>Custom Tour Requests <span class="nav-link__count"><?= $counts['custom-tours'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'virtual-experience-signups' ? ' is-active' : '' ?>" href="<?= h(url('/admin/virtual-experience-signups/index.php')) ?>">
-          Virtual Experience Waitlist <span class="nav-link__count"><?= $counts['virtual-experience-signups'] ?></span>
+          <?= render_nav_glyph('video') ?>Virtual Experience Waitlist <span class="nav-link__count"><?= $counts['virtual-experience-signups'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'agents' ? ' is-active' : '' ?>" href="<?= h(url('/admin/agents/index.php')) ?>">
-          Agent Applications <span class="nav-link__count"><?= $counts['agents'] ?></span>
+          <?= render_nav_glyph('users') ?>Agent Applications <span class="nav-link__count"><?= $counts['agents'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'career-applications' ? ' is-active' : '' ?>" href="<?= h(url('/admin/career-applications/index.php')) ?>">
-          Career Applications <span class="nav-link__count"><?= $counts['career-applications'] ?></span>
+          <?= render_nav_glyph('briefcase') ?>Career Applications <span class="nav-link__count"><?= $counts['career-applications'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'messages' ? ' is-active' : '' ?>" href="<?= h(url('/admin/messages/index.php')) ?>">
-          Messages <span class="nav-link__count"><?= $counts['messages'] ?></span>
+          <?= render_nav_glyph('mail') ?>Messages <span class="nav-link__count"><?= $counts['messages'] ?></span>
         </a>
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Settings</div>
-        <a class="nav-link<?= $active_nav === 'settings' ? ' is-active' : '' ?>" href="<?= h(url('/admin/settings/index.php')) ?>">Homepage</a>
+        <a class="nav-link<?= $active_nav === 'settings' ? ' is-active' : '' ?>" href="<?= h(url('/admin/settings/index.php')) ?>"><?= render_nav_glyph('sliders') ?>Homepage</a>
         <?php if (($admin['role'] ?? '') === 'super_admin'): ?>
-          <a class="nav-link<?= $active_nav === 'users' ? ' is-active' : '' ?>" href="<?= h(url('/admin/users/index.php')) ?>">Admin Users</a>
+          <a class="nav-link<?= $active_nav === 'users' ? ' is-active' : '' ?>" href="<?= h(url('/admin/users/index.php')) ?>"><?= render_nav_glyph('users') ?>Admin Users</a>
         <?php endif; ?>
       </div>
     </nav>
