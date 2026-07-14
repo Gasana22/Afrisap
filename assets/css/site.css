@@ -34,10 +34,14 @@
   --drum: #8a5a2b;
   --drum-dark: #6e4621;
 
-  --radius: 3px;
-  --radius-lg: 14px;
+  --radius: 10px;
+  --radius-lg: 20px;
   --shadow-card: 0 1px 2px rgba(20, 32, 27, 0.06), 0 8px 24px rgba(20, 32, 27, 0.06);
+  --shadow-card-hover: 0 4px 8px rgba(20, 32, 27, 0.08), 0 16px 40px rgba(20, 32, 27, 0.14);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.28);
   --max-width: 1200px;
+  --motion-fast: 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-slow: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * { box-sizing: border-box; }
@@ -335,22 +339,45 @@ a { color: inherit; text-decoration: none; }
 
 .hero-stat {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
   padding: 14px 18px;
-  background: rgba(20, 32, 27, 0.4);
-  border: 1px solid rgba(232, 221, 188, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-lg);
   color: var(--white);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: var(--shadow-glass);
+  transition: background-color var(--motion-fast), border-color var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
 }
 
-a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 221, 188, 0.45); }
+a.hero-stat:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+.hero-stat__icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(232, 130, 60, 0.18);
+  color: var(--ember);
+}
+
+.hero-stat__icon svg { width: 18px; height: 18px; }
+
+.hero-stat__text { display: flex; flex-direction: column; gap: 2px; }
 
 .hero-stat__label {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   opacity: 0.75;
@@ -358,9 +385,9 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
 
 .hero-stat__value {
   font-family: var(--font-mono);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 600;
-  color: var(--ember);
+  color: var(--white);
 }
 
 @media (min-width: 981px) {
@@ -371,6 +398,29 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
     width: 220px;
     padding: 0;
   }
+}
+
+/* Ambient motion for the drawn hero illustration -- a slow, gentle drift
+   so the hero doesn't sit dead-still, without the full cost/complexity of
+   real video or scroll-driven parallax. Each bird's animation-delay is set
+   inline per-instance (see render_hero_illustration()) so they don't move
+   in mechanical unison. */
+
+@keyframes hero-bird-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(6px, -5px); }
+}
+
+@keyframes hero-waypoint-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.04); }
+}
+
+.hero-bird { animation: hero-bird-drift 6s ease-in-out infinite; }
+.hero-waypoint {
+  animation: hero-waypoint-pulse 4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .btn {
@@ -394,6 +444,25 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
 
 .btn--dark { background: var(--canopy); color: var(--white); }
 .btn--dark:hover { background: var(--canopy-dark); }
+
+.btn {
+  transition: background-color var(--motion-fast), border-color var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+/* Pill CTA with a sliding arrow -- used on the hero and other high-emphasis
+   calls to action, layered on top of the base .btn styles above. */
+.btn--pill {
+  border-radius: 999px;
+}
+
+.btn__arrow {
+  display: inline-block;
+  transition: transform var(--motion-fast);
+}
+
+.btn--pill:hover .btn__arrow { transform: translateX(3px); }
 
 /* Search bar -- styled as an entry manifest seated in normal flow directly
    under the hero, not a floating white card overlapping the hero/section
@@ -536,10 +605,16 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow);
 }
 
-.door--safari { background: var(--canopy-light); }
-.door--experiential { background: var(--drum); }
+.door:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); z-index: 2; }
+
+/* Radial glow rather than a flat fill, so the panel reads as lit from a
+   point rather than a solid color swatch (matches the depth in the client's
+   reference sites' dark cards). */
+.door--safari { background: radial-gradient(140% 120% at 15% 0%, var(--canopy-light) 0%, var(--canopy) 70%); }
+.door--experiential { background: radial-gradient(140% 120% at 15% 0%, var(--drum) 0%, var(--drum-dark) 70%); }
 
 .door__seal {
   position: absolute;
@@ -605,7 +680,16 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow), border-color var(--motion-slow);
 }
+
+.tour-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--savanna-line);
+}
+
+.tour-card:hover .tour-card__media img { transform: scale(1.05); }
 
 .tour-card__media {
   height: 150px;
@@ -627,6 +711,7 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--motion-slow);
 }
 
 .tour-card__badge {
@@ -689,7 +774,10 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
   border-radius: var(--radius);
   padding: 18px;
   box-shadow: var(--shadow-card);
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow);
 }
+
+.tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); }
 
 .tile__title { font-family: var(--font-display); font-size: 17px; font-weight: 600; margin: 0 0 4px; }
 .tile__meta { font-family: var(--font-mono); font-size: 12px; opacity: 0.6; }
@@ -703,18 +791,29 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
 }
 
 .experience-tile {
-  background: var(--canopy);
+  background: radial-gradient(160% 140% at 20% 0%, var(--canopy-light) 0%, var(--canopy) 65%);
   color: var(--white);
   border-radius: var(--radius-lg);
   padding: 22px 16px;
   text-align: center;
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow);
 }
 
+.experience-tile:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-card-hover); }
+
 .experience-tile__mark {
-  font-size: 9px;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(232, 130, 60, 0.16);
   color: var(--ember);
-  margin-bottom: 12px;
 }
+
+.experience-tile__mark .nav-icon { width: 20px; height: 20px; opacity: 1; }
 
 .experience-tile__title { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
 
@@ -780,10 +879,12 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
 /* CTA band */
 
 .cta-band {
-  background: var(--canopy-dark);
+  position: relative;
+  background: radial-gradient(120% 200% at 50% -40%, var(--canopy-light) 0%, var(--canopy-dark) 55%);
   color: var(--white);
   padding: 56px 0;
   text-align: center;
+  overflow: hidden;
 }
 
 .cta-band__title {
@@ -809,9 +910,33 @@ a.hero-stat:hover { background: rgba(20, 32, 27, 0.6); border-color: rgba(232, 2
 /* ---------- Footer ---------- */
 
 .site-footer {
+  position: relative;
   background: var(--canopy-dark);
   color: var(--savanna);
   padding: 56px 0 24px;
+  overflow: hidden;
+}
+
+.site-footer > .wrap { position: relative; z-index: 1; }
+
+/* Oversized ghost wordmark behind the footer content -- a quiet brand
+   flourish rather than a functional element, so it's marked aria-hidden
+   and skipped by assistive tech. */
+.site-footer::after {
+  content: 'Safarisap';
+  position: absolute;
+  left: 50%;
+  bottom: -0.14em;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(90px, 16vw, 220px);
+  line-height: 1;
+  color: rgba(232, 221, 188, 0.05);
+  -webkit-text-stroke: 1.5px rgba(232, 221, 188, 0.1);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .footer-grid {

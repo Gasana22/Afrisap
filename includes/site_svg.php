@@ -163,7 +163,9 @@ function render_hero_illustration(): string
     // Waypoint marker low on the horizon -- concentric rings around a
     // pinned point, echoing the admin panel's contour mark, with a short
     // tick grounding it like a map pin rather than a floating sun icon.
-    $sun = '<g transform="translate(1180,440)">';
+    // Wrapped in .hero-waypoint so CSS can pulse the rings gently (ambient
+    // motion for the no-photo illustration case).
+    $sun = '<g class="hero-waypoint" transform="translate(1180,440)">';
     $radii = [92, 72, 52, 32];
     foreach ($radii as $i => $r) {
         $opacity = 0.55 - $i * 0.1;
@@ -178,12 +180,15 @@ function render_hero_illustration(): string
         . render_acacia(1500, $height - 4, 0.7);
 
     // Birds: simple chevrons scattered in the sky, right two-thirds only.
+    // Each gets its own .hero-bird group with a staggered animation-delay
+    // so they drift in a slow, gentle, non-uniform loop rather than a
+    // mechanical unison bob.
     $birdSpots = [[900, 130], [960, 175], [1300, 110], [1360, 150]];
     $birds = '';
-    foreach ($birdSpots as $spot) {
+    foreach ($birdSpots as $i => $spot) {
         $birds .= sprintf(
-            '<path d="M%d,%d q10,-12 20,0 q10,-12 20,0" fill="none" stroke="#f1e9d8" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/>',
-            $spot[0], $spot[1]
+            '<g class="hero-bird" style="animation-delay:%.1fs"><path d="M%d,%d q10,-12 20,0 q10,-12 20,0" fill="none" stroke="#f1e9d8" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/></g>',
+            $i * 0.9, $spot[0], $spot[1]
         );
     }
 

@@ -60,26 +60,38 @@ require __DIR__ . '/includes/site_header.php';
     <p class="hero__subtitle"><?= h($heroSubtitle) ?></p>
     <p class="hero__coords">01&deg;04'S, 29&deg;40'E &mdash; BWINDI IMPENETRABLE FOREST</p>
     <div class="hero__actions">
-      <a href="<?= h(url('/tours.php')) ?>" class="btn btn--primary">Plan a Safari</a>
-      <a href="<?= h(url('/experiences.php')) ?>" class="btn btn--outline">Discover Experiences</a>
+      <a href="<?= h(url('/tours.php')) ?>" class="btn btn--primary btn--pill">Plan a Safari <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+      <a href="<?= h(url('/experiences.php')) ?>" class="btn btn--outline btn--pill">Discover Experiences <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
   <div class="hero__stats">
     <a href="<?= h(url('/tours.php?group=safari')) ?>" class="hero-stat">
-      <span class="hero-stat__label">Safari Tours</span>
-      <span class="hero-stat__value"><?= $statSafariTours ?></span>
+      <span class="hero-stat__icon"><?= render_nav_glyph('binoculars') ?></span>
+      <span class="hero-stat__text">
+        <span class="hero-stat__label">Safari Tours</span>
+        <span class="hero-stat__value"><?= $statSafariTours ?></span>
+      </span>
     </a>
     <a href="<?= h(url('/experiences.php')) ?>" class="hero-stat">
-      <span class="hero-stat__label">Experiential Tours</span>
-      <span class="hero-stat__value"><?= $statExperienceTours ?></span>
+      <span class="hero-stat__icon"><?= render_nav_glyph('mask') ?></span>
+      <span class="hero-stat__text">
+        <span class="hero-stat__label">Experiential Tours</span>
+        <span class="hero-stat__value"><?= $statExperienceTours ?></span>
+      </span>
     </a>
     <div class="hero-stat">
-      <span class="hero-stat__label">Activities</span>
-      <span class="hero-stat__value"><?= $statActivities ?></span>
+      <span class="hero-stat__icon"><?= render_nav_glyph('sliders') ?></span>
+      <span class="hero-stat__text">
+        <span class="hero-stat__label">Activities</span>
+        <span class="hero-stat__value"><?= $statActivities ?></span>
+      </span>
     </div>
     <a href="<?= h(url('/tours.php?group=trip')) ?>" class="hero-stat">
-      <span class="hero-stat__label">Trip Tours</span>
-      <span class="hero-stat__value"><?= $statTripTours ?></span>
+      <span class="hero-stat__icon"><?= render_nav_glyph('compass') ?></span>
+      <span class="hero-stat__text">
+        <span class="hero-stat__label">Trip Tours</span>
+        <span class="hero-stat__value"><?= $statTripTours ?></span>
+      </span>
     </a>
   </div>
 </header>
@@ -219,7 +231,7 @@ require __DIR__ . '/includes/site_header.php';
     <div class="experience-grid">
       <?php foreach ($experienceTypes as $type): ?>
         <a href="<?= h(url('/experiences.php?type=' . $type['slug'])) ?>" class="experience-tile">
-          <div class="experience-tile__mark" aria-hidden="true">&#9679;</div>
+          <div class="experience-tile__mark"><?= render_nav_glyph(nav_icon_for($type['name'])) ?></div>
           <div class="experience-tile__title"><?= h(str_replace(' Experience', '', $type['name'])) ?></div>
         </a>
       <?php endforeach; ?>

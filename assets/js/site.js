@@ -9,8 +9,23 @@
     return;
   }
 
+  // Siblings inside the same grid/rail cascade in with a short stagger
+  // instead of popping in as one flat block. Capped so a long grid doesn't
+  // leave its last rows waiting seconds to appear.
+  var staggerParents = document.querySelectorAll('.card-grid, .tile-rail, .experience-grid, .why-grid, .hero__stats');
+  var staggerIndex = new Map();
+  staggerParents.forEach(function (parent) {
+    Array.prototype.forEach.call(parent.children, function (child, i) {
+      staggerIndex.set(child, Math.min(i, 5));
+    });
+  });
+
   targets.forEach(function (el) {
     el.classList.add('reveal');
+    var i = staggerIndex.get(el);
+    if (i) {
+      el.style.transitionDelay = (i * 0.08) + 's';
+    }
   });
 
   var observer = new IntersectionObserver(
