@@ -1,23 +1,31 @@
 /* Safarisap public site
-   Canopy green + burnt clay + warm savanna sand, with a dusk-indigo/ember
-   hero moment. Fraunces for display headlines, IBM Plex Sans for body,
-   IBM Plex Mono for data/labels (continuing the admin panel's system). */
+   Deep teal-forest canopy (evolved toward a Brightscout-style emerald/
+   turquoise system) + burnt clay + warm savanna sand, with a glowing
+   teal-to-emerald hero moment. Fraunces for display headlines, IBM Plex
+   Sans for body, IBM Plex Mono for data/labels (continuing the admin
+   panel's system). */
 
 :root {
-  --canopy: #1f3a2e;
-  --canopy-light: #2f5c46;
-  --canopy-dark: #14201b;
-  --canopy-line: #2c4a3a;
+  --canopy: #0f3a34;
+  --canopy-light: #2f7a5c;
+  --canopy-dark: #02181a;
+  --canopy-line: #184840;
   --murram: #b5502b;
   --murram-dark: #93401f;
   --savanna: #e8ddbc;
   --savanna-line: #cdbb8c;
   --paper: #f4efe0;
-  --dusk: #241b34;
+  --dusk: #02353c;
   --ember: #e8823c;
   --gold: #a97f2e;
-  --ink: #14201b;
+  --ink: #10201d;
   --white: #ffffff;
+
+  --emerald: #2eaf7d;
+  --emerald-dark: #1f8562;
+  --turquoise: #3fd0c9;
+  --mint: #c1f6ed;
+  --olive: #449342;
 
   --success: #204531;
   --success-bg: #eaf2ea;
@@ -223,9 +231,19 @@ a { color: inherit; text-decoration: none; }
 
 .hero {
   position: relative;
-  background: linear-gradient(180deg, var(--dusk) 0%, #4a3454 45%, var(--ember) 100%);
+  background: linear-gradient(160deg, var(--canopy-dark) 0%, var(--dusk) 40%, var(--canopy-light) 78%, var(--emerald) 100%);
   overflow: hidden;
   padding-top: 64px;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(560px 420px at 82% 18%, rgba(63, 208, 201, 0.32), transparent 70%),
+    radial-gradient(480px 380px at 12% 88%, rgba(46, 175, 125, 0.22), transparent 70%);
+  pointer-events: none;
 }
 
 .hero__illustration {
@@ -250,7 +268,7 @@ a { color: inherit; text-decoration: none; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(36, 27, 52, 0.82) 0%, rgba(74, 52, 84, 0.55) 45%, rgba(232, 130, 60, 0.35) 100%);
+  background: linear-gradient(180deg, rgba(2, 24, 26, 0.82) 0%, rgba(2, 53, 60, 0.6) 45%, rgba(46, 175, 125, 0.4) 100%);
 }
 
 .hero__content {

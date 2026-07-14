@@ -5,6 +5,15 @@ require_once __DIR__ . '/svg.php';
 require_once __DIR__ . '/../../includes/site_svg.php';
 
 $admin = current_admin();
+$adminNameParts = preg_split('/\s+/', trim($admin['name'] ?? ''), -1, PREG_SPLIT_NO_EMPTY);
+$adminInitials = '';
+if ($adminNameParts) {
+    $adminInitials = mb_substr($adminNameParts[0], 0, 1);
+    if (count($adminNameParts) > 1) {
+        $adminInitials .= mb_substr($adminNameParts[count($adminNameParts) - 1], 0, 1);
+    }
+    $adminInitials = mb_strtoupper($adminInitials);
+}
 $counts = [
     'countries' => (int) db()->query('SELECT COUNT(*) FROM countries')->fetchColumn(),
     'categories' => (int) db()->query('SELECT COUNT(*) FROM tour_categories')->fetchColumn(),
@@ -149,7 +158,16 @@ $active_nav = $active_nav ?? '';
         <?php if (!empty($page_eyebrow)): ?><span class="topbar__eyebrow"><?= h($page_eyebrow) ?></span><?php endif; ?>
         <div class="topbar__title"><?= h($page_title ?? '') ?></div>
       </div>
-      <?php if (!empty($page_action_html)): ?><?= $page_action_html ?><?php endif; ?>
+      <div class="topbar__actions">
+        <?php if (!empty($page_action_html)): ?><?= $page_action_html ?><?php endif; ?>
+        <div class="topbar__user">
+          <div class="topbar__avatar"><?= h($adminInitials) ?></div>
+          <div class="topbar__user-meta">
+            <span class="topbar__user-name"><?= h($admin['name'] ?? '') ?></span>
+            <span class="topbar__user-role"><?= h(str_replace('_', ' ', $admin['role'] ?? '')) ?></span>
+          </div>
+        </div>
+      </div>
     </header>
     <div class="content">
       <?php foreach (flash_get() as $flash): ?>

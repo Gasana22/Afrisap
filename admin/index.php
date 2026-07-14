@@ -9,10 +9,10 @@ $page_eyebrow = 'Overview';
 $active_nav = 'dashboard';
 
 $stats = [
-    'Countries' => ['value' => (int) db()->query('SELECT COUNT(*) FROM countries')->fetchColumn(), 'icon' => 'pin'],
-    'Tour categories' => ['value' => (int) db()->query('SELECT COUNT(*) FROM tour_categories')->fetchColumn(), 'icon' => 'tag'],
-    'Destinations' => ['value' => (int) db()->query('SELECT COUNT(*) FROM destinations')->fetchColumn(), 'icon' => 'pin'],
-    'Published tours' => ['value' => (int) db()->query("SELECT COUNT(*) FROM tours WHERE status = 'published'")->fetchColumn(), 'icon' => 'compass'],
+    'Countries' => ['value' => (int) db()->query('SELECT COUNT(*) FROM countries')->fetchColumn(), 'icon' => 'pin', 'variant' => 'turquoise'],
+    'Tour categories' => ['value' => (int) db()->query('SELECT COUNT(*) FROM tour_categories')->fetchColumn(), 'icon' => 'tag', 'variant' => 'olive'],
+    'Destinations' => ['value' => (int) db()->query('SELECT COUNT(*) FROM destinations')->fetchColumn(), 'icon' => 'pin', 'variant' => 'emerald'],
+    'Published tours' => ['value' => (int) db()->query("SELECT COUNT(*) FROM tours WHERE status = 'published'")->fetchColumn(), 'icon' => 'compass', 'variant' => 'hero'],
 ];
 
 $inboxStats = [
@@ -29,8 +29,8 @@ require __DIR__ . '/includes/header.php';
 
 <div class="stat-grid">
   <?php foreach ($stats as $label => $stat): ?>
-    <div class="stat-tile">
-      <div class="stat-tile__icon"><?= render_nav_glyph($stat['icon']) ?></div>
+    <div class="stat-tile<?= $stat['variant'] === 'hero' ? ' stat-tile--hero' : '' ?>">
+      <div class="stat-tile__icon<?= $stat['variant'] !== 'hero' ? ' stat-tile__icon--' . $stat['variant'] : '' ?>"><?= render_nav_glyph($stat['icon']) ?></div>
       <div class="stat-tile__body">
         <div class="stat-tile__label"><?= h($label) ?></div>
         <div class="stat-tile__value"><?= $stat['value'] ?></div>
@@ -46,9 +46,9 @@ require __DIR__ . '/includes/header.php';
   <div class="panel__body">
     <div class="sub-list">
       <?php foreach ($inboxStats as $item): ?>
-        <div class="sub-row">
-          <div class="sub-row__body" style="display:flex;align-items:center;gap:10px;">
-            <?= render_nav_glyph($item['icon']) ?>
+        <div class="sub-row<?= $item['value'] > 0 ? ' sub-row--flagged' : '' ?>">
+          <div class="sub-row__body">
+            <div class="sub-row__icon"><?= render_nav_glyph($item['icon']) ?></div>
             <div class="sub-row__title"><?= h($item['label']) ?></div>
           </div>
           <a class="btn btn--<?= $item['value'] > 0 ? 'primary' : 'ghost' ?> btn--sm" href="<?= h(url($item['href'])) ?>"><?= $item['value'] ?> &rarr;</a>

@@ -87,8 +87,8 @@ function render_acacia(int $cx, int $baseY, float $scale): string
     $canopyCy = $trunkH + $canopyRy; // canopy center, measured upward from baseY
 
     $group = sprintf('<g transform="translate(%d,%d)">', $cx, $baseY);
-    $group .= sprintf('<rect x="%.1f" y="-%.1f" width="%.1f" height="%.1f" fill="#14201b"/>', -$trunkW / 2, $trunkH, $trunkW, $trunkH);
-    $group .= sprintf('<ellipse cx="0" cy="-%.1f" rx="%.1f" ry="%.1f" fill="#14201b"/>', $canopyCy, $canopyRx, $canopyRy);
+    $group .= sprintf('<rect x="%.1f" y="-%.1f" width="%.1f" height="%.1f" fill="#10201d"/>', -$trunkW / 2, $trunkH, $trunkW, $trunkH);
+    $group .= sprintf('<ellipse cx="0" cy="-%.1f" rx="%.1f" ry="%.1f" fill="#10201d"/>', $canopyCy, $canopyRx, $canopyRy);
     $group .= '</g>';
 
     return $group;
@@ -112,9 +112,9 @@ function render_hero_illustration(): string
     // low and calm on the left third where the headline sits, rising into
     // the right two-thirds.
     $layers = [
-        ['baseY' => 460, 'amp' => 30, 'freq' => 1.1, 'phase' => 1.1, 'color' => '#3c5c49', 'opacity' => 0.5],
-        ['baseY' => 500, 'amp' => 40, 'freq' => 1.4, 'phase' => 2.6, 'color' => '#2c4a3a', 'opacity' => 0.7],
-        ['baseY' => 560, 'amp' => 46, 'freq' => 0.9, 'phase' => 4.4, 'color' => '#1f3a2e', 'opacity' => 1],
+        ['baseY' => 460, 'amp' => 30, 'freq' => 1.1, 'phase' => 1.1, 'color' => '#2f7a5c', 'opacity' => 0.5],
+        ['baseY' => 500, 'amp' => 40, 'freq' => 1.4, 'phase' => 2.6, 'color' => '#184840', 'opacity' => 0.7],
+        ['baseY' => 560, 'amp' => 46, 'freq' => 0.9, 'phase' => 4.4, 'color' => '#0f3a34', 'opacity' => 1],
     ];
 
     $ridgePoints = [];
