@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/media.php';
 require_login();
 
 $page_title = 'Dashboard';
@@ -77,6 +78,10 @@ $recentBookings = db()->query("SELECT b.*,
     LEFT JOIN experience_tours et ON et.id = b.bookable_id AND b.bookable_type = 'experience_tour'
     ORDER BY b.created_at DESC
     LIMIT 5")->fetchAll();
+foreach ($recentBookings as &$booking) {
+    $booking['cover'] = get_cover_image($booking['bookable_type'], (int) $booking['bookable_id']);
+}
+unset($booking);
 
 // ---- Upcoming scheduled departures ----
 $upcomingTours = db()->query("SELECT id, title, scheduled_date, price, days
@@ -84,6 +89,35 @@ $upcomingTours = db()->query("SELECT id, title, scheduled_date, price, days
     WHERE status = 'published' AND scheduled_date IS NOT NULL AND scheduled_date >= CURDATE()
     ORDER BY scheduled_date ASC
     LIMIT 5")->fetchAll();
+foreach ($upcomingTours as &$tour) {
+    $tour['cover'] = get_cover_image('tour', (int) $tour['id']);
+}
+unset($tour);
+
+// ---- Published tours by category (donut breakdown, top 4 + Other) ----
+$categoryRows = db()->query("SELECT c.name, COUNT(*) AS cnt
+    FROM tours t
+    JOIN tour_categories c ON c.id = t.category_id
+    WHERE t.status = 'published'
+    GROUP BY c.id, c.name
+    ORDER BY cnt DESC")->fetchAll();
+
+$categoryBreakdown = array_slice($categoryRows, 0, 4);
+$otherCount = array_sum(array_column(array_slice($categoryRows, 4), 'cnt'));
+if ($otherCount > 0) {
+    $categoryBreakdown[] = ['name' => 'Other', 'cnt' => $otherCount];
+}
+$categoryTotal = max(1, array_sum(array_column($categoryBreakdown, 'cnt')));
+$donutColors = ['#2eaf7d', '#3fd0c9', '#449342', '#b5502b', '#a97f2e'];
+
+$donutStops = [];
+$cursor = 0;
+foreach ($categoryBreakdown as $i => $row) {
+    $pct = $row['cnt'] / $categoryTotal * 100;
+    $donutStops[] = $donutColors[$i % count($donutColors)] . ' ' . round($cursor, 2) . '% ' . round($cursor + $pct, 2) . '%';
+    $cursor += $pct;
+}
+$donutGradient = implode(', ', $donutStops);
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -98,6 +132,28 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
   <?php endforeach; ?>
+
+  <div class="stat-tile stat-tile--spark">
+    <div class="stat-tile__top">
+      <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('calendar') ?></div>
+      <div class="stat-tile__body">
+        <div class="stat-tile__label">Bookings this month</div>
+        <div class="stat-tile__value"><?= (int) end($bookingsByMonth) ?></div>
+      </div>
+    </div>
+    <div class="stat-tile__spark"><?= render_sparkline(array_values($bookingsByMonth), '#2eaf7d') ?></div>
+  </div>
+
+  <div class="stat-tile stat-tile--spark">
+    <div class="stat-tile__top">
+      <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('tag') ?></div>
+      <div class="stat-tile__body">
+        <div class="stat-tile__label">Quote requests this month</div>
+        <div class="stat-tile__value"><?= (int) end($quotesByMonth) ?></div>
+      </div>
+    </div>
+    <div class="stat-tile__spark"><?= render_sparkline(array_values($quotesByMonth), '#3fd0c9') ?></div>
+  </div>
 </div>
 
 <div class="dash-grid">
@@ -135,20 +191,20 @@ require __DIR__ . '/includes/header.php';
     <div class="panel__header">
       <div class="panel__title">Recent activity</div>
     </div>
-    <div class="panel__body panel__body--flush">
+    <div class="panel__body">
       <?php if (!$activityFeed): ?>
         <div class="empty-state">
           <div class="empty-state__title">Nothing yet</div>
           <div class="empty-state__body">New enquiries will show up here as they arrive.</div>
         </div>
       <?php else: ?>
-        <div class="activity-feed">
+        <div class="timeline">
           <?php foreach ($activityFeed as $item): ?>
-            <a class="activity-row" href="<?= h(url($item['href'])) ?>">
-              <div class="activity-row__icon<?= $item['variant'] ? ' stat-tile__icon--' . $item['variant'] : '' ?>"><?= render_nav_glyph($item['icon']) ?></div>
-              <div class="activity-row__body">
-                <div class="activity-row__text"><?= $item['text'] ?></div>
-                <div class="activity-row__time"><?= h(time_ago($item['created_at'])) ?></div>
+            <a class="timeline-item" href="<?= h(url($item['href'])) ?>">
+              <span class="timeline-item__dot<?= $item['variant'] ? ' timeline-item__dot--' . $item['variant'] : '' ?>"></span>
+              <div class="timeline-item__body">
+                <div class="timeline-item__text"><?= $item['text'] ?></div>
+                <div class="timeline-item__time"><?= h(time_ago($item['created_at'])) ?></div>
               </div>
             </a>
           <?php endforeach; ?>
@@ -158,21 +214,55 @@ require __DIR__ . '/includes/header.php';
   </div>
 </div>
 
-<div class="panel">
-  <div class="panel__header">
-    <div class="panel__title">Needs attention</div>
-  </div>
-  <div class="panel__body">
-    <div class="sub-list">
-      <?php foreach ($inboxStats as $item): ?>
-        <div class="sub-row<?= $item['value'] > 0 ? ' sub-row--flagged' : '' ?>">
-          <div class="sub-row__body">
-            <div class="sub-row__icon"><?= render_nav_glyph($item['icon']) ?></div>
-            <div class="sub-row__title"><?= h($item['label']) ?></div>
+<div class="dash-grid">
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__title">Needs attention</div>
+    </div>
+    <div class="panel__body">
+      <div class="sub-list">
+        <?php foreach ($inboxStats as $item): ?>
+          <div class="sub-row<?= $item['value'] > 0 ? ' sub-row--flagged' : '' ?>">
+            <div class="sub-row__body">
+              <div class="sub-row__icon"><?= render_nav_glyph($item['icon']) ?></div>
+              <div class="sub-row__title"><?= h($item['label']) ?></div>
+            </div>
+            <a class="btn btn--<?= $item['value'] > 0 ? 'primary' : 'ghost' ?> btn--sm" href="<?= h(url($item['href'])) ?>"><?= $item['value'] ?> &rarr;</a>
           </div>
-          <a class="btn btn--<?= $item['value'] > 0 ? 'primary' : 'ghost' ?> btn--sm" href="<?= h(url($item['href'])) ?>"><?= $item['value'] ?> &rarr;</a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__title">Tours by category</div>
+    </div>
+    <div class="panel__body">
+      <?php if (!$categoryBreakdown): ?>
+        <div class="empty-state">
+          <div class="empty-state__title">No published tours yet</div>
+          <div class="empty-state__body">The category mix will chart here once tours are published.</div>
         </div>
-      <?php endforeach; ?>
+      <?php else: ?>
+        <div class="donut-row">
+          <div class="donut" style="background:conic-gradient(<?= $donutGradient ?>)">
+            <div class="donut__center">
+              <div class="donut__value"><?= $categoryTotal ?></div>
+              <div class="donut__label">Tours</div>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <?php foreach ($categoryBreakdown as $i => $row): ?>
+              <span class="donut-legend__item">
+                <i class="donut-legend__dot" style="background:<?= h($donutColors[$i % count($donutColors)]) ?>"></i>
+                <?= h($row['name']) ?>
+                <span class="segment-legend__count"><?= (int) $row['cnt'] ?></span>
+              </span>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>
@@ -197,7 +287,14 @@ require __DIR__ . '/includes/header.php';
           <?php foreach ($recentBookings as $booking): ?>
             <tr>
               <td><?= h($booking['customer_name']) ?></td>
-              <td><?= h($booking['item_title'] ?: 'Deleted') ?></td>
+              <td>
+                <div class="table-item">
+                  <?php if ($booking['cover']): ?>
+                    <img class="table-item__thumb" src="<?= h(url('/' . $booking['cover'])) ?>" alt="">
+                  <?php endif; ?>
+                  <span><?= h($booking['item_title'] ?: 'Deleted') ?></span>
+                </div>
+              </td>
               <td class="table__meta"><?= h(time_ago($booking['created_at'])) ?></td>
               <td><span class="status-pill status-pill--<?= h($booking['status']) ?>"><?= h(ucfirst($booking['status'])) ?></span></td>
             </tr>
@@ -223,7 +320,11 @@ require __DIR__ . '/includes/header.php';
           <?php foreach ($upcomingTours as $tour): ?>
             <a class="sub-row" href="<?= h(url('/admin/tours/manage.php?id=' . $tour['id'])) ?>">
               <div class="sub-row__body">
-                <div class="sub-row__icon"><?= render_nav_glyph('calendar') ?></div>
+                <?php if ($tour['cover']): ?>
+                  <img class="sub-row__thumb" src="<?= h(url('/' . $tour['cover'])) ?>" alt="">
+                <?php else: ?>
+                  <div class="sub-row__icon"><?= render_nav_glyph('calendar') ?></div>
+                <?php endif; ?>
                 <div>
                   <div class="sub-row__title"><?= h($tour['title']) ?></div>
                   <div class="sub-row__meta"><?= h(formatDate($tour['scheduled_date'], 'M j, Y')) ?> &middot; <?= (int) $tour['days'] ?> days</div>

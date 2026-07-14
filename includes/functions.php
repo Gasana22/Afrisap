@@ -143,6 +143,34 @@ function time_ago(string $datetime): string
     return 'just now';
 }
 
+// ============================================================
+// SPARKLINE (small inline trend chart embedded in a stat tile)
+// ============================================================
+
+function render_sparkline(array $values, string $color, int $width = 80, int $height = 28): string
+{
+    $count = count($values);
+    if ($count < 2) {
+        return '';
+    }
+
+    $max = max($values);
+    $min = min($values);
+    $range = max(1, $max - $min);
+    $step = $width / ($count - 1);
+
+    $points = [];
+    foreach (array_values($values) as $i => $v) {
+        $x = round($i * $step, 1);
+        $y = round($height - (($v - $min) / $range) * ($height - 4) - 2, 1);
+        $points[] = "{$x},{$y}";
+    }
+
+    return '<svg class="sparkline" width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" preserveAspectRatio="none" aria-hidden="true">'
+        . '<polyline points="' . h(implode(' ', $points)) . '" fill="none" stroke="' . h($color) . '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+        . '</svg>';
+}
+
 function formatDate(?string $date, string $format = 'F j, Y'): string
 {
     if (empty($date)) {
