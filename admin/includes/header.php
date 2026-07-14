@@ -48,6 +48,7 @@ $active_nav = $active_nav ?? '';
 <link rel="stylesheet" href="<?= h(url('/assets/admin/css/admin.css')) ?>">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="admin-shell">
   <aside class="sidebar">
     <?= sidebar_field_svg() ?>
@@ -152,8 +153,10 @@ $active_nav = $active_nav ?? '';
       <a class="sidebar__logout" href="<?= h(url('/admin/logout.php')) ?>">Log out</a>
     </div>
   </aside>
+  <div class="sidebar-backdrop" onclick="document.querySelector('.sidebar').classList.remove('is-open'); document.querySelector('.admin-nav-toggle').setAttribute('aria-expanded', 'false');"></div>
   <div class="main">
     <header class="topbar">
+      <button type="button" class="admin-nav-toggle" aria-label="Toggle navigation" aria-expanded="false" onclick="var open = document.querySelector('.sidebar').classList.toggle('is-open'); this.setAttribute('aria-expanded', open ? 'true' : 'false');">&#9776;</button>
       <div>
         <?php if (!empty($page_eyebrow)): ?><span class="topbar__eyebrow"><?= h($page_eyebrow) ?></span><?php endif; ?>
         <div class="topbar__title"><?= h($page_title ?? '') ?></div>
@@ -169,7 +172,7 @@ $active_nav = $active_nav ?? '';
         </div>
       </div>
     </header>
-    <div class="content">
+    <main id="main" class="content">
       <?php foreach (flash_get() as $flash): ?>
         <div class="flash flash--<?= h($flash['type']) ?>"><?= h($flash['message']) ?></div>
       <?php endforeach; ?>

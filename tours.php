@@ -135,7 +135,7 @@ require __DIR__ . '/includes/site_header.php';
           <h2 class="detail-heading">Gallery</h2>
           <div class="gallery-strip">
             <?php foreach ($categoryGallery as $img): ?>
-              <img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy">
+              <img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?: ($category ? $category['name'] : $groupTitle) . ' photo') ?>" loading="lazy">
             <?php endforeach; ?>
           </div>
         <?php endif; ?>

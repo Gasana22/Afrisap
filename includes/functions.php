@@ -171,6 +171,23 @@ function render_sparkline(array $values, string $color, int $width = 80, int $he
         . '</svg>';
 }
 
+/**
+ * Single source of truth for chart colors used in inline SVG/CSS that PHP
+ * generates (donut segments, sparklines) -- these can't reference CSS custom
+ * properties directly, so this mirrors --emerald/--turquoise/--olive/
+ * --murram/--gold from assets/admin/css/admin.css. Keep both in sync.
+ */
+function chart_palette(): array
+{
+    return [
+        'emerald' => '#2eaf7d',
+        'turquoise' => '#3fd0c9',
+        'olive' => '#449342',
+        'murram' => '#b5502b',
+        'gold' => '#a97f2e',
+    ];
+}
+
 function formatDate(?string $date, string $format = 'F j, Y'): string
 {
     if (empty($date)) {

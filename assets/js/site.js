@@ -44,3 +44,36 @@
     observer.observe(el);
   });
 })();
+
+(function () {
+  'use strict';
+
+  // Mega-menu triggers open on CSS :hover / :focus-within; this only keeps
+  // aria-expanded in sync with that visual state so screen readers get the
+  // same signal sighted users get from the dropdown appearing.
+  var items = document.querySelectorAll('.site-nav__links > li');
+
+  items.forEach(function (li) {
+    var button = li.querySelector('button');
+    if (!button) {
+      return;
+    }
+
+    function open() {
+      button.setAttribute('aria-expanded', 'true');
+    }
+
+    function close() {
+      button.setAttribute('aria-expanded', 'false');
+    }
+
+    li.addEventListener('mouseenter', open);
+    li.addEventListener('mouseleave', close);
+    li.addEventListener('focusin', open);
+    li.addEventListener('focusout', function (e) {
+      if (!li.contains(e.relatedTarget)) {
+        close();
+      }
+    });
+  });
+})();

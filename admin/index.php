@@ -108,7 +108,8 @@ if ($otherCount > 0) {
     $categoryBreakdown[] = ['name' => 'Other', 'cnt' => $otherCount];
 }
 $categoryTotal = max(1, array_sum(array_column($categoryBreakdown, 'cnt')));
-$donutColors = ['#2eaf7d', '#3fd0c9', '#449342', '#b5502b', '#a97f2e'];
+$chartPalette = chart_palette();
+$donutColors = array_values($chartPalette);
 
 $donutStops = [];
 $cursor = 0;
@@ -141,7 +142,7 @@ require __DIR__ . '/includes/header.php';
         <div class="stat-tile__value"><?= (int) end($bookingsByMonth) ?></div>
       </div>
     </div>
-    <div class="stat-tile__spark"><?= render_sparkline(array_values($bookingsByMonth), '#2eaf7d') ?></div>
+    <div class="stat-tile__spark"><?= render_sparkline(array_values($bookingsByMonth), $chartPalette['emerald']) ?></div>
   </div>
 
   <div class="stat-tile stat-tile--spark">
@@ -152,7 +153,7 @@ require __DIR__ . '/includes/header.php';
         <div class="stat-tile__value"><?= (int) end($quotesByMonth) ?></div>
       </div>
     </div>
-    <div class="stat-tile__spark"><?= render_sparkline(array_values($quotesByMonth), '#3fd0c9') ?></div>
+    <div class="stat-tile__spark"><?= render_sparkline(array_values($quotesByMonth), $chartPalette['turquoise']) ?></div>
   </div>
 </div>
 
@@ -176,8 +177,8 @@ require __DIR__ . '/includes/header.php';
           <?php foreach ($trendMonthKeys as $i => $key): ?>
             <div class="bar-chart__col">
               <div class="bar-chart__bars">
-                <div class="bar-chart__bar bar-chart__bar--bookings" style="height:<?= max(4, (int) round($bookingsByMonth[$key] / $trendMax * 130)) ?>px" title="<?= (int) $bookingsByMonth[$key] ?> bookings in <?= h($trendMonthLabels[$i]) ?>"></div>
-                <div class="bar-chart__bar bar-chart__bar--quotes" style="height:<?= max(4, (int) round($quotesByMonth[$key] / $trendMax * 130)) ?>px" title="<?= (int) $quotesByMonth[$key] ?> quote requests in <?= h($trendMonthLabels[$i]) ?>"></div>
+                <div class="bar-chart__bar bar-chart__bar--bookings" style="--bar-scale:<?= max(0.03, round($bookingsByMonth[$key] / $trendMax, 3)) ?>" title="<?= (int) $bookingsByMonth[$key] ?> bookings in <?= h($trendMonthLabels[$i]) ?>"></div>
+                <div class="bar-chart__bar bar-chart__bar--quotes" style="--bar-scale:<?= max(0.03, round($quotesByMonth[$key] / $trendMax, 3)) ?>" title="<?= (int) $quotesByMonth[$key] ?> quote requests in <?= h($trendMonthLabels[$i]) ?>"></div>
               </div>
               <div class="bar-chart__label"><?= h($trendMonthLabels[$i]) ?></div>
             </div>

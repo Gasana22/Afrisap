@@ -56,7 +56,7 @@ require __DIR__ . '/includes/site_header.php';
 <?php if ($gallery): ?>
 <div class="wrap" style="margin-top:-1px;">
   <div class="gallery-strip gallery-strip--hero">
-    <?php foreach ($gallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?>
+    <?php foreach ($gallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?: $destination['name'] . ' photo') ?>" loading="lazy"><?php endforeach; ?>
   </div>
 </div>
 <?php endif; ?>
@@ -82,7 +82,7 @@ require __DIR__ . '/includes/site_header.php';
                   <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
                   <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
                   <?php if ($activityGallery): ?>
-                    <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+                    <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?: $destination['name'] . ' photo') ?>" loading="lazy"><?php endforeach; ?></div>
                   <?php endif; ?>
                 </div>
               </div>

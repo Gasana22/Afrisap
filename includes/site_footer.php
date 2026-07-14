@@ -1,3 +1,5 @@
+</main>
+
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">

@@ -31,6 +31,8 @@ $pageTitle = $page_title ?? 'Safarisap — Explore. Experience. Belong.';
 </head>
 <body class="site">
 
+<a class="skip-link" href="#main">Skip to content</a>
+
 <div class="utility-bar">
   <div class="wrap">
     <div>24/7 Support · <a href="tel:+256393246926">+256 393 246 926</a> · WhatsApp <a href="https://wa.me/256775328952">+256 775 328 952</a> · <a href="mailto:info@safarisap.com">info@safarisap.com</a></div>
@@ -39,3 +41,5 @@ $pageTitle = $page_title ?? 'Safarisap — Explore. Experience. Belong.';
 </div>
 
 <?php $render_site_nav(); ?>
+
+<main id="main">

@@ -141,7 +141,6 @@ require __DIR__ . '/includes/site_header.php';
 <section class="section">
   <div class="wrap">
     <div class="section__header">
-      <p class="section__eyebrow">Two Ways to Travel</p>
       <h2 class="section__title">Wildlife, or the world people live in</h2>
       <p class="section__lead">Safari tours take you into the parks. Experiential tours take you into daily life: a farm, a factory floor, a football pitch, a neighbourhood. Both are Uganda.</p>
     </div>
@@ -169,7 +168,6 @@ require __DIR__ . '/includes/site_header.php';
 <section class="section section--savanna">
   <div class="wrap">
     <div class="section__header">
-      <p class="section__eyebrow">Featured Itineraries</p>
       <h2 class="section__title">Recently added safaris</h2>
     </div>
     <?php if (!$featuredTours): ?>
@@ -204,7 +202,6 @@ require __DIR__ . '/includes/site_header.php';
 <section class="section">
   <div class="wrap">
     <div class="section__header">
-      <p class="section__eyebrow">Explore by Destination</p>
       <h2 class="section__title">National parks &amp; game reserves</h2>
     </div>
     <?php if (!$destinations): ?>
@@ -225,7 +222,6 @@ require __DIR__ . '/includes/site_header.php';
 <section class="section section--savanna">
   <div class="wrap">
     <div class="section__header">
-      <p class="section__eyebrow">Experiential Tours</p>
       <h2 class="section__title">Five ways into everyday Uganda</h2>
     </div>
     <div class="experience-grid">
@@ -242,7 +238,6 @@ require __DIR__ . '/includes/site_header.php';
 <section class="section">
   <div class="wrap">
     <div class="section__header">
-      <p class="section__eyebrow">Why Safarisap</p>
       <h2 class="section__title">Planned by people who know the ground</h2>
     </div>
     <div class="why-grid">
