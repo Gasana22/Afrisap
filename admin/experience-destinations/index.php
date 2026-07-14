@@ -20,8 +20,27 @@ foreach ($destinations as $row) {
     $grouped[$row['type_name']][] = $row;
 }
 
+$totalActivities = array_sum(array_column($destinations, 'activity_count'));
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($destinations): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('pin') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Experience destinations</div><div class="stat-tile__value"><?= count($destinations) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('mask') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Experience types</div><div class="stat-tile__value"><?= count($grouped) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('sliders') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Activities linked</div><div class="stat-tile__value"><?= $totalActivities ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <?php if (!$destinations): ?>
   <div class="panel">

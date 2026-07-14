@@ -12,8 +12,35 @@ $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/careers
 $careers = db()->query('SELECT c.*, (SELECT COUNT(*) FROM career_applications ca WHERE ca.career_id = c.id) AS application_count
     FROM careers c ORDER BY c.posted_at DESC')->fetchAll();
 
+$careerStats = ['open' => 0, 'closed' => 0];
+foreach ($careers as $career) {
+    $careerStats[$career['status'] === 'open' ? 'open' : 'closed']++;
+}
+$totalApplications = array_sum(array_column($careers, 'application_count'));
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($careers): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('briefcase') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Career listings</div><div class="stat-tile__value"><?= count($careers) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Open</div><div class="stat-tile__value"><?= $careerStats['open'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('doc') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Closed</div><div class="stat-tile__value"><?= $careerStats['closed'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--olive"><?= render_nav_glyph('users') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Applications</div><div class="stat-tile__value"><?= $totalApplications ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$careers): ?>
@@ -29,7 +56,7 @@ require __DIR__ . '/../includes/header.php';
           <tr>
             <td><?= h($career['title']) ?></td>
             <td class="table__meta"><?= h($career['location']) ?></td>
-            <td class="table__meta"><?= h(ucfirst($career['status'])) ?></td>
+            <td><span class="status-pill status-pill--<?= $career['status'] === 'open' ? 'open' : 'draft' ?>"><?= h(ucfirst($career['status'])) ?></span></td>
             <td class="table__meta"><?= (int) $career['application_count'] ?></td>
             <td>
               <div class="table__actions">

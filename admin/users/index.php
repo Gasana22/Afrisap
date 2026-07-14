@@ -20,6 +20,17 @@ foreach ($users as $u) {
 require __DIR__ . '/../includes/header.php';
 ?>
 
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('users') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Admin users</div><div class="stat-tile__value"><?= count($users) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('briefcase') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Super admins</div><div class="stat-tile__value"><?= $superAdminCount ?></div></div>
+  </div>
+</div>
+
 <div class="panel">
   <table class="table">
     <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last login</th><th></th></tr></thead>
@@ -28,7 +39,7 @@ require __DIR__ . '/../includes/header.php';
         <tr>
           <td><?= h($user['name']) ?><?= (int) $user['id'] === (int) current_admin()['id'] ? ' <span class="table__meta">(you)</span>' : '' ?></td>
           <td class="table__meta"><?= h($user['email']) ?></td>
-          <td class="table__meta"><?= h(str_replace('_', ' ', $user['role'])) ?></td>
+          <td><span class="status-pill status-pill--<?= h($user['role']) ?>"><?= h(str_replace('_', ' ', $user['role'])) ?></span></td>
           <td class="table__meta"><?= $user['last_login_at'] ? h(date('M j, Y g:ia', strtotime($user['last_login_at']))) : 'Never' ?></td>
           <td>
             <div class="table__actions">

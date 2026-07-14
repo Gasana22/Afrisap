@@ -13,6 +13,15 @@ $signups = db()->query('SELECT * FROM virtual_experience_signups ORDER BY create
 require __DIR__ . '/../includes/header.php';
 ?>
 
+<?php if ($signups): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('video') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Waitlist signups</div><div class="stat-tile__value"><?= count($signups) ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
+
 <div class="panel">
   <?php if (!$signups): ?>
     <div class="empty-state">

@@ -15,8 +15,30 @@ $tours = db()->query("SELECT et.id, et.title, et.price, et.days, et.status, ety.
     JOIN experience_types ety ON ety.id = et.experience_type_id
     ORDER BY et.created_at DESC")->fetchAll();
 
+$experienceTourStats = ['published' => 0, 'draft' => 0];
+foreach ($tours as $tour) {
+    $experienceTourStats[$tour['status'] === 'published' ? 'published' : 'draft']++;
+}
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($tours): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('mask') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Experience tours</div><div class="stat-tile__value"><?= count($tours) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Published</div><div class="stat-tile__value"><?= $experienceTourStats['published'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('doc') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Draft</div><div class="stat-tile__value"><?= $experienceTourStats['draft'] ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$tours): ?>
@@ -38,7 +60,7 @@ require __DIR__ . '/../includes/header.php';
             <td class="table__meta">$<?= number_format((float) $tour['price'], 2) ?></td>
             <td class="table__meta"><?= (int) $tour['days'] ?></td>
             <td class="table__meta"><?= (int) $tour['destination_count'] ?><?= (int) $tour['destination_count'] < 2 ? ' ⚠' : '' ?></td>
-            <td class="table__meta"><?= h(ucfirst($tour['status'])) ?></td>
+            <td><span class="status-pill status-pill--<?= h($tour['status']) ?>"><?= h(ucfirst($tour['status'])) ?></span></td>
             <td>
               <div class="table__actions">
                 <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/experience-tours/manage.php?id=' . $tour['id'])) ?>">Manage</a>

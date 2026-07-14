@@ -20,8 +20,35 @@ $stmt = db()->prepare($sql);
 $stmt->execute($params);
 $requests = $stmt->fetchAll();
 
+// Stat tiles reflect the whole inbox regardless of the tab filter above.
+$customTourStats = [
+    'total' => (int) db()->query('SELECT COUNT(*) FROM custom_tour_requests')->fetchColumn(),
+    'new' => (int) db()->query("SELECT COUNT(*) FROM custom_tour_requests WHERE status = 'new'")->fetchColumn(),
+    'contacted' => (int) db()->query("SELECT COUNT(*) FROM custom_tour_requests WHERE status = 'contacted'")->fetchColumn(),
+    'closed' => (int) db()->query("SELECT COUNT(*) FROM custom_tour_requests WHERE status = 'closed'")->fetchColumn(),
+];
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('sliders') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Total requests</div><div class="stat-tile__value"><?= $customTourStats['total'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('mail') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">New</div><div class="stat-tile__value"><?= $customTourStats['new'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--olive"><?= render_nav_glyph('users') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Contacted</div><div class="stat-tile__value"><?= $customTourStats['contacted'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Closed</div><div class="stat-tile__value"><?= $customTourStats['closed'] ?></div></div>
+  </div>
+</div>
 
 <div class="tab-nav">
   <a href="<?= h(url('/admin/custom-tours/index.php')) ?>" class="<?= $statusFilter === '' ? 'is-active' : '' ?>">All</a>

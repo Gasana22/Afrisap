@@ -13,8 +13,28 @@ $applications = db()->query('SELECT ca.*, c.title AS career_title
     JOIN careers c ON c.id = ca.career_id
     ORDER BY ca.created_at DESC')->fetchAll();
 
+$rolesAppliedTo = count(array_unique(array_column($applications, 'career_title')));
+$withCv = count(array_filter($applications, fn (array $app) => !empty($app['cv_path'])));
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($applications): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('briefcase') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Total applications</div><div class="stat-tile__value"><?= count($applications) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Roles applied to</div><div class="stat-tile__value"><?= $rolesAppliedTo ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('doc') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">With CV attached</div><div class="stat-tile__value"><?= $withCv ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$applications): ?>

@@ -14,8 +14,23 @@ $providers = db()->query('SELECT p.*, et.name AS type_name
     JOIN experience_types et ON et.id = p.experience_type_id
     ORDER BY p.company_name')->fetchAll();
 
+$providerTypeCount = count(array_unique(array_column($providers, 'type_name')));
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($providers): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('briefcase') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Service providers</div><div class="stat-tile__value"><?= count($providers) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('mask') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Experience types covered</div><div class="stat-tile__value"><?= $providerTypeCount ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$providers): ?>
@@ -28,7 +43,6 @@ require __DIR__ . '/../includes/header.php';
     <table class="table">
       <thead>
         <tr>
-          <th></th>
           <th>Company</th>
           <th>Type</th>
           <th>Region</th>
@@ -39,12 +53,14 @@ require __DIR__ . '/../includes/header.php';
       <tbody>
         <?php foreach ($providers as $provider): ?>
           <tr>
-            <td style="width:52px;">
-              <?php if ($provider['logo_path']): ?>
-                <img src="<?= h(url('/' . $provider['logo_path'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--line);">
-              <?php endif; ?>
+            <td>
+              <div class="table-item">
+                <?php if ($provider['logo_path']): ?>
+                  <img class="table-item__thumb" src="<?= h(url('/' . $provider['logo_path'])) ?>" alt="">
+                <?php endif; ?>
+                <span><?= h($provider['company_name']) ?></span>
+              </div>
             </td>
-            <td><?= h($provider['company_name']) ?></td>
             <td class="table__meta"><?= h($provider['type_name']) ?></td>
             <td class="table__meta"><?= h($provider['region']) ?></td>
             <td class="table__meta"><?= h($provider['contact_person']) ?></td>

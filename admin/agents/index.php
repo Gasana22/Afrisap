@@ -20,8 +20,35 @@ $stmt = db()->prepare($sql);
 $stmt->execute($params);
 $agents = $stmt->fetchAll();
 
+// Stat tiles reflect the whole inbox regardless of the tab filter above.
+$agentStats = [
+    'total' => (int) db()->query('SELECT COUNT(*) FROM agents')->fetchColumn(),
+    'new' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'new'")->fetchColumn(),
+    'approved' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'approved'")->fetchColumn(),
+    'rejected' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'rejected'")->fetchColumn(),
+];
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('users') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Total applications</div><div class="stat-tile__value"><?= $agentStats['total'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('mail') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">New</div><div class="stat-tile__value"><?= $agentStats['new'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Approved</div><div class="stat-tile__value"><?= $agentStats['approved'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--danger"><?= render_nav_glyph('compass') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Rejected</div><div class="stat-tile__value"><?= $agentStats['rejected'] ?></div></div>
+  </div>
+</div>
 
 <div class="tab-nav">
   <a href="<?= h(url('/admin/agents/index.php')) ?>" class="<?= $statusFilter === '' ? 'is-active' : '' ?>">All</a>

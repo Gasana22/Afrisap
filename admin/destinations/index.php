@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/media.php';
 require_login();
 
 $page_title = 'Destinations';
@@ -13,9 +14,28 @@ $destinations = db()->query('SELECT d.id, d.name, c.name AS country_name
     FROM destinations d
     JOIN countries c ON c.id = d.country_id
     ORDER BY c.name, d.name')->fetchAll();
+foreach ($destinations as &$destination) {
+    $destination['cover'] = get_cover_image('destination', (int) $destination['id']);
+}
+unset($destination);
+
+$countryCount = count(array_unique(array_column($destinations, 'country_name')));
 
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($destinations): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('pin') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Destinations</div><div class="stat-tile__value"><?= count($destinations) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('compass') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Countries covered</div><div class="stat-tile__value"><?= $countryCount ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$destinations): ?>
@@ -43,7 +63,14 @@ require __DIR__ . '/../includes/header.php';
       <tbody>
         <?php foreach ($destinations as $destination): ?>
           <tr>
-            <td><?= h($destination['name']) ?></td>
+            <td>
+              <div class="table-item">
+                <?php if ($destination['cover']): ?>
+                  <img class="table-item__thumb" src="<?= h(url('/' . $destination['cover'])) ?>" alt="">
+                <?php endif; ?>
+                <span><?= h($destination['name']) ?></span>
+              </div>
+            </td>
             <td class="table__meta"><?= h($destination['country_name']) ?></td>
             <td>
               <div class="table__actions">

@@ -16,8 +16,32 @@ $activities = db()->query("SELECT a.*, d.name AS destination_name,
     LEFT JOIN destinations d ON d.id = a.destination_id
     ORDER BY a.name")->fetchAll();
 
+$activitiesInUse = 0;
+foreach ($activities as $activity) {
+    if ((int) $activity['tour_count'] > 0 || (int) $activity['destination_activity_count'] > 0) {
+        $activitiesInUse++;
+    }
+}
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($activities): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('sliders') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Activities</div><div class="stat-tile__value"><?= count($activities) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">In use</div><div class="stat-tile__value"><?= $activitiesInUse ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('doc') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Unused</div><div class="stat-tile__value"><?= count($activities) - $activitiesInUse ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$activities): ?>

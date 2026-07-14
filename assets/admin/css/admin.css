@@ -1063,7 +1063,9 @@ a { color: inherit; }
 .status-pill--closed,
 .status-pill--read,
 .status-pill--contacted,
-.status-pill--published { color: #204531; border-color: #c7dccb; background: #eef4ee; }
+.status-pill--published,
+.status-pill--open,
+.status-pill--super_admin { color: #204531; border-color: #c7dccb; background: #eef4ee; }
 
 .status-pill--cancelled,
 .status-pill--rejected { color: var(--danger); border-color: #e7c7c1; background: #fbeeec; }

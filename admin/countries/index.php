@@ -15,8 +15,23 @@ $countries = db()->query('SELECT c.id, c.name, COUNT(d.id) AS destination_count
     GROUP BY c.id, c.name
     ORDER BY c.name')->fetchAll();
 
+$totalDestinations = array_sum(array_column($countries, 'destination_count'));
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($countries): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('pin') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Countries</div><div class="stat-tile__value"><?= count($countries) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('pin') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Destinations across all</div><div class="stat-tile__value"><?= $totalDestinations ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$countries): ?>

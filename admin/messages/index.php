@@ -20,8 +20,35 @@ $stmt = db()->prepare($sql);
 $stmt->execute($params);
 $messages = $stmt->fetchAll();
 
+// Stat tiles reflect the whole inbox regardless of the tab filter above.
+$messageStats = [
+    'total' => (int) db()->query('SELECT COUNT(*) FROM contact_messages')->fetchColumn(),
+    'new' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'new'")->fetchColumn(),
+    'read' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'read'")->fetchColumn(),
+    'closed' => (int) db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'closed'")->fetchColumn(),
+];
+
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('mail') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Total messages</div><div class="stat-tile__value"><?= $messageStats['total'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('mail') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">New</div><div class="stat-tile__value"><?= $messageStats['new'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--olive"><?= render_nav_glyph('doc') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Read</div><div class="stat-tile__value"><?= $messageStats['read'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Closed</div><div class="stat-tile__value"><?= $messageStats['closed'] ?></div></div>
+  </div>
+</div>
 
 <div class="tab-nav">
   <a href="<?= h(url('/admin/messages/index.php')) ?>" class="<?= $statusFilter === '' ? 'is-active' : '' ?>">All</a>

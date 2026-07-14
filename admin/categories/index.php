@@ -12,9 +12,36 @@ $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/categor
 $categories = db()->query("SELECT * FROM tour_categories ORDER BY FIELD(menu_group, 'safari','trip','school'), sort_order, name")->fetchAll();
 
 $groupLabels = ['safari' => 'Safari Tours', 'trip' => 'Trip Tours', 'school' => 'School Trips'];
+$groupCounts = ['safari' => 0, 'trip' => 0, 'school' => 0];
+foreach ($categories as $category) {
+    if (isset($groupCounts[$category['menu_group']])) {
+        $groupCounts[$category['menu_group']]++;
+    }
+}
 
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($categories): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Total categories</div><div class="stat-tile__value"><?= count($categories) ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('compass') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Safari Tours</div><div class="stat-tile__value"><?= $groupCounts['safari'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('sliders') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Trip Tours</div><div class="stat-tile__value"><?= $groupCounts['trip'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--olive"><?= render_nav_glyph('book') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">School Trips</div><div class="stat-tile__value"><?= $groupCounts['school'] ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!$categories): ?>

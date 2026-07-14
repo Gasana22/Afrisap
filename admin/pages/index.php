@@ -14,6 +14,15 @@ $pages = db()->query('SELECT * FROM pages ORDER BY title')->fetchAll();
 require __DIR__ . '/../includes/header.php';
 ?>
 
+<?php if ($pages): ?>
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('doc') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Content pages</div><div class="stat-tile__value"><?= count($pages) ?></div></div>
+  </div>
+</div>
+<?php endif; ?>
+
 <div class="panel">
   <?php if (!$pages): ?>
     <div class="empty-state">
