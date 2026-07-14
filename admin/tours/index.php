@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/media.php';
 require_login();
 
 $page_title = 'Tours';
@@ -18,18 +19,15 @@ $tours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.days, t.sc
     ORDER BY t.created_at DESC")->fetchAll();
 
 $tourStats = ['total' => count($tours), 'published' => 0, 'draft' => 0, 'upcoming' => 0];
-$budgetCounts = ['Luxury' => 0, 'Mid-Range' => 0, 'Budget' => 0];
 $today = date('Y-m-d');
-foreach ($tours as $tour) {
+foreach ($tours as &$tour) {
     $tourStats[$tour['status'] === 'published' ? 'published' : 'draft']++;
     if ($tour['scheduled_date'] && $tour['scheduled_date'] >= $today) {
         $tourStats['upcoming']++;
     }
-    if (isset($budgetCounts[$tour['budget_type']])) {
-        $budgetCounts[$tour['budget_type']]++;
-    }
+    $tour['cover'] = get_cover_image('tour', (int) $tour['id']);
 }
-$budgetTotal = max(1, array_sum($budgetCounts));
+unset($tour);
 
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -52,24 +50,6 @@ require __DIR__ . '/../includes/header.php';
     <div class="stat-tile__body"><div class="stat-tile__label">Upcoming departures</div><div class="stat-tile__value"><?= $tourStats['upcoming'] ?></div></div>
   </div>
 </div>
-
-<?php if ($tours): ?>
-<div class="panel">
-  <div class="panel__header"><div class="panel__title">Budget mix</div></div>
-  <div class="panel__body">
-    <div class="segment-bar">
-      <div class="segment-bar__seg segment-bar__seg--a" style="width:<?= round($budgetCounts['Mid-Range'] / $budgetTotal * 100, 2) ?>%"></div>
-      <div class="segment-bar__seg segment-bar__seg--b" style="width:<?= round($budgetCounts['Budget'] / $budgetTotal * 100, 2) ?>%"></div>
-      <div class="segment-bar__seg segment-bar__seg--c" style="width:<?= round($budgetCounts['Luxury'] / $budgetTotal * 100, 2) ?>%"></div>
-    </div>
-    <div class="segment-legend">
-      <span class="segment-legend__item"><i class="segment-legend__dot segment-legend__dot--a"></i>Mid-Range <span class="segment-legend__count"><?= $budgetCounts['Mid-Range'] ?></span></span>
-      <span class="segment-legend__item"><i class="segment-legend__dot segment-legend__dot--b"></i>Budget <span class="segment-legend__count"><?= $budgetCounts['Budget'] ?></span></span>
-      <span class="segment-legend__item"><i class="segment-legend__dot segment-legend__dot--c"></i>Luxury <span class="segment-legend__count"><?= $budgetCounts['Luxury'] ?></span></span>
-    </div>
-  </div>
-</div>
-<?php endif; ?>
 
 <div class="panel">
   <?php if (!$tours): ?>
@@ -96,7 +76,14 @@ require __DIR__ . '/../includes/header.php';
       <tbody>
         <?php foreach ($tours as $tour): ?>
           <tr>
-            <td><?= h($tour['title']) ?></td>
+            <td>
+              <div class="table-item">
+                <?php if ($tour['cover']): ?>
+                  <img class="table-item__thumb" src="<?= h(url('/' . $tour['cover'])) ?>" alt="">
+                <?php endif; ?>
+                <span><?= h($tour['title']) ?></span>
+              </div>
+            </td>
             <td class="table__meta"><?= h($tour['category_name']) ?></td>
             <td class="table__meta"><?= h($tour['budget_type']) ?></td>
             <td class="table__meta">$<?= number_format((float) $tour['price'], 2) ?></td>

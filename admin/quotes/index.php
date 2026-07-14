@@ -28,25 +28,6 @@ $quoteStats = [
     'experiential' => (int) db()->query("SELECT COUNT(*) FROM quote_requests WHERE quote_type = 'experiential'")->fetchColumn(),
 ];
 
-// 6-month trend, split by quote type.
-$trendMonthKeys = [];
-$trendMonthLabels = [];
-for ($i = 5; $i >= 0; $i--) {
-    $ts = strtotime("-{$i} months");
-    $trendMonthKeys[] = date('Y-m', $ts);
-    $trendMonthLabels[] = date('M', $ts);
-}
-$safariByMonth = array_fill_keys($trendMonthKeys, 0);
-$experientialByMonth = array_fill_keys($trendMonthKeys, 0);
-foreach (db()->query("SELECT DATE_FORMAT(created_at, '%Y-%m') AS ym, quote_type, COUNT(*) AS c FROM quote_requests WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) GROUP BY ym, quote_type")->fetchAll() as $row) {
-    if ($row['quote_type'] === 'safari' && isset($safariByMonth[$row['ym']])) {
-        $safariByMonth[$row['ym']] = (int) $row['c'];
-    } elseif ($row['quote_type'] === 'experiential' && isset($experientialByMonth[$row['ym']])) {
-        $experientialByMonth[$row['ym']] = (int) $row['c'];
-    }
-}
-$quoteTrendMax = max(1, max($safariByMonth), max($experientialByMonth));
-
 require __DIR__ . '/../includes/header.php';
 ?>
 
@@ -68,31 +49,6 @@ require __DIR__ . '/../includes/header.php';
     <div class="stat-tile__body"><div class="stat-tile__label">Experiential quotes</div><div class="stat-tile__value"><?= $quoteStats['experiential'] ?></div></div>
   </div>
 </div>
-
-<?php if ($quoteStats['total'] > 0): ?>
-<div class="panel">
-  <div class="panel__header">
-    <div class="panel__title">Requests trend</div>
-    <div class="chart-legend">
-      <span class="chart-legend__item"><i class="chart-legend__dot chart-legend__dot--bookings"></i>Safari</span>
-      <span class="chart-legend__item"><i class="chart-legend__dot chart-legend__dot--quotes"></i>Experiential</span>
-    </div>
-  </div>
-  <div class="panel__body">
-    <div class="bar-chart">
-      <?php foreach ($trendMonthKeys as $i => $key): ?>
-        <div class="bar-chart__col">
-          <div class="bar-chart__bars">
-            <div class="bar-chart__bar bar-chart__bar--bookings" style="height:<?= max(4, (int) round($safariByMonth[$key] / $quoteTrendMax * 130)) ?>px" title="<?= (int) $safariByMonth[$key] ?> safari quotes in <?= h($trendMonthLabels[$i]) ?>"></div>
-            <div class="bar-chart__bar bar-chart__bar--quotes" style="height:<?= max(4, (int) round($experientialByMonth[$key] / $quoteTrendMax * 130)) ?>px" title="<?= (int) $experientialByMonth[$key] ?> experiential quotes in <?= h($trendMonthLabels[$i]) ?>"></div>
-          </div>
-          <div class="bar-chart__label"><?= h($trendMonthLabels[$i]) ?></div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</div>
-<?php endif; ?>
 
 <div class="tab-nav">
   <a href="<?= h(url('/admin/quotes/index.php')) ?>" class="<?= $statusFilter === '' ? 'is-active' : '' ?>">All</a>

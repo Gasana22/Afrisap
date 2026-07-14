@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/media.php';
 require_login();
 
 $page_title = 'Bookings';
@@ -26,9 +27,40 @@ $bookings = db()->prepare("SELECT b.*,
     ORDER BY b.created_at DESC");
 $bookings->execute($params);
 $bookings = $bookings->fetchAll();
+foreach ($bookings as &$booking) {
+    $booking['cover'] = get_cover_image($booking['bookable_type'], (int) $booking['bookable_id']);
+}
+unset($booking);
+
+// Stat tiles reflect the whole inbox regardless of the tab filter above.
+$bookingStats = [
+    'total' => (int) db()->query('SELECT COUNT(*) FROM bookings')->fetchColumn(),
+    'pending' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'pending'")->fetchColumn(),
+    'confirmed' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'confirmed'")->fetchColumn(),
+    'cancelled' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'cancelled'")->fetchColumn(),
+];
 
 require __DIR__ . '/../includes/header.php';
 ?>
+
+<div class="stat-grid">
+  <div class="stat-tile stat-tile--hero">
+    <div class="stat-tile__icon"><?= render_nav_glyph('calendar') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Total bookings</div><div class="stat-tile__value"><?= $bookingStats['total'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--turquoise"><?= render_nav_glyph('mail') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Pending</div><div class="stat-tile__value"><?= $bookingStats['pending'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--emerald"><?= render_nav_glyph('tag') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Confirmed</div><div class="stat-tile__value"><?= $bookingStats['confirmed'] ?></div></div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-tile__icon stat-tile__icon--danger"><?= render_nav_glyph('compass') ?></div>
+    <div class="stat-tile__body"><div class="stat-tile__label">Cancelled</div><div class="stat-tile__value"><?= $bookingStats['cancelled'] ?></div></div>
+  </div>
+</div>
 
 <div class="tab-nav">
   <a href="<?= h(url('/admin/bookings/index.php')) ?>" class="<?= $statusFilter === '' ? 'is-active' : '' ?>">All</a>
@@ -56,12 +88,19 @@ require __DIR__ . '/../includes/header.php';
               <span class="table__meta"><?= h($booking['customer_email']) ?><?= $booking['customer_phone'] ? ' · ' . h($booking['customer_phone']) : '' ?></span>
             </td>
             <td>
-              <?php if ($booking['item_title']): ?>
-                <a href="<?= h(url($booking['item_link'])) ?>"><?= h($booking['item_title']) ?></a>
-              <?php else: ?>
-                <span class="table__meta">Deleted</span>
-              <?php endif; ?>
-              <br><span class="table__meta"><?= $booking['bookable_type'] === 'tour' ? 'Safari' : 'Experiential' ?></span>
+              <div class="table-item">
+                <?php if ($booking['cover']): ?>
+                  <img class="table-item__thumb" src="<?= h(url('/' . $booking['cover'])) ?>" alt="">
+                <?php endif; ?>
+                <div>
+                  <?php if ($booking['item_title']): ?>
+                    <a href="<?= h(url($booking['item_link'])) ?>"><?= h($booking['item_title']) ?></a>
+                  <?php else: ?>
+                    <span class="table__meta">Deleted</span>
+                  <?php endif; ?>
+                  <br><span class="table__meta"><?= $booking['bookable_type'] === 'tour' ? 'Safari' : 'Experiential' ?></span>
+                </div>
+              </div>
             </td>
             <td class="table__meta"><?= h($booking['travel_date'] ?: '—') ?></td>
             <td class="table__meta"><?= (int) $booking['num_people'] ?></td>

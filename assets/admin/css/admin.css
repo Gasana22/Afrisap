@@ -398,6 +398,7 @@ a { color: inherit; }
 .stat-tile__icon--turquoise { background: #e3f8f6; color: #1e8f88; }
 .stat-tile__icon--olive { background: #eaf3e3; color: #3c7a3a; }
 .stat-tile__icon--emerald { background: #e2f5ec; color: var(--emerald-dark); }
+.stat-tile__icon--danger { background: #fbeeec; color: var(--danger-dark); }
 
 .stat-tile__body { min-width: 0; }
 
@@ -491,34 +492,6 @@ a { color: inherit; }
 }
 
 .table--compact td, .table--compact th { padding: 9px 18px; }
-
-/* Segmented breakdown bar (e.g. tours by budget tier) */
-.segment-bar {
-  display: flex;
-  height: 14px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: var(--mist);
-}
-
-.segment-bar__seg { height: 100%; }
-.segment-bar__seg--a { background: linear-gradient(90deg, var(--emerald) 0%, var(--emerald-dark) 100%); }
-.segment-bar__seg--b { background: linear-gradient(90deg, var(--turquoise) 0%, #1e8f88 100%); }
-.segment-bar__seg--c { background: linear-gradient(90deg, var(--murram) 0%, var(--murram-dark) 100%); }
-
-.segment-legend { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
-
-.segment-legend__item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12.5px;
-}
-
-.segment-legend__dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-.segment-legend__dot--a { background: var(--emerald); }
-.segment-legend__dot--b { background: var(--turquoise); }
-.segment-legend__dot--c { background: var(--murram); }
 
 .segment-legend__count {
   font-family: var(--font-mono);
