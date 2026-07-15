@@ -1,0 +1,4 @@
+@import url('components/app-shell.css');
+
+/* Platform admin specific tweaks */
+.app-sidebar { --sfp-sidebar-bg: #1f2937; }

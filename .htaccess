@@ -1,0 +1,24 @@
+RewriteEngine On
+
+# Deny direct access to sensitive folders
+RewriteRule ^(config|includes|database|logs|vendor)/ - [F,L]
+
+# Public traceability pages: /org/{slug}/page -> org/_slug/page.php?slug={slug}
+RewriteRule ^org/([^/]+)/?$ org/_slug/index.php?slug=$1 [QSA,L]
+RewriteRule ^org/([^/]+)/([a-zA-Z0-9_-]+)\.php$ org/_slug/$2.php?slug=$1 [QSA,L]
+RewriteRule ^org/([^/]+)/([a-zA-Z0-9_-]+)/?$ org/_slug/$2.php?slug=$1 [QSA,L]
+
+# Root -> public landing page
+RewriteRule ^$ public/index.php [L]
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<FilesMatch "\.(env|sql|log|md)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes

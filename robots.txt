@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /org-admin/
+Disallow: /worker/
+Disallow: /api/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /database/
+Disallow: /storage/
+Disallow: /logs/
+Disallow: /vendor/
+Allow: /public/
+Allow: /org/
+
+Sitemap: /sitemap.xml

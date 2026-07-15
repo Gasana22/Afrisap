@@ -1,0 +1,15 @@
+/vendor/
+/node_modules/
+.env
+storage/uploads/*
+!storage/uploads/.gitkeep
+storage/exports/*
+!storage/exports/.gitkeep
+storage/cache/*
+!storage/cache/.gitkeep
+logs/*.log
+database/backups/*
+!database/backups/.gitkeep
+.DS_Store
+*.swp
+.phpunit.result.cache

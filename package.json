@@ -1,0 +1,11 @@
+{
+  "name": "smart-farm-platform",
+  "version": "1.0.0",
+  "description": "Smart Farm Management & Traceability Platform - front-end assets",
+  "private": true,
+  "scripts": {
+    "build:css": "echo \"No build step required - plain CSS\"",
+    "lint:js": "echo \"No JS lint step configured\""
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,19 @@
+@import url('components/app-shell.css');
+
+/* org-admin specific tweaks */
+.farm-selector select {
+    border-radius: 999px;
+    border: 1px solid var(--sfp-border);
+    padding: .4rem .9rem;
+}
+
+.crop-tabs .nav-link {
+    border-radius: 999px;
+    padding: .35rem 1rem;
+    color: var(--sfp-text-muted);
+}
+
+.crop-tabs .nav-link.active {
+    background: var(--sfp-primary);
+    color: #fff;
+}

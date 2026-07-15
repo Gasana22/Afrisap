@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Static sitemap for the public marketing site. Replace the placeholder
+     domain with your real APP_URL before deploying, and regenerate to add
+     published blog posts and any /org/{slug}/ pages you want indexed. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://example.com/public/index.php</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://example.com/public/about.php</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://example.com/public/features.php</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://example.com/public/pricing.php</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://example.com/public/blog.php</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://example.com/public/contact.php</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://example.com/public/demo.php</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://example.com/public/privacy.php</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+</urlset>
