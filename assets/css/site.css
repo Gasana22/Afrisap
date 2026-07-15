@@ -534,18 +534,18 @@ a.hero-stat:hover {
   background: var(--savanna-line);
 }
 
-/* "Log entry" header: a coordinate-style tag with a hairline running the
-   rest of the section width, then the heading and lead set left, not
-   centered. This is the site's primary structural device -- it replaces the
-   generic centered eyebrow/title/subhead stack (the single most recognizable
-   templated pattern) with something that reads like a waypoint entry in a
-   field log. No markup change needed anywhere this component is used. */
-.section__header { margin: 0 0 40px; }
+/* Centered eyebrow/title/lead stack, per client feedback (they marked up
+   the left-aligned "log entry" version and wrote "Centre" against it).
+   The eyebrow keeps its small centered accent line instead of a hairline
+   running the section width. No markup change needed anywhere this
+   component is used. */
+.section__header { margin: 0 auto 40px; text-align: center; }
 
 .section__eyebrow {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.1em;
@@ -556,7 +556,7 @@ a.hero-stat:hover {
 
 .section__eyebrow::after {
   content: '';
-  flex: 1 1 auto;
+  width: 48px;
   height: 1px;
   background: var(--savanna-line);
 }
@@ -565,12 +565,12 @@ a.hero-stat:hover {
   font-family: var(--font-display);
   font-size: clamp(26px, 3.2vw, 36px);
   font-weight: 600;
-  margin: 0 0 10px;
+  margin: 0 auto 10px;
   letter-spacing: -0.01em;
   max-width: 640px;
 }
 
-.section__lead { color: var(--ink); opacity: 0.68; font-size: 15.5px; margin: 0; max-width: 560px; }
+.section__lead { color: var(--ink); opacity: 0.68; font-size: 15.5px; margin: 0 auto; max-width: 560px; }
 
 /* Two doors -- styled as a pair of route stubs torn from the same manifest,
    not flat SaaS feature blocks. A dashed perforation runs down the gap
