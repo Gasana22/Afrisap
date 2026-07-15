@@ -1345,7 +1345,7 @@ a.list-row:hover { border-color: var(--murram); }
 
 .filter-bar {
   display: grid;
-  grid-template-columns: repeat(4, 1fr) auto;
+  grid-template-columns: repeat(3, 1fr) auto;
   gap: 12px;
   align-items: end;
   background: var(--white);

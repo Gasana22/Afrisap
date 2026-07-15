@@ -204,15 +204,6 @@ require __DIR__ . '/includes/site_header.php';
           <option value="8+" <?= $daysBucket === '8+' ? 'selected' : '' ?>>8+ days</option>
         </select>
       </div>
-      <div class="filter-bar__field">
-        <label for="f-destination"><?= render_nav_glyph('pin') ?>Destination</label>
-        <select id="f-destination" name="destination">
-          <option value="">Any national park</option>
-          <?php foreach (db()->query('SELECT id, name FROM destinations ORDER BY name')->fetchAll() as $d): ?>
-            <option value="<?= (int) $d['id'] ?>" <?= $destinationId === (int) $d['id'] ? 'selected' : '' ?>><?= h($d['name']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
       <button type="submit" class="btn btn--dark">Filter</button>
     </form>
 
