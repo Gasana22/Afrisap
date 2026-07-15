@@ -37,7 +37,7 @@ render_public_navbar();
               <?php if ($isFeatured): ?>
                 <span class="badge bg-primary mb-2">Most Popular</span>
               <?php endif; ?>
-              <h5 class="fw-bold"><?= e($plan['name']) ?></h5>
+              <h2 class="h5 fw-bold"><?= e($plan['name']) ?></h2>
               <div class="price mt-2">
                 $<span data-price-monthly="<?= number_format($monthly, 2) ?>" data-price-yearly="<?= number_format($yearly, 2) ?>"><?= number_format($monthly, 2) ?></span>
                 <span class="fs-6 text-muted fw-normal">/<?= $monthly > 0 ? 'mo' : 'forever' ?></span>

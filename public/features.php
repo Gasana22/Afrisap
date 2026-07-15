@@ -77,8 +77,8 @@ render_public_navbar();
       <?php foreach ($modules as $m): ?>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon"><i class="bi <?= e($m['icon']) ?>"></i></div>
-            <h5 class="fw-semibold"><?= $m['title'] ?></h5>
+            <div class="feature-icon mb-3"><i class="bi <?= e($m['icon']) ?>"></i></div>
+            <h2 class="h5 fw-semibold mb-2"><?= $m['title'] ?></h2>
             <p class="text-muted mb-0"><?= $m['text'] ?></p>
           </div>
         </div>

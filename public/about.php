@@ -36,9 +36,9 @@ render_public_navbar();
   <div class="container">
     <div class="section-heading">
       <h2 class="fw-bold">Our Mission</h2>
-      <p class="text-muted">To make world-class farm management and traceability tools accessible to every
-        agribusiness, regardless of size, so that better data leads to better harvests, better livelihoods, and
-        safer food on every table.</p>
+      <p class="text-muted">To give every farm, regardless of size, the same field-to-sale record keeping that
+        large agribusinesses already rely on &mdash; so a harvest, a vaccination record, or a shipment can be traced
+        back to exactly where and when it happened.</p>
     </div>
   </div>
 </section>
@@ -52,21 +52,21 @@ render_public_navbar();
       <div class="col-md-4">
         <div class="feature-card text-center">
           <div class="feature-icon mx-auto"><i class="bi bi-shield-check"></i></div>
-          <h5 class="fw-semibold">Trust &amp; Transparency</h5>
+          <h3 class="h5 fw-semibold">Trust &amp; Transparency</h3>
           <p class="text-muted mb-0">Every batch we help trace is a promise kept to the end consumer.</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="feature-card text-center">
           <div class="feature-icon mx-auto"><i class="bi bi-lightbulb"></i></div>
-          <h5 class="fw-semibold">Practical Innovation</h5>
+          <h3 class="h5 fw-semibold">Practical Innovation</h3>
           <p class="text-muted mb-0">We build features farm teams actually use in the field, not just on a slide deck.</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="feature-card text-center">
           <div class="feature-icon mx-auto"><i class="bi bi-people"></i></div>
-          <h5 class="fw-semibold">Farmers First</h5>
+          <h3 class="h5 fw-semibold">Farmers First</h3>
           <p class="text-muted mb-0">Our roadmap is shaped by the agronomists, managers and workers who use it daily.</p>
         </div>
       </div>

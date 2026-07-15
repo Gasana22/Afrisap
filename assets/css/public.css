@@ -93,6 +93,8 @@ a { color: var(--sfp-primary); }
     padding: 3rem 0 1.5rem;
 }
 .site-footer h5, .site-footer h6 { color: #fff; }
+.site-footer .footer-brand { color: #fff; font-size: 1.25rem; }
+.site-footer .footer-group-label { color: #fff; letter-spacing: .04em; }
 .site-footer a { color: #cbd5c9; text-decoration: none; }
 .site-footer a:hover { color: #fff; }
 

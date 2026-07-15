@@ -70,7 +70,7 @@ render_header(['title' => ($batch ? humanize($batch['product_type']) . ' - ' : '
         <?php render_status_badge($batch['status']); ?>
       </div>
 
-      <h5 class="fw-semibold mb-3">Origin</h5>
+      <h3 class="h5 fw-semibold mb-3">Origin</h3>
       <div class="row g-3 mb-4">
         <div class="col-md-4">
           <div class="feature-card text-center h-100">
@@ -116,14 +116,14 @@ render_header(['title' => ($batch ? humanize($batch['product_type']) . ' - ' : '
         </div>
       </div>
 
-      <h5 class="fw-semibold mb-3">Product Journey</h5>
+      <h3 class="h5 fw-semibold mb-3">Product Journey</h3>
       <?php if (!$journey): ?>
         <p class="text-muted mb-5">No journey stages have been recorded for this batch yet.</p>
       <?php else: ?>
         <div class="trace-timeline mb-5">
           <?php foreach ($journey as $stage): ?>
             <div class="trace-step">
-              <h6 class="fw-semibold mb-1"><?= e(humanize($stage['stage'])) ?></h6>
+              <h4 class="h6 fw-semibold mb-1"><?= e(humanize($stage['stage'])) ?></h4>
               <p class="text-muted small mb-1">
                 <?= e(format_date($stage['start_date'])) ?><?= $stage['end_date'] ? ' &ndash; ' . e(format_date($stage['end_date'])) : '' ?>
                 <?php if (!empty($stage['responsible_party'])): ?>
@@ -138,14 +138,14 @@ render_header(['title' => ($batch ? humanize($batch['product_type']) . ' - ' : '
         </div>
       <?php endif; ?>
 
-      <h5 class="fw-semibold mb-3">Chain of Custody Events</h5>
+      <h3 class="h5 fw-semibold mb-3">Chain of Custody Events</h3>
       <?php if (!$events): ?>
         <p class="text-muted mb-0">No traceability events have been recorded for this batch yet.</p>
       <?php else: ?>
         <div class="trace-timeline">
           <?php foreach ($events as $event): ?>
             <div class="trace-step">
-              <h6 class="fw-semibold mb-1"><?= e(humanize($event['event_type'])) ?></h6>
+              <h4 class="h6 fw-semibold mb-1"><?= e(humanize($event['event_type'])) ?></h4>
               <p class="text-muted small mb-1">
                 <?= e(format_date($event['event_date'], 'd M Y H:i')) ?>
                 <?php if (!empty($event['location'])): ?>

@@ -44,23 +44,25 @@ function render_public_footer_nav(): void
     ];
 
     echo '<footer class="site-footer"><div class="container"><div class="row g-4">';
-    echo '<div class="col-md-4"><h5><i class="bi bi-flower1"></i> Smart Farm Platform</h5>'
+    echo '<div class="col-md-4"><p class="footer-brand fw-bold mb-2"><i class="bi bi-flower1"></i> Smart Farm Platform</p>'
         . '<p class="text-muted">Multi-tenant farm management & traceability for modern agribusiness.</p></div>';
 
-    echo '<div class="col-md-2"><h6>Product</h6><ul class="list-unstyled">'
+    $footerLabelClass = 'footer-group-label fw-semibold text-uppercase small mb-2';
+
+    echo '<div class="col-md-2"><p class="' . $footerLabelClass . '">Product</p><ul class="list-unstyled">'
         . '<li><a href="' . $urls['features'] . '">Features</a></li>'
         . '<li><a href="' . $urls['pricing'] . '">Pricing</a></li>'
         . '<li><a href="' . $urls['demo'] . '">Request Demo</a></li></ul></div>';
 
-    echo '<div class="col-md-2"><h6>Company</h6><ul class="list-unstyled">'
+    echo '<div class="col-md-2"><p class="' . $footerLabelClass . '">Company</p><ul class="list-unstyled">'
         . '<li><a href="' . $urls['about'] . '">About</a></li>'
         . '<li><a href="' . $urls['blog'] . '">Blog</a></li>'
         . '<li><a href="' . $urls['contact'] . '">Contact</a></li></ul></div>';
 
-    echo '<div class="col-md-2"><h6>Legal</h6><ul class="list-unstyled">'
+    echo '<div class="col-md-2"><p class="' . $footerLabelClass . '">Legal</p><ul class="list-unstyled">'
         . '<li><a href="' . $urls['privacy'] . '">Privacy Policy</a></li></ul></div>';
 
-    echo '<div class="col-md-2"><h6>Account</h6><ul class="list-unstyled">'
+    echo '<div class="col-md-2"><p class="' . $footerLabelClass . '">Account</p><ul class="list-unstyled">'
         . '<li><a href="' . $urls['login'] . '">Log In</a></li>'
         . '<li><a href="' . $urls['register'] . '">Register</a></li></ul></div>';
 

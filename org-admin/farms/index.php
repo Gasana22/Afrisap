@@ -44,7 +44,7 @@ render_header(['title' => 'Farms', 'context' => 'org-admin']);
             <div class="col-md-6 col-xl-4">
               <div class="content-card h-100">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                  <h6 class="mb-0"><?= e($farm['name']) ?></h6>
+                  <h5 class="h6 mb-0"><?= e($farm['name']) ?></h5>
                   <?php render_status_badge($farm['status']); ?>
                 </div>
                 <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> <?= e($farm['village'] ?: '-') ?>, <?= e($farm['district'] ?: '-') ?></p>

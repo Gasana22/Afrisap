@@ -68,8 +68,8 @@ render_public_navbar();
       <?php foreach ($features as $f): ?>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon"><i class="bi <?= e($f['icon']) ?>"></i></div>
-            <h5 class="fw-semibold"><?= e($f['title']) ?></h5>
+            <div class="feature-icon mb-3"><i class="bi <?= e($f['icon']) ?>"></i></div>
+            <h3 class="h5 fw-semibold mb-2"><?= e($f['title']) ?></h3>
             <p class="text-muted mb-0"><?= e($f['text']) ?></p>
           </div>
         </div>
@@ -87,17 +87,17 @@ render_public_navbar();
     <div class="row g-4 text-center">
       <div class="col-md-4">
         <div class="feature-icon mx-auto"><i class="bi bi-person-plus"></i></div>
-        <h5 class="mt-3 fw-semibold">1. Create your account</h5>
+        <h3 class="h5 mt-3 fw-semibold">1. Create your account</h3>
         <p class="text-muted">Sign up in minutes and set up your organization &mdash; no credit card required for the trial.</p>
       </div>
       <div class="col-md-4">
         <div class="feature-icon mx-auto"><i class="bi bi-diagram-3"></i></div>
-        <h5 class="mt-3 fw-semibold">2. Add your farms &amp; teams</h5>
+        <h3 class="h5 mt-3 fw-semibold">2. Add your farms &amp; teams</h3>
         <p class="text-muted">Register farms, blocks and plots, invite your managers and workers, and start logging activity.</p>
       </div>
       <div class="col-md-4">
         <div class="feature-icon mx-auto"><i class="bi bi-graph-up-arrow"></i></div>
-        <h5 class="mt-3 fw-semibold">3. Track, report &amp; trace</h5>
+        <h3 class="h5 mt-3 fw-semibold">3. Track, report &amp; trace</h3>
         <p class="text-muted">Watch dashboards update in real time and give your customers full traceability with a scan.</p>
       </div>
     </div>
