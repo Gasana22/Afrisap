@@ -243,15 +243,8 @@ a { color: inherit; text-decoration: none; }
   object-fit: cover;
 }
 
-/* Photo hero still needs the same dusk-to-ember read for white text/stat
-   boxes, so lay the usual gradient over the uploaded photo rather than
-   trying to guess a readable overlay per image. */
-.hero--photo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(36, 27, 52, 0.82) 0%, rgba(74, 52, 84, 0.55) 45%, rgba(232, 130, 60, 0.35) 100%);
-}
+/* Client feedback: the hero photo should show 100% clear, with no tint
+   overlay (previously a dusk-to-ember gradient sat over it). Removed. */
 
 .hero__content {
   position: relative;
@@ -301,12 +294,12 @@ a { color: inherit; text-decoration: none; }
 
 .hero__title {
   font-family: var(--font-display);
-  font-size: clamp(40px, 5.6vw, 64px);
+  font-size: clamp(24px, 3.4vw, 42px);
   font-weight: 600;
-  line-height: 1.05;
+  line-height: 1.15;
   margin: 0 0 18px;
   letter-spacing: -0.01em;
-  max-width: 14ch;
+  max-width: 100%;
 }
 
 .hero__subtitle {
