@@ -499,43 +499,18 @@ a.hero-stat:hover {
 .section { padding: 72px 0; position: relative; }
 .section--savanna { background: var(--savanna); }
 
-/* A single contour line marks the seam where a band changes tone, instead
-   of an abrupt flat-color cut -- a quiet echo of the hero's map lines. */
-.section--savanna::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--savanna-line);
-}
-
 /* Centered eyebrow/title/lead stack, per client feedback (they marked up
    the left-aligned "log entry" version and wrote "Centre" against it).
-   The eyebrow keeps its small centered accent line instead of a hairline
-   running the section width. No markup change needed anywhere this
-   component is used. */
+   No markup change needed anywhere this component is used. */
 .section__header { margin: 0 auto 40px; text-align: center; }
 
 .section__eyebrow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--murram-dark);
   margin: 0 0 16px;
-}
-
-.section__eyebrow::after {
-  content: '';
-  width: 48px;
-  height: 1px;
-  background: var(--savanna-line);
 }
 
 .section__title {
@@ -549,10 +524,6 @@ a.hero-stat:hover {
 
 .section__lead { color: var(--ink); opacity: 0.68; font-size: 15.5px; margin: 0 auto; max-width: 560px; }
 
-/* Two doors -- styled as a pair of route stubs torn from the same manifest,
-   not flat SaaS feature blocks. A dashed perforation runs down the gap
-   between them; each carries a stamped contour seal and a route number. */
-
 .doors {
   position: relative;
   display: grid;
@@ -560,17 +531,6 @@ a.hero-stat:hover {
   gap: 1px;
   background: var(--savanna-line);
   border: 1px solid var(--savanna-line);
-}
-
-.doors::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  border-left: 2px dashed rgba(255, 255, 255, 0.3);
-  z-index: 1;
 }
 
 .door {
@@ -587,32 +547,8 @@ a.hero-stat:hover {
 
 .door:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); z-index: 2; }
 
-/* Radial glow rather than a flat fill, so the panel reads as lit from a
-   point rather than a solid color swatch (matches the depth in the client's
-   reference sites' dark cards). */
-.door--safari { background: radial-gradient(140% 120% at 15% 0%, var(--canopy-light) 0%, var(--canopy) 70%); }
-.door--experiential { background: radial-gradient(140% 120% at 15% 0%, var(--drum) 0%, var(--drum-dark) 70%); }
-
-.door__seal {
-  position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 120px;
-  height: 120px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 50%;
-}
-
-.door__seal::before,
-.door__seal::after {
-  content: '';
-  position: absolute;
-  inset: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 50%;
-}
-
-.door__seal::after { inset: 32px; }
+.door--safari { background: var(--canopy); }
+.door--experiential { background: var(--drum); }
 
 .door__route {
   font-family: var(--font-mono);
@@ -768,7 +704,7 @@ a.hero-stat:hover {
 }
 
 .experience-tile {
-  background: radial-gradient(160% 140% at 20% 0%, var(--canopy-light) 0%, var(--canopy) 65%);
+  background: var(--canopy);
   color: var(--white);
   border-radius: var(--radius-lg);
   padding: 22px 16px;
@@ -872,7 +808,7 @@ a.hero-stat:hover {
 
 .cta-band {
   position: relative;
-  background: radial-gradient(120% 200% at 50% -40%, var(--canopy-light) 0%, var(--canopy-dark) 55%);
+  background: var(--canopy-dark);
   color: var(--white);
   padding: 56px 0;
   text-align: center;
@@ -997,39 +933,10 @@ a.hero-stat:hover {
 
 .page-header {
   position: relative;
-  background: radial-gradient(120% 180% at 12% 0%, var(--canopy-light) 0%, var(--canopy) 55%);
+  background: var(--canopy);
   color: var(--white);
   padding: 44px 0 36px;
   overflow: hidden;
-}
-
-/* Faint concentric waypoint mark echoing the homepage hero's map motif,
-   so inner pages don't feel like a completely different site once you
-   click through from the hero. */
-.page-header::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -60px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  border: 1px solid rgba(232, 130, 60, 0.18);
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.page-header::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  border: 1px solid rgba(232, 130, 60, 0.22);
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 
 .page-header > .wrap { position: relative; z-index: 1; }
@@ -1111,11 +1018,8 @@ a.hero-stat:hover {
   text-decoration: underline;
 }
 
-/* Price card styled as a permit stub -- a reference number and stamped
-   tier seal up top, a dashed perforation before the facts list, echoing
-   the real permit paperwork gorilla trekking and park entry require. */
 .side-card--price {
-  background: radial-gradient(160% 140% at 15% 0%, var(--canopy-light) 0%, var(--canopy-dark) 60%);
+  background: var(--canopy-dark);
   color: var(--white);
   border: none;
   position: relative;
@@ -1146,7 +1050,7 @@ a.hero-stat:hover {
   list-style: none;
   margin: 0 0 16px;
   padding: 14px 0 0;
-  border-top: 1px dashed rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .side-card__facts li {

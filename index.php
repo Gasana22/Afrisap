@@ -137,7 +137,6 @@ require __DIR__ . '/includes/site_header.php';
     </div>
     <div class="doors">
       <a href="<?= h(url('/tours.php')) ?>" class="door door--safari">
-        <span class="door__seal" aria-hidden="true"></span>
         <p class="door__route">ROUTE 01 &mdash; INTO THE PARKS</p>
         <p class="door__eyebrow">Safari Tours</p>
         <h3 class="door__title">Gorillas, game drives &amp; the Rift Valley</h3>
@@ -145,7 +144,6 @@ require __DIR__ . '/includes/site_header.php';
         <span class="btn btn--outline">Browse Safaris</span>
       </a>
       <a href="<?= h(url('/experiences.php')) ?>" class="door door--experiential">
-        <span class="door__seal" aria-hidden="true"></span>
         <p class="door__route">ROUTE 02 &mdash; INTO DAILY LIFE</p>
         <p class="door__eyebrow">Experiential Tours</p>
         <h3 class="door__title">Culture, farms, sport &amp; the everyday</h3>
