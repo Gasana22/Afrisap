@@ -5,11 +5,14 @@ storage/uploads/*
 !storage/uploads/.gitkeep
 storage/exports/*
 !storage/exports/.gitkeep
+!storage/exports/.htaccess
 storage/cache/*
 !storage/cache/.gitkeep
+!storage/cache/.htaccess
 logs/*.log
 database/backups/*
 !database/backups/.gitkeep
+!database/backups/.htaccess
 .DS_Store
 *.swp
 .phpunit.result.cache
