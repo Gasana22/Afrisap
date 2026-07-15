@@ -58,7 +58,6 @@ require __DIR__ . '/includes/site_header.php';
     </p>
     <h1 class="hero__title"><?= h($heroTitle) ?></h1>
     <p class="hero__subtitle"><?= h($heroSubtitle) ?></p>
-    <p class="hero__coords">01&deg;04'S, 29&deg;40'E &mdash; BWINDI IMPENETRABLE FOREST</p>
     <div class="hero__actions">
       <a href="<?= h(url('/tours.php')) ?>" class="btn btn--primary btn--pill">Plan a Safari <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
       <a href="<?= h(url('/experiences.php')) ?>" class="btn btn--outline btn--pill">Discover Experiences <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
@@ -123,15 +122,6 @@ require __DIR__ . '/includes/site_header.php';
         <option value="1-3">1–3 days</option>
         <option value="4-7">4–7 days</option>
         <option value="8+">8+ days</option>
-      </select>
-    </div>
-    <div class="search-bar__field">
-      <label for="search-destination">Destination</label>
-      <select id="search-destination" name="destination">
-        <option value="">Any national park</option>
-        <?php foreach (db()->query('SELECT id, name FROM destinations ORDER BY name')->fetchAll() as $dest): ?>
-          <option value="<?= (int) $dest['id'] ?>"><?= h($dest['name']) ?></option>
-        <?php endforeach; ?>
       </select>
     </div>
     <button type="submit" class="btn btn--dark">Search</button>
