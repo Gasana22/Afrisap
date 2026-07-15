@@ -179,12 +179,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `experience_types` WRITE;
 /*!40000 ALTER TABLE `experience_types` DISABLE KEYS */;
-INSERT INTO `experience_types` VALUES
-(1,'Cultural Experience','cultural-experience'),
-(2,'Farm Experience','farm-experience'),
-(3,'Manufactural/Factory Experience','manufactural-factory-experience'),
-(4,'Sports Experience','sports-experience'),
-(5,'Ghetto Experience','ghetto-experience');
+INSERT INTO `experience_types` (`id`, `name`, `slug`, `short_description`) VALUES
+(1,'Cultural Experience','cultural-experience',"Meet Uganda's tribes and traditions"),
+(2,'Farm Experience','farm-experience','Hands-on visits to working farms'),
+(3,'Manufactural/Factory Experience','manufactural-factory-experience','Behind the scenes on the factory floor'),
+(4,'Sports Experience','sports-experience','Local matches, pitches and players'),
+(5,'Ghetto Experience','ghetto-experience','Real neighbourhood life, guided and safe');
 /*!40000 ALTER TABLE `experience_types` ENABLE KEYS */;
 UNLOCK TABLES;
 

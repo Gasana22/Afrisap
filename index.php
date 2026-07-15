@@ -19,7 +19,7 @@ $destinations = db()->query('SELECT d.id, d.name, c.name AS country_name
     ORDER BY d.created_at DESC
     LIMIT 8')->fetchAll();
 
-$experienceTypes = db()->query('SELECT id, name, slug FROM experience_types ORDER BY name')->fetchAll();
+$experienceTypes = db()->query('SELECT id, name, slug, image_path, short_description FROM experience_types ORDER BY name')->fetchAll();
 
 $siteSettings = db()->query('SELECT * FROM site_settings WHERE id = 1')->fetch() ?: [];
 $heroEyebrowCountries = [
@@ -218,9 +218,15 @@ require __DIR__ . '/includes/site_header.php';
     </div>
     <div class="experience-grid">
       <?php foreach ($experienceTypes as $type): ?>
-        <a href="<?= h(url('/experiences.php?type=' . $type['slug'])) ?>" class="experience-tile">
+        <a href="<?= h(url('/experiences.php?type=' . $type['slug'])) ?>" class="experience-tile<?= $type['image_path'] ? ' experience-tile--photo' : '' ?>">
+          <?php if ($type['image_path']): ?>
+            <img class="experience-tile__photo" src="<?= h(url('/' . $type['image_path'])) ?>" alt="" loading="lazy">
+          <?php endif; ?>
           <div class="experience-tile__mark"><?= render_nav_glyph(nav_icon_for($type['name'])) ?></div>
           <div class="experience-tile__title"><?= h(str_replace(' Experience', '', $type['name'])) ?></div>
+          <?php if ($type['short_description']): ?>
+            <p class="experience-tile__desc"><?= h($type['short_description']) ?></p>
+          <?php endif; ?>
         </a>
       <?php endforeach; ?>
     </div>

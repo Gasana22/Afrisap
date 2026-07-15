@@ -704,15 +704,51 @@ a.hero-stat:hover {
 }
 
 .experience-tile {
+  position: relative;
   background: var(--canopy);
   color: var(--white);
   border-radius: var(--radius-lg);
   padding: 22px 16px;
   text-align: center;
+  overflow: hidden;
   transition: transform var(--motion-slow), box-shadow var(--motion-slow);
 }
 
 .experience-tile:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-card-hover); }
+
+/* Photo variant: full-bleed image behind the icon/title/description, with a
+   plain bottom scrim (not a brand-color gradient) purely so the white text
+   stays legible over whatever photo is uploaded. */
+.experience-tile--photo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 220px;
+}
+
+.experience-tile__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.experience-tile--photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20, 32, 27, 0) 35%, rgba(20, 32, 27, 0.88) 100%);
+  z-index: 1;
+}
+
+.experience-tile__mark,
+.experience-tile__title,
+.experience-tile__desc {
+  position: relative;
+  z-index: 2;
+}
 
 .experience-tile__mark {
   width: 40px;
@@ -729,6 +765,8 @@ a.hero-stat:hover {
 .experience-tile__mark .nav-icon { width: 20px; height: 20px; opacity: 1; }
 
 .experience-tile__title { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+
+.experience-tile__desc { font-size: 12.5px; opacity: 0.8; margin: 6px 0 0; }
 
 .experience-tile__number {
   font-family: var(--font-mono);

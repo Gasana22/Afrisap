@@ -12,6 +12,7 @@ $counts = [
     'destinations' => (int) db()->query('SELECT COUNT(*) FROM destinations')->fetchColumn(),
     'tours' => (int) db()->query('SELECT COUNT(*) FROM tours')->fetchColumn(),
     'activities' => (int) db()->query('SELECT COUNT(*) FROM activities')->fetchColumn(),
+    'experience-types' => (int) db()->query('SELECT COUNT(*) FROM experience_types')->fetchColumn(),
     'providers' => (int) db()->query('SELECT COUNT(*) FROM service_providers')->fetchColumn(),
     'experience-destinations' => (int) db()->query('SELECT COUNT(*) FROM experience_destinations')->fetchColumn(),
     'experience-tours' => (int) db()->query('SELECT COUNT(*) FROM experience_tours')->fetchColumn(),
@@ -83,6 +84,9 @@ $active_nav = $active_nav ?? '';
       </div>
       <div class="nav-group">
         <div class="nav-group__label">Experiential</div>
+        <a class="nav-link<?= $active_nav === 'experience-types' ? ' is-active' : '' ?>" href="<?= h(url('/admin/experience-types/index.php')) ?>">
+          <?= render_nav_glyph('image') ?>Experience Types <span class="nav-link__count"><?= $counts['experience-types'] ?></span>
+        </a>
         <a class="nav-link<?= $active_nav === 'providers' ? ' is-active' : '' ?>" href="<?= h(url('/admin/providers/index.php')) ?>">
           <?= render_nav_glyph('briefcase') ?>Service Providers <span class="nav-link__count"><?= $counts['providers'] ?></span>
         </a>

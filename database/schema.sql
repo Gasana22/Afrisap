@@ -359,6 +359,8 @@ CREATE TABLE `experience_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `slug` varchar(120) NOT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
+  `short_description` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `slug` (`slug`)
