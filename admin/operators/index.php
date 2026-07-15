@@ -22,10 +22,11 @@ require __DIR__ . '/../includes/header.php';
   <?php if (!$operators): ?>
     <div class="empty-state">
       <div class="empty-state__title">No tour operators yet</div>
-      <div class="empty-state__body">Add the agent/operator companies that will be attached to tours and shown to customers when they book.</div>
+      <div class="empty-state__body">Add the agent/operator companies that will be attached to tours and shown to customers when they book. These also appear as logos in the homepage's "Our Partners" section.</div>
       <a class="btn btn--primary" href="<?= h(url('/admin/operators/form.php')) ?>">Add the first operator</a>
     </div>
   <?php else: ?>
+    <p class="hint" style="margin-bottom:18px;">These appear as logos in the homepage's "Our Partners" section, and are linkable to individual tours below.</p>
     <table class="table">
       <thead>
         <tr>
