@@ -543,9 +543,10 @@ a.hero-stat:hover {
 .section__eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--murram-dark);
+  color: var(--murram);
   margin: 0 0 16px;
 }
 
