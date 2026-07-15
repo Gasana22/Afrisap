@@ -4,6 +4,7 @@
       <div>
         <div class="footer-brand">Safari<span style="color:var(--ember);">sap</span></div>
         <div class="footer-tagline">Explore. Experience. Belong.</div>
+        <div class="footer-product-of">Product of Afri-Sap Limited</div>
       </div>
       <div class="footer-col">
         <p class="footer-col__title">Safaris</p>
