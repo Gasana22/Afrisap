@@ -910,26 +910,6 @@ a.hero-stat:hover {
 
 .site-footer > .wrap { position: relative; z-index: 1; }
 
-/* Oversized ghost wordmark behind the footer content -- a quiet brand
-   flourish rather than a functional element, so it's marked aria-hidden
-   and skipped by assistive tech. */
-.site-footer::after {
-  content: 'Safarisap';
-  position: absolute;
-  left: 50%;
-  bottom: -0.14em;
-  transform: translateX(-50%);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(90px, 16vw, 220px);
-  line-height: 1;
-  color: rgba(232, 221, 188, 0.05);
-  -webkit-text-stroke: 1.5px rgba(232, 221, 188, 0.1);
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 0;
-}
-
 .footer-grid {
   display: grid;
   grid-template-columns: 1.4fr repeat(4, 1fr);
