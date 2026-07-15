@@ -1,5 +1,30 @@
+<?php
+// Static reference data (typical daytime temperature, not live weather) --
+// client asked for coordinates + temperature for at least 6 national parks
+// in the footer. No `destinations` rows exist yet to source this from, so
+// it's a fixed list here rather than a DB-backed feature.
+$footerParks = [
+    ['name' => 'Bwindi Impenetrable Forest', 'coords' => "01&deg;04'S, 29&deg;40'E", 'temp' => '18&deg;C'],
+    ['name' => 'Queen Elizabeth NP', 'coords' => "00&deg;12'S, 29&deg;54'E", 'temp' => '27&deg;C'],
+    ['name' => 'Murchison Falls NP', 'coords' => "02&deg;15'N, 31&deg;48'E", 'temp' => '29&deg;C'],
+    ['name' => 'Serengeti NP', 'coords' => "02&deg;20'S, 34&deg;50'E", 'temp' => '26&deg;C'],
+    ['name' => 'Maasai Mara Reserve', 'coords' => "01&deg;30'S, 35&deg;08'E", 'temp' => '24&deg;C'],
+    ['name' => 'Volcanoes NP', 'coords' => "01&deg;30'S, 29&deg;30'E", 'temp' => '15&deg;C'],
+];
+?>
 <footer class="site-footer">
   <div class="wrap">
+    <div class="footer-parks">
+      <p class="footer-parks__label">National Parks &mdash; Typical Daytime Temp</p>
+      <div class="footer-parks__row">
+        <?php foreach ($footerParks as $park): ?>
+          <div class="footer-parks__item">
+            <span class="footer-parks__name"><?= h($park['name']) ?></span>
+            <span class="footer-parks__meta"><?= $park['coords'] ?> &middot; <?= $park['temp'] ?></span>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
     <div class="footer-grid">
       <div>
         <div class="footer-brand">Safari<span style="color:var(--ember);">sap</span></div>
