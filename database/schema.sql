@@ -263,6 +263,7 @@ CREATE TABLE `destinations` (
   `overview` text DEFAULT NULL,
   `why_consider` text DEFAULT NULL,
   `additional_info` text DEFAULT NULL,
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),

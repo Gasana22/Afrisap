@@ -13,11 +13,12 @@ $featuredTours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.di
     ORDER BY t.created_at DESC
     LIMIT 6")->fetchAll();
 
-$destinations = db()->query('SELECT d.id, d.name, c.name AS country_name
+$destinations = db()->query("SELECT d.id, d.name, c.name AS country_name
     FROM destinations d
     JOIN countries c ON c.id = d.country_id
+    WHERE d.is_featured = 1
     ORDER BY d.created_at DESC
-    LIMIT 8')->fetchAll();
+    LIMIT 8")->fetchAll();
 
 $experienceTypes = db()->query('SELECT id, name, slug, image_path, short_description FROM experience_types ORDER BY name')->fetchAll();
 

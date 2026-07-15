@@ -9,7 +9,7 @@ $page_eyebrow = 'Safari';
 $active_nav = 'destinations';
 $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/destinations/form.php')) . '">Add destination</a>';
 
-$destinations = db()->query('SELECT d.id, d.name, c.name AS country_name
+$destinations = db()->query('SELECT d.id, d.name, d.is_featured, c.name AS country_name
     FROM destinations d
     JOIN countries c ON c.id = d.country_id
     ORDER BY c.name, d.name')->fetchAll();
@@ -37,6 +37,7 @@ require __DIR__ . '/../includes/header.php';
         <tr>
           <th>Name</th>
           <th>Country</th>
+          <th>Featured</th>
           <th></th>
         </tr>
       </thead>
@@ -45,6 +46,7 @@ require __DIR__ . '/../includes/header.php';
           <tr>
             <td><?= h($destination['name']) ?></td>
             <td class="table__meta"><?= h($destination['country_name']) ?></td>
+            <td class="table__meta"><?= $destination['is_featured'] ? 'Yes' : '&mdash;' ?></td>
             <td>
               <div class="table__actions">
                 <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/destinations/manage.php?id=' . $destination['id'])) ?>">Manage</a>

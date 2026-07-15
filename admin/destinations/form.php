@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../includes/bootstrap.php';
 require_login();
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
-$destination = ['country_id' => '', 'name' => '', 'overview' => '', 'why_consider' => '', 'additional_info' => ''];
+$destination = ['country_id' => '', 'name' => '', 'overview' => '', 'why_consider' => '', 'additional_info' => '', 'is_featured' => 0];
 $errors = [];
 
 if ($id) {
@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $destination['overview'] = trim($_POST['overview'] ?? '');
     $destination['why_consider'] = trim($_POST['why_consider'] ?? '');
     $destination['additional_info'] = trim($_POST['additional_info'] ?? '');
+    $destination['is_featured'] = isset($_POST['is_featured']) ? 1 : 0;
 
     if ($destination['name'] === '') {
         $errors['name'] = 'Enter a destination name.';
@@ -42,11 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         if ($id) {
-            $stmt = db()->prepare('UPDATE destinations SET country_id = ?, name = ?, overview = ?, why_consider = ?, additional_info = ? WHERE id = ?');
-            $stmt->execute([$destination['country_id'], $destination['name'], $destination['overview'], $destination['why_consider'], $destination['additional_info'], $id]);
+            $stmt = db()->prepare('UPDATE destinations SET country_id = ?, name = ?, overview = ?, why_consider = ?, additional_info = ?, is_featured = ? WHERE id = ?');
+            $stmt->execute([$destination['country_id'], $destination['name'], $destination['overview'], $destination['why_consider'], $destination['additional_info'], $destination['is_featured'], $id]);
         } else {
-            $stmt = db()->prepare('INSERT INTO destinations (country_id, name, overview, why_consider, additional_info) VALUES (?, ?, ?, ?, ?)');
-            $stmt->execute([$destination['country_id'], $destination['name'], $destination['overview'], $destination['why_consider'], $destination['additional_info']]);
+            $stmt = db()->prepare('INSERT INTO destinations (country_id, name, overview, why_consider, additional_info, is_featured) VALUES (?, ?, ?, ?, ?, ?)');
+            $stmt->execute([$destination['country_id'], $destination['name'], $destination['overview'], $destination['why_consider'], $destination['additional_info'], $destination['is_featured']]);
             $id = (int) db()->lastInsertId();
         }
         flash_set('success', 'Destination saved.');
@@ -92,6 +93,10 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field form-field--full">
           <label for="additional_info">Additional information</label>
           <textarea id="additional_info" name="additional_info"><?= h($destination['additional_info']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full">
+          <label style="font-weight:400;"><input type="checkbox" name="is_featured" value="1" <?= $destination['is_featured'] ? 'checked' : '' ?>> Featured on the homepage</label>
+          <span class="hint">Shown in the homepage's "National parks & game reserves" section. Leave unchecked for destinations that should only appear on their own page and in listings.</span>
         </div>
         <div class="form-field form-field--full">
           <span class="hint">Animals found, birds found, popular activities and gallery are managed from the destination detail screen once it's saved.</span>
