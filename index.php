@@ -246,6 +246,13 @@ require __DIR__ . '/includes/site_header.php';
   </div>
 </section>
 
+<section class="ribbon-cta">
+  <div class="wrap">
+    <p class="ribbon-cta__text">Not seeing exactly what you want? Build your own itinerary.</p>
+    <a href="<?= h(url('/create-your-own-tour.php')) ?>" class="btn btn--dark btn--pill">Create Your Own Tour <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+  </div>
+</section>
+
 <section class="section">
   <div class="wrap">
     <div class="section__header">

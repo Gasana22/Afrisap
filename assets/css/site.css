@@ -933,6 +933,24 @@ a.hero-stat:hover {
   margin-top: 6px;
 }
 
+/* Slim ribbon CTA -- lighter-weight than .cta-band, for a one-line prompt
+   between two homepage sections rather than a full padded band. */
+.ribbon-cta {
+  background: var(--murram);
+  color: var(--white);
+}
+
+.ribbon-cta .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 22px 24px;
+}
+
+.ribbon-cta__text { font-size: 16px; font-weight: 600; margin: 0; }
+
 /* CTA band */
 
 .cta-band {
