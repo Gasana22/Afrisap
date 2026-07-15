@@ -539,7 +539,7 @@ a.hero-stat:hover {
 
 .section__title {
   font-family: var(--font-display);
-  font-size: clamp(26px, 3.2vw, 36px);
+  font-size: clamp(22px, 2.6vw, 30px);
   font-weight: 600;
   margin: 0 auto 10px;
   letter-spacing: -0.01em;
