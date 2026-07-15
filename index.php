@@ -50,12 +50,15 @@ require __DIR__ . '/includes/site_header.php';
     <?= render_hero_illustration() ?>
   <?php endif; ?>
   <div class="wrap hero__content">
-    <p class="hero__eyebrow">
-      <?php foreach ($heroEyebrowCountries as $i => $country): ?>
-        <?php if ($i > 0): ?><span aria-hidden="true"> &middot; </span><?php endif; ?>
-        <?php if ($country['href']): ?><a href="<?= h(url('/' . $country['href'])) ?>"><?= h($country['label']) ?></a><?php else: ?><?= h($country['label']) ?><?php endif; ?>
+    <div class="hero__eyebrow">
+      <?php foreach ($heroEyebrowCountries as $country): ?>
+        <?php if ($country['href']): ?>
+          <a href="<?= h(url('/' . $country['href'])) ?>" class="hero__eyebrow-chip"><?= h($country['label']) ?></a>
+        <?php else: ?>
+          <span class="hero__eyebrow-chip"><?= h($country['label']) ?></span>
+        <?php endif; ?>
       <?php endforeach; ?>
-    </p>
+    </div>
     <h1 class="hero__title"><?= h($heroTitle) ?></h1>
     <p class="hero__subtitle"><?= h($heroSubtitle) ?></p>
     <div class="hero__actions">
