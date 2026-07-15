@@ -309,7 +309,7 @@ a.hero__country-chip:hover {
   line-height: 1.15;
   margin: 0 0 18px;
   letter-spacing: -0.01em;
-  max-width: 100%;
+  max-width: 14ch;
 }
 
 .hero__subtitle {
