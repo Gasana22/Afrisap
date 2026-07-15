@@ -38,6 +38,7 @@ function render_nav_glyph(string $name): string
         'sliders' => '<path d="M4 5h12M4 10h12M4 15h12"/><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="9" cy="15" r="1.6"/>',
         'video' => '<rect x="2.5" y="5.5" width="10" height="9" rx="1.3"/><path d="m12.5 8.5 5-2.3v7.6l-5-2.3Z" stroke-linejoin="round"/>',
         'paw' => '<circle cx="6" cy="6.5" r="1.4"/><circle cx="10" cy="5" r="1.4"/><circle cx="14" cy="6.5" r="1.4"/><path d="M10 15c-2.6 0-4-1.3-4-3s1.6-3 4-3 4 1.3 4 3-1.4 3-4 3Z"/>',
+        'car' => '<path d="M4 13 5.5 8.3A1.5 1.5 0 0 1 7 7.2h6a1.5 1.5 0 0 1 1.5 1.1L16 13" stroke-linejoin="round"/><path d="M2.5 13h15v2.2h-15z" stroke-linejoin="round"/><circle cx="6" cy="15.6" r="1.5"/><circle cx="14" cy="15.6" r="1.5"/>',
     ];
 
     $body = $glyphs[$name] ?? $glyphs['compass'];
@@ -66,6 +67,8 @@ function nav_icon_for(string $label): string
         'contact' => 'mail', 'gallery' => 'image', 'about' => 'compass',
         'scheduled' => 'calendar', 'create your own' => 'sliders', 'virtual' => 'video',
         'operator' => 'briefcase',
+        'car rental' => 'car', 'landcruiser' => 'car', '4x4' => 'car', 'van' => 'car',
+        'airport transfer' => 'car', 'luxury car' => 'car',
     ];
 
     foreach ($map as $needle => $glyph) {

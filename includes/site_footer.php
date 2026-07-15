@@ -37,6 +37,7 @@ $footerParks = [
         <a href="<?= h(url('/tours.php?category=chimpanzee-trekking-safaris')) ?>">Chimpanzee Trekking</a>
         <a href="<?= h(url('/tours.php?category=wildlife-game-drives-safaris')) ?>">Wildlife &amp; Game Drives</a>
         <a href="<?= h(url('/tours.php?category=birding-safaris')) ?>">Birding Safaris</a>
+        <a href="<?= h(url('/car-rental.php')) ?>">Car Rental</a>
       </div>
       <div class="footer-col">
         <p class="footer-col__title">Experiential</p>

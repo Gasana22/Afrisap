@@ -36,6 +36,7 @@ $heroEyebrowCountries = [
 $heroTitle = $siteSettings['hero_title'] ?? '' ?: 'Explore. Experience. Belong.';
 $heroSubtitle = $siteSettings['hero_subtitle'] ?? '' ?: "Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village. Safarisap plans East Africa on your terms.";
 $heroBackground = $siteSettings['hero_background_path'] ?? null;
+$heroSlides = get_media('hero_slideshow', 1);
 
 $statSafariTours = (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group = 'safari' AND t.status = 'published'")->fetchColumn();
 $statExperienceTours = (int) db()->query("SELECT COUNT(*) FROM experience_tours WHERE status = 'published'")->fetchColumn();
@@ -46,8 +47,14 @@ $page_title = 'Safarisap — Explore. Experience. Belong.';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
-<header class="hero<?= $heroBackground ? ' hero--photo' : '' ?>">
-  <?php if ($heroBackground): ?>
+<header class="hero<?= ($heroSlides || $heroBackground) ? ' hero--photo' : '' ?>">
+  <?php if ($heroSlides): ?>
+    <div class="hero__slideshow">
+      <?php foreach ($heroSlides as $i => $slide): ?>
+        <img class="hero__slide<?= $i === 0 ? ' is-active' : '' ?>" src="<?= h(url('/' . $slide['file_path'])) ?>" alt="">
+      <?php endforeach; ?>
+    </div>
+  <?php elseif ($heroBackground): ?>
     <img class="hero__photo" src="<?= h(url('/' . $heroBackground)) ?>" alt="">
   <?php else: ?>
     <?= render_hero_illustration() ?>

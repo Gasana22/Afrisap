@@ -67,6 +67,15 @@ declare(strict_types=1);
           <a href="<?= h(url('/virtual-experience.php')) ?>"><?= render_nav_glyph('video') ?><span>Virtual Experience</span></a>
         </div>
       </li>
+      <li>
+        <button>Car Rental <span class="site-nav__caret">&#9662;</span></button>
+        <div class="mega-menu mega-menu--narrow">
+          <a href="<?= h(url('/car-rental.php?type=safari-4x4-landcruiser')) ?>"><?= render_nav_glyph('car') ?><span>Safari 4X4 Landcruiser</span></a>
+          <a href="<?= h(url('/car-rental.php?type=vans')) ?>"><?= render_nav_glyph('car') ?><span>VANs</span></a>
+          <a href="<?= h(url('/car-rental.php?type=airport-transfer')) ?>"><?= render_nav_glyph('car') ?><span>Airport Transfer</span></a>
+          <a href="<?= h(url('/car-rental.php?type=luxury-cars')) ?>"><?= render_nav_glyph('car') ?><span>Luxury Cars</span></a>
+        </div>
+      </li>
       <li><a href="<?= h(url('/operators.php')) ?>" class="site-nav__cta">Tour Operators</a></li>
     </ul>
   </div>

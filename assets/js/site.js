@@ -44,3 +44,26 @@
     observer.observe(el);
   });
 })();
+
+// Hero background slideshow: crossfades through however many photos the
+// admin uploaded (.hero__slide, .is-active toggled every 5s). Does nothing
+// if there's only one slide, and skips the auto-advance entirely under
+// prefers-reduced-motion (the slides just stay on the first photo).
+(function () {
+  'use strict';
+
+  var slides = document.querySelectorAll('.hero__slide');
+  if (slides.length < 2) {
+    return;
+  }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  var current = 0;
+  setInterval(function () {
+    slides[current].classList.remove('is-active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('is-active');
+  }, 5000);
+})();

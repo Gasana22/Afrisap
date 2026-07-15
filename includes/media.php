@@ -5,6 +5,7 @@ require_once __DIR__ . '/db.php';
 
 // Whitelist of entity types the generic gallery manager is allowed to touch.
 const MEDIA_ENTITY_TYPES = [
+    'hero_slideshow',
     'destination',
     'destination_activity',
     'tour',

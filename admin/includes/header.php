@@ -21,6 +21,7 @@ $counts = [
     'blog' => (int) db()->query('SELECT COUNT(*) FROM blog_posts')->fetchColumn(),
     'bookings' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'pending'")->fetchColumn(),
     'quotes' => (int) db()->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn(),
+    'car-rental' => (int) db()->query("SELECT COUNT(*) FROM car_rental_requests WHERE status = 'new'")->fetchColumn(),
     'custom-tours' => (int) db()->query("SELECT COUNT(*) FROM custom_tour_requests WHERE status = 'new'")->fetchColumn(),
     'virtual-experience-signups' => (int) db()->query('SELECT COUNT(*) FROM virtual_experience_signups')->fetchColumn(),
     'agents' => (int) db()->query("SELECT COUNT(*) FROM agents WHERE status = 'new'")->fetchColumn(),
@@ -116,6 +117,9 @@ $active_nav = $active_nav ?? '';
         </a>
         <a class="nav-link<?= $active_nav === 'quotes' ? ' is-active' : '' ?>" href="<?= h(url('/admin/quotes/index.php')) ?>">
           <?= render_nav_glyph('tag') ?>Quote Requests <span class="nav-link__count"><?= $counts['quotes'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'car-rental' ? ' is-active' : '' ?>" href="<?= h(url('/admin/car-rental/index.php')) ?>">
+          <?= render_nav_glyph('car') ?>Car Rental Requests <span class="nav-link__count"><?= $counts['car-rental'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'custom-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/custom-tours/index.php')) ?>">
           <?= render_nav_glyph('sliders') ?>Custom Tour Requests <span class="nav-link__count"><?= $counts['custom-tours'] ?></span>
