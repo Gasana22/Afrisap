@@ -845,6 +845,43 @@ a.hero-stat:hover {
 
 .why-item__body { opacity: 0.72; margin: 0; font-size: 14.5px; }
 
+/* Our Partners (homepage) */
+
+.partner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.partner-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88px;
+  padding: 16px;
+  background: var(--white);
+  border: 1px solid var(--savanna-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--motion-slow), box-shadow var(--motion-slow);
+}
+
+.partner-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); }
+
+.partner-card__logo { max-width: 100%; max-height: 48px; object-fit: contain; }
+
+.partner-card__name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+}
+
+.section__more { text-align: center; margin: 24px 0 0; }
+.section__more a { color: var(--murram); font-weight: 600; text-decoration: none; }
+.section__more a:hover { text-decoration: underline; }
+
 /* Stat band (About page, etc.) */
 
 .stat-band {

@@ -21,6 +21,8 @@ $destinations = db()->query('SELECT d.id, d.name, c.name AS country_name
 
 $experienceTypes = db()->query('SELECT id, name, slug, image_path, short_description FROM experience_types ORDER BY name')->fetchAll();
 
+$partners = db()->query('SELECT id, company_name, logo_path FROM tour_operators ORDER BY company_name LIMIT 12')->fetchAll();
+
 $siteSettings = db()->query('SELECT * FROM site_settings WHERE id = 1')->fetch() ?: [];
 $heroEyebrowCountries = [
     ['label' => 'East Africa', 'href' => null],
@@ -119,7 +121,7 @@ require __DIR__ . '/includes/site_header.php';
       </select>
     </div>
     <div class="search-bar__field">
-      <label for="search-days">Days</label>
+      <label for="search-days">Number of Days</label>
       <select id="search-days" name="days">
         <option value="">Any length</option>
         <option value="1-3">1–3 days</option>
@@ -259,6 +261,31 @@ require __DIR__ . '/includes/site_header.php';
         <p class="why-item__body">Kampala, Nairobi, Addis Ababa and London, supporting you in your timezone, on the ground where it matters.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="section section--savanna">
+  <div class="wrap">
+    <div class="section__header">
+      <p class="section__eyebrow">Who We Work With</p>
+      <h2 class="section__title">Our Partners</h2>
+    </div>
+    <?php if (!$partners): ?>
+      <p class="empty-note">Operator profiles are being added. Check back soon, or <a href="<?= h(url('/contact.php')) ?>">get in touch</a> if you run tours in East Africa and want to be listed.</p>
+    <?php else: ?>
+      <div class="partner-grid">
+        <?php foreach ($partners as $partner): ?>
+          <a href="<?= h(url('/operators.php')) ?>" class="partner-card">
+            <?php if ($partner['logo_path']): ?>
+              <img class="partner-card__logo" src="<?= h(url('/' . $partner['logo_path'])) ?>" alt="<?= h($partner['company_name']) ?>" loading="lazy">
+            <?php else: ?>
+              <span class="partner-card__name"><?= h($partner['company_name']) ?></span>
+            <?php endif; ?>
+          </a>
+        <?php endforeach; ?>
+      </div>
+      <p class="section__more"><a href="<?= h(url('/operators.php')) ?>">See all tour operators &rarr;</a></p>
+    <?php endif; ?>
   </div>
 </section>
 

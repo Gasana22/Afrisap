@@ -196,7 +196,7 @@ require __DIR__ . '/includes/site_header.php';
         </select>
       </div>
       <div class="filter-bar__field">
-        <label for="f-days"><?= render_nav_glyph('calendar') ?>Days</label>
+        <label for="f-days"><?= render_nav_glyph('calendar') ?>Number of Days</label>
         <select id="f-days" name="days">
           <option value="">Any length</option>
           <option value="1-3" <?= $daysBucket === '1-3' ? 'selected' : '' ?>>1–3 days</option>
