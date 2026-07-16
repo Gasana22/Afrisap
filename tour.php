@@ -184,6 +184,7 @@ require __DIR__ . '/includes/site_header.php';
           <ul class="side-card__facts">
             <li><span>Tour name</span><span><?= h($tour['title']) ?></span></li>
             <?php if ($destinations): ?>
+              <li><span>Location</span><span><?= h(implode(', ', array_unique(array_column($destinations, 'country_name')))) ?></span></li>
               <li><span>Destinations</span><span><?= h(implode(', ', array_column($destinations, 'name'))) ?></span></li>
             <?php endif; ?>
             <?php if ($tour['operator_name']): ?>
