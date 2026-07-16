@@ -143,8 +143,8 @@ require __DIR__ . '/includes/site_header.php';
               <p class="tour-card__meta"><?= h($tour['category_name']) ?> &middot; <?= (int) $tour['days'] ?> days</p>
               <h3 class="tour-card__title"><?= h($tour['title']) ?></h3>
               <div class="tour-card__footer">
-                <div class="tour-card__price"><span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'], 0) ?></div>
-                <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View</span>
+                <div class="tour-card__price"><span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'], 0) ?><span class="tour-card__price-unit">/ person</span></div>
+                <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View Details</span>
               </div>
             </div>
           </a>

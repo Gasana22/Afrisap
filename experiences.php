@@ -149,9 +149,9 @@ $tours = $stmt->fetchAll();
               <p class="tour-card__overview"><?= h(mb_strimwidth((string) $tour['short_overview'], 0, 110, '…')) ?></p>
               <div class="tour-card__footer">
                 <div class="tour-card__price">
-                  <span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'] * (1 - (float) $tour['discount_percent'] / 100), 0) ?>
+                  <span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'] * (1 - (float) $tour['discount_percent'] / 100), 0) ?><span class="tour-card__price-unit">/ person</span>
                 </div>
-                <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View</span>
+                <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View Details</span>
               </div>
             </div>
           </a>

@@ -70,10 +70,10 @@ require __DIR__ . '/includes/site_header.php';
                   <p class="tour-card__overview"><?= h(mb_strimwidth((string) $tour['short_overview'], 0, 110, '…')) ?></p>
                   <div class="tour-card__footer">
                     <div class="tour-card__price">
-                      <span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'], 0) ?>
+                      <span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'], 0) ?><span class="tour-card__price-unit">/ person</span>
                       <?php if ((float) $tour['discount_percent'] > 0): ?><small><?= (float) $tour['discount_percent'] ?>% off</small><?php endif; ?>
                     </div>
-                    <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View</span>
+                    <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View Details</span>
                   </div>
                 </div>
               </a>
