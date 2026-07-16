@@ -4,13 +4,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../includes/bootstrap.php';
 require_login();
 
-function slugify(string $value): string
-{
-    $slug = strtolower(trim($value));
-    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
-    return trim($slug, '-');
-}
-
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $category = ['menu_group' => 'safari', 'name' => '', 'slug' => '', 'sort_order' => 0];
 $errors = [];
