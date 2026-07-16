@@ -416,7 +416,7 @@ a.hero-stat:hover {
 
 @media (min-width: 981px) {
   .hero {
-    min-height: 760px;
+    min-height: 640px;
   }
 
   .hero__stats {
