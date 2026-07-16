@@ -27,7 +27,7 @@ $footerParks = [
     </div>
     <div class="footer-grid">
       <div>
-        <div class="footer-brand">Safari<span style="color:var(--ember);">sap</span></div>
+        <div class="footer-brand">Safarisap</div>
         <div class="footer-tagline">Explore. Experience. Belong.</div>
         <div class="footer-product-of">Product of Afri-Sap Limited</div>
       </div>
