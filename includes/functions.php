@@ -37,6 +37,22 @@ function url(string $path): string
  * the current page rather than an external site, so the link silently
  * "doesn't fetch" -- this prepends https:// when one isn't already there.
  */
+/** Small fixed flag lookup for the countries this site actually operates in. */
+function country_flag(string $name): string
+{
+    $flags = [
+        'Uganda' => '🇺🇬',
+        'Kenya' => '🇰🇪',
+        'Tanzania' => '🇹🇿',
+        'Rwanda' => '🇷🇼',
+        'Burundi' => '🇧🇮',
+        'DR Congo' => '🇨🇩',
+        'South Sudan' => '🇸🇸',
+    ];
+
+    return $flags[$name] ?? '';
+}
+
 function external_url(string $value): string
 {
     $value = trim($value);

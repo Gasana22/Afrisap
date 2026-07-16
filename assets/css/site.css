@@ -1395,6 +1395,91 @@ a.list-row:hover { border-color: var(--murram); }
 .list-row__title { font-family: var(--font-display); font-weight: 600; font-size: 16px; margin: 0 0 2px; }
 .list-row__meta { font-size: 13px; opacity: 0.65; }
 
+/* Tour operator directory (operators.php) -- a denser, information-first
+   card per operator (logo, office/price/tour-type/destinations facts,
+   a few sample tours, and a link into their full tour list), loosely
+   modelled on how operator-directory listings on sites like
+   SafariBookings read. */
+
+.operator-list__count { font-size: 14px; opacity: 0.65; margin: 0 0 20px; }
+
+.operator-list { display: flex; flex-direction: column; gap: 20px; }
+
+.operator-card {
+  background: var(--white);
+  border: 1px solid var(--savanna-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.operator-card__main {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.operator-card__photo {
+  flex: none;
+  width: 140px;
+  height: 105px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.operator-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.operator-card__body { flex: 1; min-width: 0; }
+
+.operator-card__title {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.operator-card__title:hover { color: var(--murram-dark); }
+
+.operator-card__facts { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.operator-card__facts > div { display: flex; gap: 8px; font-size: 13.5px; }
+.operator-card__facts dt { flex: none; width: 100px; opacity: 0.55; }
+.operator-card__facts dd { margin: 0; }
+.operator-card__unit { opacity: 0.55; font-size: 12px; }
+
+.operator-card__flags { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.operator-card__flag { white-space: nowrap; }
+
+.operator-card__logo {
+  flex: none;
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  align-self: center;
+}
+
+.operator-card__tours {
+  border-top: 1px solid var(--savanna-line);
+  background: var(--savanna);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.operator-card__tours a { font-size: 14px; color: var(--murram-dark); }
+.operator-card__tours a:hover { text-decoration: underline; }
+.operator-card__tour-price { color: var(--ink); opacity: 0.6; font-size: 13px; }
+
+.operator-card__cta { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+.operator-card__offered-by { font-size: 13px; opacity: 0.55; }
+
+@media (max-width: 640px) {
+  .operator-card__main { flex-direction: column; }
+  .operator-card__logo { align-self: flex-start; }
+}
+
 /* FAQs */
 
 .faq-list { display: flex; flex-direction: column; gap: 10px; }
