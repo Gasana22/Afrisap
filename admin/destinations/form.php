@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/media.php';
 require_login();
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
@@ -99,7 +100,12 @@ require __DIR__ . '/../includes/header.php';
           <span class="hint">Shown in the homepage's "National parks & game reserves" section. Leave unchecked for destinations that should only appear on their own page and in listings.</span>
         </div>
         <div class="form-field form-field--full">
-          <span class="hint">Animals found, birds found, popular activities and gallery are managed from the destination detail screen once it's saved.</span>
+          <?php if ($id): ?>
+            <a href="<?= h(url('/admin/media/index.php?entity_type=destination&entity_id=' . $id . '&title=' . urlencode($destination['name'] . ' gallery') . '&back=' . urlencode($_SERVER['REQUEST_URI']))) ?>">Manage gallery (<?= media_count('destination', $id) ?>)</a>
+            <span class="hint">Add at least 3-5 photos. Animals found, birds found and popular activities are also managed from the destination detail screen.</span>
+          <?php else: ?>
+            <span class="hint">Save this destination first to add its gallery (at least 3-5 photos), animals found, birds found and popular activities.</span>
+          <?php endif; ?>
         </div>
       </div>
       <div class="form-actions">
