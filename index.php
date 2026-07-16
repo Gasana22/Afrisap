@@ -273,7 +273,7 @@ require __DIR__ . '/includes/site_header.php';
       <div class="why-item">
         <div class="why-item__icon"><?= render_nav_glyph('pin') ?></div>
         <h3 class="why-item__title">Branches across the region</h3>
-        <p class="why-item__body">Kampala, Nairobi, Addis Ababa and London, supporting you in your timezone, on the ground where it matters.</p>
+        <p class="why-item__body">Kampala and Kigali, supporting you in your timezone, on the ground where it matters.</p>
       </div>
     </div>
   </div>

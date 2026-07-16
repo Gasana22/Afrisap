@@ -52,7 +52,7 @@ require __DIR__ . '/includes/site_header.php';
     <aside class="detail-side">
       <div class="side-card">
         <p class="side-card__title">Branches</p>
-        <p class="side-card__body">Kampala &middot; Nairobi &middot; Addis Ababa &middot; London</p>
+        <p class="side-card__body">Kampala &middot; Kigali</p>
       </div>
       <div class="side-card">
         <p class="side-card__title">Email</p>

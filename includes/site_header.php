@@ -33,8 +33,8 @@ $pageTitle = $page_title ?? 'Safarisap — Explore. Experience. Belong.';
 
 <div class="utility-bar">
   <div class="wrap">
-    <div>24/7 Support · <a href="tel:+256393246926">+256 393 246 926</a> · WhatsApp <a href="https://wa.me/256775328952">+256 775 328 952</a> · <a href="mailto:info@safarisap.com">info@safarisap.com</a></div>
-    <div class="utility-bar__branches">Branches: Kampala · Nairobi · Addis Ababa · London</div>
+    <div>Calls: <a href="tel:+256393246926">+256 393 246 926</a> · WhatsApp: <a href="https://wa.me/256775328952">+256 775 328 952</a> · Email: <a href="mailto:info@safarisap.com">info@safarisap.com</a></div>
+    <div class="utility-bar__branches">Branches: Kampala, Kigali</div>
   </div>
 </div>
 

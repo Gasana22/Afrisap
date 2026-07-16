@@ -57,7 +57,7 @@ require __DIR__ . '/includes/site_header.php';
       </div>
       <div class="why-item">
         <h3 class="why-item__title">On the ground</h3>
-        <p class="why-item__body">Branches in Kampala, Nairobi, Addis Ababa and London mean support in your timezone and staff who know the region.</p>
+        <p class="why-item__body">Branches in Kampala and Kigali mean support in your timezone and staff who know the region.</p>
       </div>
     </div>
   </div>

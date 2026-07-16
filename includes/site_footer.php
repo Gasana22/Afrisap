@@ -62,7 +62,7 @@ $footerParks = [
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; <?= date('Y') ?> Safarisap. Branches in Kampala, Nairobi, Addis Ababa &amp; London.</span>
+      <span>&copy; <?= date('Y') ?> Safarisap. Branches in Kampala &amp; Kigali.</span>
       <span>Uganda &middot; Kenya &middot; Tanzania &middot; Rwanda &middot; Burundi &middot; South Sudan &middot; DR Congo</span>
     </div>
   </div>
