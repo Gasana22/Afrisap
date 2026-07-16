@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/media.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
-$stmt = db()->prepare("SELECT t.*, c.name AS category_name, o.company_name AS operator_name, o.logo_path AS operator_logo, o.phone AS operator_phone, o.email AS operator_email
+$stmt = db()->prepare("SELECT t.*, c.name AS category_name, o.company_name AS operator_name, o.logo_path AS operator_logo
     FROM tours t
     JOIN tour_categories c ON c.id = t.category_id
     LEFT JOIN tour_operators o ON o.id = t.operator_id
@@ -206,8 +206,6 @@ require __DIR__ . '/includes/site_header.php';
               <?php if ($tour['operator_logo']): ?><img src="<?= h(url('/' . $tour['operator_logo'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><?php endif; ?>
               <strong><a href="<?= h(url('/operator.php?id=' . $tour['operator_id'])) ?>" style="color:inherit;text-decoration:underline;"><?= h($tour['operator_name']) ?></a></strong>
             </div>
-            <?php if ($tour['operator_phone']): ?><p class="side-card__body"><?= h($tour['operator_phone']) ?></p><?php endif; ?>
-            <?php if ($tour['operator_email']): ?><p class="side-card__body"><?= h($tour['operator_email']) ?></p><?php endif; ?>
           </div>
         <?php endif; ?>
       </aside>
