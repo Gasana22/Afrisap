@@ -100,6 +100,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
     <form method="post" action="<?= h(url('/admin/tours/destinations.php')) ?>">
       <?= csrf_field() ?>
       <input type="hidden" name="tour_id" value="<?= $id ?>">
+      <span class="hint" style="display:block;margin-bottom:8px;">Tick every park/destination this tour visits -- no limit, any country, any combination (e.g. Murchison Falls, Kibale, and Bwindi for one multi-stop tour). Just pick at least 2.</span>
       <div class="checkbox-grid">
         <?php foreach ($allDestinations as $destination): ?>
           <label class="checkbox-row">
@@ -109,7 +110,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
         <?php endforeach; ?>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary btn--sm">Save destinations (pick at least 2)</button>
+        <button type="submit" class="btn btn--primary btn--sm">Save destinations (2 or more)</button>
       </div>
     </form>
     <?php endif; ?>
