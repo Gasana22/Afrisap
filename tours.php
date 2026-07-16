@@ -54,10 +54,15 @@ if ($daysBucket === '1-3') {
 } elseif ($daysBucket === '8+') {
     $where[] = 't.days >= 8';
 }
-if ($countryId || $destinationId) {
-    $where[] = 'EXISTS (SELECT 1 FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id' .
-        ($countryId ? ' AND d.country_id = ' . (int) $countryId : '') .
-        ($destinationId ? ' AND d.id = ' . (int) $destinationId : '') . ')';
+if ($destinationId) {
+    $where[] = 'EXISTS (SELECT 1 FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id AND d.id = ' . (int) $destinationId .
+        ($countryId ? ' AND d.country_id = ' . (int) $countryId : '') . ')';
+} elseif ($countryId) {
+    // Matches either a tagged destination in that country, or the tour's own
+    // explicit Countries selection (admin/tours/form.php) -- some tours cover
+    // a country without a specific named destination attached yet.
+    $where[] = '(EXISTS (SELECT 1 FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id AND d.country_id = ' . (int) $countryId . ')' .
+        ' OR EXISTS (SELECT 1 FROM tour_countries tc WHERE tc.tour_id = t.id AND tc.country_id = ' . (int) $countryId . '))';
 }
 
 $sql = 'SELECT t.id, t.title, t.budget_type, t.price, t.discount_percent, t.days, t.short_overview, c.name AS category_name

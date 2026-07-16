@@ -27,6 +27,10 @@ $destinations = db()->prepare('SELECT d.id, d.name, c.name AS country_name FROM 
 $destinations->execute([$id]);
 $destinations = $destinations->fetchAll();
 
+$tourCountries = db()->prepare('SELECT c.name FROM tour_countries tc JOIN countries c ON c.id = tc.country_id WHERE tc.tour_id = ? ORDER BY c.name');
+$tourCountries->execute([$id]);
+$tourCountries = array_column($tourCountries->fetchAll(), 'name');
+
 $extraCategories = db()->prepare('SELECT c.name FROM tour_extra_categories tec JOIN tour_categories c ON c.id = tec.category_id WHERE tec.tour_id = ? ORDER BY c.name');
 $extraCategories->execute([$id]);
 $extraCategories = array_column($extraCategories->fetchAll(), 'name');
@@ -183,8 +187,13 @@ require __DIR__ . '/includes/site_header.php';
           </div>
           <ul class="side-card__facts">
             <li><span>Tour name</span><span><?= h($tour['title']) ?></span></li>
+            <?php
+              $locationCountries = $tourCountries ?: array_unique(array_column($destinations, 'country_name'));
+            ?>
+            <?php if ($locationCountries): ?>
+              <li><span>Location</span><span><?= h(implode(', ', $locationCountries)) ?></span></li>
+            <?php endif; ?>
             <?php if ($destinations): ?>
-              <li><span>Location</span><span><?= h(implode(', ', array_unique(array_column($destinations, 'country_name')))) ?></span></li>
               <li><span>Destinations</span><span><?= h(implode(', ', array_column($destinations, 'name'))) ?></span></li>
             <?php endif; ?>
             <?php if ($tour['operator_name']): ?>

@@ -14,6 +14,7 @@ $tour = [
 $errors = [];
 
 $extraCategoryIds = [];
+$countryIds = [];
 
 if ($id) {
     $stmt = db()->prepare('SELECT * FROM tours WHERE id = ?');
@@ -26,10 +27,15 @@ if ($id) {
     $extraStmt = db()->prepare('SELECT category_id FROM tour_extra_categories WHERE tour_id = ?');
     $extraStmt->execute([$id]);
     $extraCategoryIds = array_map('intval', $extraStmt->fetchAll(PDO::FETCH_COLUMN));
+
+    $countryStmt = db()->prepare('SELECT country_id FROM tour_countries WHERE tour_id = ?');
+    $countryStmt->execute([$id]);
+    $countryIds = array_map('intval', $countryStmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
 $categories = db()->query("SELECT * FROM tour_categories ORDER BY FIELD(menu_group,'safari','trip','school'), sort_order, name")->fetchAll();
 $operators = db()->query('SELECT id, company_name FROM tour_operators ORDER BY company_name')->fetchAll();
+$countries = db()->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
 
 if (!$categories) {
     flash_set('error', 'Add a tour category before creating tours.');
@@ -41,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tour['title'] = trim($_POST['title'] ?? '');
     $tour['category_id'] = (int) ($_POST['category_id'] ?? 0);
     $extraCategoryIds = array_values(array_unique(array_filter(array_map('intval', $_POST['extra_category_ids'] ?? []))));
+    $countryIds = array_values(array_unique(array_filter(array_map('intval', $_POST['country_ids'] ?? []))));
     $tour['budget_type'] = $_POST['budget_type'] ?? 'Mid-Range';
     $tour['price'] = $_POST['price'] ?? '';
     $tour['discount_percent'] = $_POST['discount_percent'] ?? 0;
@@ -108,6 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insertExtra = db()->prepare('INSERT INTO tour_extra_categories (tour_id, category_id) VALUES (?, ?)');
             foreach ($extraCategoryIds as $extraCategoryId) {
                 $insertExtra->execute([$id, $extraCategoryId]);
+            }
+        }
+
+        db()->prepare('DELETE FROM tour_countries WHERE tour_id = ?')->execute([$id]);
+        if ($countryIds) {
+            $insertCountry = db()->prepare('INSERT INTO tour_countries (tour_id, country_id) VALUES (?, ?)');
+            foreach ($countryIds as $countryId) {
+                $insertCountry->execute([$id, $countryId]);
             }
         }
 
@@ -212,6 +227,18 @@ require __DIR__ . '/../includes/header.php';
               <option value="<?= (int) $operator['id'] ?>" <?= (int) $tour['operator_id'] === (int) $operator['id'] ? 'selected' : '' ?>><?= h($operator['company_name']) ?></option>
             <?php endforeach; ?>
           </select>
+        </div>
+        <div class="form-field form-field--full">
+          <label>Countries</label>
+          <span class="hint" style="display:block;margin-bottom:8px;">Tick every country this tour covers -- one, or several for a multi-country itinerary.</span>
+          <div class="checkbox-grid">
+            <?php foreach ($countries as $country): ?>
+              <label class="checkbox-row">
+                <input type="checkbox" name="country_ids[]" value="<?= (int) $country['id'] ?>" <?= in_array((int) $country['id'], $countryIds, true) ? 'checked' : '' ?>>
+                <?= h($country['name']) ?>
+              </label>
+            <?php endforeach; ?>
+          </div>
         </div>
       </div>
 
