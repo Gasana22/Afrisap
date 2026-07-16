@@ -69,6 +69,7 @@ function nav_icon_for(string $label): string
         'operator' => 'briefcase',
         'car rental' => 'car', 'landcruiser' => 'car', '4x4' => 'car', 'van' => 'car',
         'airport transfer' => 'car', 'luxury car' => 'car',
+        'flight' => 'plane', 'chartered' => 'plane',
     ];
 
     foreach ($map as $needle => $glyph) {

@@ -76,6 +76,13 @@ declare(strict_types=1);
           <a href="<?= h(url('/car-rental.php?type=luxury-cars')) ?>"><?= render_nav_glyph('car') ?><span>Luxury Cars</span></a>
         </div>
       </li>
+      <li>
+        <button>Flight Booking <span class="site-nav__caret">&#9662;</span></button>
+        <div class="mega-menu mega-menu--narrow">
+          <a href="<?= h(url('/flight-booking.php?type=internal-flights')) ?>"><?= render_nav_glyph('plane') ?><span>Internal Flights</span></a>
+          <a href="<?= h(url('/flight-booking.php?type=chartered-flights')) ?>"><?= render_nav_glyph('plane') ?><span>Chartered Flights</span></a>
+        </div>
+      </li>
       <li><a href="<?= h(url('/operators.php')) ?>" class="site-nav__cta">Tour Operators</a></li>
     </ul>
   </div>
