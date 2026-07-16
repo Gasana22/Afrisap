@@ -610,7 +610,7 @@ a.hero-stat:hover {
 .door:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); z-index: 2; }
 
 .door--safari { background: var(--canopy); }
-.door--experiential { background: var(--drum); }
+.door--experiential { background: var(--murram-dark); }
 
 .door__route {
   font-family: var(--font-mono);
