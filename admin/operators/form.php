@@ -8,7 +8,7 @@ require_login();
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $operator = [
     'company_name' => '', 'phone' => '', 'email' => '', 'logo_path' => null,
-    'contact_person' => '', 'website' => '', 'profile_image_path' => null,
+    'contact_person' => '', 'office_location' => '', 'website' => '', 'profile_image_path' => null,
     'tour_type' => '', 'member_of' => '', 'trip_advisor_link' => '',
     'budget_type' => '', 'years_experience' => '', 'country_id' => '', 'overview' => '',
 ];
@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $operator['phone'] = trim($_POST['phone'] ?? '');
     $operator['email'] = trim($_POST['email'] ?? '');
     $operator['contact_person'] = trim($_POST['contact_person'] ?? '');
+    $operator['office_location'] = trim($_POST['office_location'] ?? '');
     $operator['website'] = trim($_POST['website'] ?? '');
     $operator['tour_type'] = trim($_POST['tour_type'] ?? '');
     $operator['member_of'] = trim($_POST['member_of'] ?? '');
@@ -79,22 +80,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $params = [
             $operator['company_name'], $operator['logo_path'], $operator['phone'], $operator['email'],
-            $operator['contact_person'] ?: null, $operator['website'] ?: null, $operator['profile_image_path'],
+            $operator['contact_person'] ?: null, $operator['office_location'] ?: null, $operator['website'] ?: null, $operator['profile_image_path'],
             $operator['tour_type'] ?: null, $operator['member_of'] ?: null, $operator['trip_advisor_link'] ?: null,
             $budgetType, $yearsExperience, $countryId, $operator['overview'] ?: null,
         ];
 
         if ($id) {
             $stmt = db()->prepare('UPDATE tour_operators SET company_name = ?, logo_path = ?, phone = ?, email = ?,
-                contact_person = ?, website = ?, profile_image_path = ?, tour_type = ?, member_of = ?,
+                contact_person = ?, office_location = ?, website = ?, profile_image_path = ?, tour_type = ?, member_of = ?,
                 trip_advisor_link = ?, budget_type = ?, years_experience = ?, country_id = ?, overview = ?
                 WHERE id = ?');
             $stmt->execute([...$params, $id]);
         } else {
             $stmt = db()->prepare('INSERT INTO tour_operators (company_name, logo_path, phone, email,
-                contact_person, website, profile_image_path, tour_type, member_of, trip_advisor_link,
+                contact_person, office_location, website, profile_image_path, tour_type, member_of, trip_advisor_link,
                 budget_type, years_experience, country_id, overview)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $stmt->execute($params);
         }
         flash_set('success', 'Operator saved.');
@@ -122,6 +123,10 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field">
           <label for="contact_person">Contact person name</label>
           <input type="text" id="contact_person" name="contact_person" value="<?= h($operator['contact_person']) ?>">
+        </div>
+        <div class="form-field">
+          <label for="office_location">Office location</label>
+          <input type="text" id="office_location" name="office_location" value="<?= h($operator['office_location']) ?>" placeholder="e.g. Kampala, Uganda">
         </div>
         <div class="form-field">
           <label for="email">Email</label>

@@ -70,7 +70,7 @@ require __DIR__ . '/includes/site_header.php';
                   <p class="tour-card__overview"><?= h(mb_strimwidth((string) $tour['short_overview'], 0, 110, '…')) ?></p>
                   <div class="tour-card__footer">
                     <div class="tour-card__price">
-                      $<?= number_format((float) $tour['price'], 0) ?>
+                      <span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'], 0) ?>
                       <?php if ((float) $tour['discount_percent'] > 0): ?><small><?= (float) $tour['discount_percent'] ?>% off</small><?php endif; ?>
                     </div>
                     <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View</span>
@@ -89,6 +89,7 @@ require __DIR__ . '/includes/site_header.php';
           <p class="side-card__title"><?= render_nav_glyph('briefcase') ?>Company details</p>
           <?php if ($operator['logo_path']): ?><img src="<?= h(url('/' . $operator['logo_path'])) ?>" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px;margin-bottom:10px;"><?php endif; ?>
           <?php if ($operator['contact_person']): ?><p class="side-card__body"><strong>Contact:</strong> <?= h($operator['contact_person']) ?></p><?php endif; ?>
+          <?php if ($operator['office_location']): ?><p class="side-card__body"><strong>Office:</strong> <?= h($operator['office_location']) ?></p><?php endif; ?>
           <?php if ($operator['phone']): ?><p class="side-card__body"><?= h($operator['phone']) ?></p><?php endif; ?>
           <?php if ($operator['email']): ?><p class="side-card__body"><?= h($operator['email']) ?></p><?php endif; ?>
           <?php if ($operator['website']): ?><p class="side-card__body"><a href="<?= h($operator['website']) ?>" target="_blank" rel="noopener">Website</a></p><?php endif; ?>

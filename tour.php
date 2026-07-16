@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/media.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
-$stmt = db()->prepare("SELECT t.*, c.name AS category_name, o.company_name AS operator_name, o.logo_path AS operator_logo
+$stmt = db()->prepare("SELECT t.*, c.name AS category_name, o.company_name AS operator_name, o.logo_path AS operator_logo, o.office_location AS operator_office_location
     FROM tours t
     JOIN tour_categories c ON c.id = t.category_id
     LEFT JOIN tour_operators o ON o.id = t.operator_id
@@ -174,6 +174,7 @@ require __DIR__ . '/includes/site_header.php';
         <div class="side-card side-card--price">
           <p class="side-card__permit-no">ITINERARY NO. SS&ndash;<?= str_pad((string) $tour['id'], 4, '0', STR_PAD_LEFT) ?></p>
           <div class="side-card__price">
+            <span class="side-card__price-label">Starting from</span>
             $<?= number_format($netPrice, 0) ?>
             <?php if ((float) $tour['discount_percent'] > 0): ?>
               <span class="side-card__was">$<?= number_format((float) $tour['price'], 0) ?></span>
@@ -187,6 +188,9 @@ require __DIR__ . '/includes/site_header.php';
             <?php endif; ?>
             <?php if ($tour['operator_name']): ?>
               <li><span>Tour operator in charge</span><span><?= h($tour['operator_name']) ?></span></li>
+            <?php endif; ?>
+            <?php if ($tour['operator_office_location']): ?>
+              <li><span>Office location</span><span><?= h($tour['operator_office_location']) ?></span></li>
             <?php endif; ?>
             <li><span>Tour type</span><span><?= h($tourTypeLabel) ?></span></li>
             <li><span>Budget type</span><span><?= h($tour['budget_type']) ?></span></li>

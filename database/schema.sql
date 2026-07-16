@@ -567,6 +567,7 @@ CREATE TABLE `tour_operators` (
   `phone` varchar(50) DEFAULT NULL,
   `email` varchar(150) DEFAULT NULL,
   `contact_person` varchar(150) DEFAULT NULL,
+  `office_location` varchar(255) DEFAULT NULL,
   `website` varchar(255) DEFAULT NULL,
   `profile_image_path` varchar(255) DEFAULT NULL,
   `tour_type` varchar(150) DEFAULT NULL,
