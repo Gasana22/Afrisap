@@ -9,7 +9,7 @@ $tour = [
     'title' => '', 'category_id' => '', 'budget_type' => 'Mid-Range', 'price' => '', 'discount_percent' => 0,
     'days' => '', 'scheduled_date' => '', 'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '',
     'top_highlights' => '', 'hotel_info' => '', 'vehicle_info' => '', 'flight_info' => '',
-    'includes' => '', 'excludes' => '', 'operator_id' => '', 'status' => 'draft',
+    'includes' => '', 'excludes' => '', 'operator_id' => '', 'status' => 'draft', 'is_featured' => 0,
 ];
 $errors = [];
 
@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tour['excludes'] = trim($_POST['excludes'] ?? '');
     $tour['operator_id'] = $_POST['operator_id'] !== '' ? (int) $_POST['operator_id'] : null;
     $tour['status'] = $_POST['status'] ?? 'draft';
+    $tour['is_featured'] = isset($_POST['is_featured']) ? 1 : 0;
 
     if ($tour['title'] === '') {
         $errors['title'] = 'Enter a tour title.';
@@ -89,14 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tour['title'], $tour['category_id'], $tour['budget_type'], $tour['price'], $tour['discount_percent'],
             $tour['days'], $tour['scheduled_date'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'], $tour['full_overview'],
             $tour['top_highlights'], $tour['hotel_info'], $tour['vehicle_info'], $tour['flight_info'],
-            $tour['includes'], $tour['excludes'], $tour['operator_id'], $tour['status'],
+            $tour['includes'], $tour['excludes'], $tour['operator_id'], $tour['status'], $tour['is_featured'],
         ];
 
         if ($id) {
-            db()->prepare('UPDATE tours SET title=?, category_id=?, budget_type=?, price=?, discount_percent=?, days=?, scheduled_date=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, hotel_info=?, vehicle_info=?, flight_info=?, includes=?, excludes=?, operator_id=?, status=? WHERE id=?')
+            db()->prepare('UPDATE tours SET title=?, category_id=?, budget_type=?, price=?, discount_percent=?, days=?, scheduled_date=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, hotel_info=?, vehicle_info=?, flight_info=?, includes=?, excludes=?, operator_id=?, status=?, is_featured=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO tours (title, category_id, budget_type, price, discount_percent, days, scheduled_date, min_pax, max_pax, short_overview, full_overview, top_highlights, hotel_info, vehicle_info, flight_info, includes, excludes, operator_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO tours (title, category_id, budget_type, price, discount_percent, days, scheduled_date, min_pax, max_pax, short_overview, full_overview, top_highlights, hotel_info, vehicle_info, flight_info, includes, excludes, operator_id, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -169,6 +170,9 @@ require __DIR__ . '/../includes/header.php';
             <option value="draft" <?= $tour['status'] === 'draft' ? 'selected' : '' ?>>Draft</option>
             <option value="published" <?= $tour['status'] === 'published' ? 'selected' : '' ?>>Published</option>
           </select>
+        </div>
+        <div class="form-field">
+          <label style="font-weight:400;"><input type="checkbox" name="is_featured" value="1" <?= $tour['is_featured'] ? 'checked' : '' ?>> Feature on the homepage</label>
         </div>
         <div class="form-field<?= isset($errors['price']) ? ' has-error' : '' ?>">
           <label for="price">Price (USD)</label>

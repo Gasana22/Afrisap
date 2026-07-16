@@ -9,7 +9,7 @@ $featuredTours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.di
         c.name AS category_name
     FROM tours t
     JOIN tour_categories c ON c.id = t.category_id
-    WHERE t.status = 'published'
+    WHERE t.status = 'published' AND t.is_featured = 1
     ORDER BY t.created_at DESC
     LIMIT 6")->fetchAll();
 

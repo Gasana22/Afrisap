@@ -607,6 +607,7 @@ CREATE TABLE `tours` (
   `excludes` text DEFAULT NULL,
   `operator_id` int(10) unsigned DEFAULT NULL,
   `status` enum('draft','published') NOT NULL DEFAULT 'draft',
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),

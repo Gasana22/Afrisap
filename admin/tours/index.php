@@ -9,7 +9,7 @@ $page_eyebrow = 'Safari';
 $active_nav = 'tours';
 $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/tours/form.php')) . '">Add tour</a>';
 
-$tours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.days, t.scheduled_date, t.status,
+$tours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.days, t.scheduled_date, t.status, t.is_featured,
         c.name AS category_name, o.company_name AS operator_name,
         (SELECT COUNT(*) FROM tour_destinations td WHERE td.tour_id = t.id) AS destination_count
     FROM tours t
@@ -39,6 +39,7 @@ require __DIR__ . '/../includes/header.php';
           <th>Scheduled</th>
           <th>Destinations</th>
           <th>Status</th>
+          <th>Featured</th>
           <th></th>
         </tr>
       </thead>
@@ -53,6 +54,7 @@ require __DIR__ . '/../includes/header.php';
             <td class="table__meta"><?= $tour['scheduled_date'] ? h(formatDate($tour['scheduled_date'], 'M j, Y')) : '—' ?></td>
             <td class="table__meta"><?= (int) $tour['destination_count'] ?><?= (int) $tour['destination_count'] < 2 ? ' ⚠' : '' ?></td>
             <td class="table__meta"><?= h(ucfirst($tour['status'])) ?></td>
+            <td class="table__meta"><?= $tour['is_featured'] ? 'Yes' : '&mdash;' ?></td>
             <td>
               <div class="table__actions">
                 <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/tours/manage.php?id=' . $tour['id'])) ?>">Manage</a>
