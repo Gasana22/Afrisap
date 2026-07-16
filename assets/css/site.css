@@ -1254,13 +1254,15 @@ a.hero-stat:hover {
 
 .side-card__facts li {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4px;
   padding: 9px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 13px;
 }
 
 .side-card__facts li span:first-child { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.55; }
+.side-card__facts li span:last-child { line-height: 1.45; }
 
 /* Galleries inline on detail pages */
 
