@@ -90,6 +90,13 @@ $returnUrl = $_SERVER['REQUEST_URI'];
     <div class="panel__title">Destinations</div>
   </div>
   <div class="panel__body">
+    <?php if (!$allDestinations): ?>
+      <div class="empty-state">
+        <div class="empty-state__title">No destinations exist yet</div>
+        <div class="empty-state__body">Add destinations (national parks, etc.) first -- any country, any number -- and they'll show up here as tickable checkboxes to attach to this tour.</div>
+        <a class="btn btn--primary" href="<?= h(url('/admin/destinations/form.php')) ?>">Add a destination</a>
+      </div>
+    <?php else: ?>
     <form method="post" action="<?= h(url('/admin/tours/destinations.php')) ?>">
       <?= csrf_field() ?>
       <input type="hidden" name="tour_id" value="<?= $id ?>">
@@ -105,6 +112,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
         <button type="submit" class="btn btn--primary btn--sm">Save destinations (pick at least 2)</button>
       </div>
     </form>
+    <?php endif; ?>
   </div>
 </div>
 
