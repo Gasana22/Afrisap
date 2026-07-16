@@ -122,8 +122,6 @@ a { color: inherit; text-decoration: none; }
   margin-right: auto;
 }
 
-.site-nav__brand span { color: var(--ember); }
-
 .site-nav__links {
   display: flex;
   align-items: center;
