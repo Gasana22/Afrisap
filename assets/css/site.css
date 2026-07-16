@@ -1128,6 +1128,13 @@ a.hero-stat:hover {
   margin: 0 0 10px;
 }
 
+/* A tour can belong to several categories (day 1 gorilla trekking, day 6
+   a wildlife game drive, etc.), so this line can run long -- all-caps
+   reads worse the longer it gets, so keep it in normal sentence case
+   here even though the shorter single-label eyebrows elsewhere (Tour
+   Operator, category pages, ...) stay uppercase. */
+.page-header__eyebrow--categories { text-transform: none; letter-spacing: 0.02em; }
+
 .page-header__title {
   font-family: var(--font-display);
   font-size: clamp(24px, 3.2vw, 32px);

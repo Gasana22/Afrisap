@@ -34,7 +34,7 @@ $tourCountries = array_column($tourCountries->fetchAll(), 'name');
 $extraCategories = db()->prepare('SELECT c.name FROM tour_extra_categories tec JOIN tour_categories c ON c.id = tec.category_id WHERE tec.tour_id = ? ORDER BY c.name');
 $extraCategories->execute([$id]);
 $extraCategories = array_column($extraCategories->fetchAll(), 'name');
-$tourTypeLabel = implode(' & ', array_merge([$tour['category_name']], $extraCategories));
+$tourTypeLabel = implode(', ', array_merge([$tour['category_name']], $extraCategories));
 
 $itineraryDays = db()->prepare('SELECT * FROM tour_itinerary_days WHERE tour_id = ? ORDER BY day_number');
 $itineraryDays->execute([$id]);
@@ -63,7 +63,7 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow"><?= h($tourTypeLabel) ?> &middot; <?= h($tour['budget_type']) ?></p>
+    <p class="page-header__eyebrow page-header__eyebrow--categories"><?= h($tourTypeLabel) ?> &middot; <?= h($tour['budget_type']) ?></p>
     <h1 class="page-header__title"><?= h($tour['title']) ?></h1>
     <?php if ($destinations): ?>
       <p class="page-header__lead"><?php foreach ($destinations as $i => $d): ?><?= $i ? ' &middot; ' : '' ?><a href="<?= h(url('/destination.php?id=' . $d['id'])) ?>" style="color:inherit;text-decoration:underline;"><?= h($d['name']) ?></a><?php endforeach; ?></p>
