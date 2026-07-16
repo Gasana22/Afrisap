@@ -71,25 +71,18 @@ require __DIR__ . '/includes/site_header.php';
   </div>
 </header>
 
-<?php if ($mainGallery): ?>
-<div class="wrap" style="margin-top:-1px;">
-  <div class="gallery-strip gallery-strip--hero">
-    <?php foreach ($mainGallery as $img): ?>
-      <img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy">
-    <?php endforeach; ?>
-  </div>
-</div>
-<?php endif; ?>
-
 <section class="section">
   <div class="wrap">
     <div class="detail-grid">
       <div class="detail-main">
         <?php if ($tour['short_overview']): ?><p class="detail-lead"><?= nl2br(h($tour['short_overview'])) ?></p><?php endif; ?>
 
-        <?php if ($tour['full_overview']): ?>
+        <?php if ($tour['full_overview'] || $mainGallery || $overviewGallery): ?>
           <h2 class="detail-heading">Full overview</h2>
-          <p class="detail-text"><?= nl2br(h($tour['full_overview'])) ?></p>
+          <?php if ($tour['full_overview']): ?><p class="detail-text"><?= nl2br(h($tour['full_overview'])) ?></p><?php endif; ?>
+          <?php if ($mainGallery): ?>
+            <div class="gallery-strip"><?php foreach ($mainGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+          <?php endif; ?>
           <?php if ($overviewGallery): ?>
             <div class="gallery-strip"><?php foreach ($overviewGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
           <?php endif; ?>
