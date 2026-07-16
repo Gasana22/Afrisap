@@ -63,8 +63,8 @@ require __DIR__ . '/includes/site_header.php';
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow page-header__eyebrow--categories"><?= h($tourTypeLabel) ?> &middot; <?= h($tour['budget_type']) ?></p>
     <h1 class="page-header__title"><?= h($tour['title']) ?></h1>
+    <p class="page-header__eyebrow page-header__eyebrow--categories"><?= h($tourTypeLabel) ?> &middot; <?= h($tour['budget_type']) ?></p>
     <?php if ($destinations): ?>
       <p class="page-header__lead"><?php foreach ($destinations as $i => $d): ?><?= $i ? ' &middot; ' : '' ?><a href="<?= h(url('/destination.php?id=' . $d['id'])) ?>" style="color:inherit;text-decoration:underline;"><?= h($d['name']) ?></a><?php endforeach; ?></p>
     <?php endif; ?>
