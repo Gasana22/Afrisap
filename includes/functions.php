@@ -31,6 +31,22 @@ function url(string $path): string
     return $basePath . $path;
 }
 
+/**
+ * Normalizes an admin-entered external link (website, TripAdvisor, etc.).
+ * Without a scheme, a browser treats "letsgosag.com" as a path relative to
+ * the current page rather than an external site, so the link silently
+ * "doesn't fetch" -- this prepends https:// when one isn't already there.
+ */
+function external_url(string $value): string
+{
+    $value = trim($value);
+    if ($value === '' || preg_match('#^https?://#i', $value)) {
+        return $value;
+    }
+
+    return 'https://' . $value;
+}
+
 function assetUrl(string $path): string
 {
     return url('assets/' . ltrim($path, '/'));

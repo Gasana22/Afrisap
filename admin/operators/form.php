@@ -33,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $operator['email'] = trim($_POST['email'] ?? '');
     $operator['contact_person'] = trim($_POST['contact_person'] ?? '');
     $operator['office_location'] = trim($_POST['office_location'] ?? '');
-    $operator['website'] = trim($_POST['website'] ?? '');
+    $operator['website'] = external_url($_POST['website'] ?? '');
     $operator['tour_type'] = trim($_POST['tour_type'] ?? '');
     $operator['member_of'] = trim($_POST['member_of'] ?? '');
-    $operator['trip_advisor_link'] = trim($_POST['trip_advisor_link'] ?? '');
+    $operator['trip_advisor_link'] = external_url($_POST['trip_advisor_link'] ?? '');
     $operator['budget_type'] = $_POST['budget_type'] ?? '';
     $operator['years_experience'] = trim($_POST['years_experience'] ?? '');
     $operator['country_id'] = (int) ($_POST['country_id'] ?? 0);

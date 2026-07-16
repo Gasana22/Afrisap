@@ -88,17 +88,14 @@ require __DIR__ . '/includes/site_header.php';
         <div class="side-card">
           <p class="side-card__title"><?= render_nav_glyph('briefcase') ?>Company details</p>
           <?php if ($operator['logo_path']): ?><img src="<?= h(url('/' . $operator['logo_path'])) ?>" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px;margin-bottom:10px;"><?php endif; ?>
-          <?php if ($operator['contact_person']): ?><p class="side-card__body"><strong>Contact:</strong> <?= h($operator['contact_person']) ?></p><?php endif; ?>
           <?php if ($operator['office_location']): ?><p class="side-card__body"><strong>Office:</strong> <?= h($operator['office_location']) ?></p><?php endif; ?>
-          <?php if ($operator['phone']): ?><p class="side-card__body"><?= h($operator['phone']) ?></p><?php endif; ?>
-          <?php if ($operator['email']): ?><p class="side-card__body"><?= h($operator['email']) ?></p><?php endif; ?>
-          <?php if ($operator['website']): ?><p class="side-card__body"><a href="<?= h($operator['website']) ?>" target="_blank" rel="noopener">Website</a></p><?php endif; ?>
-          <?php if ($operator['trip_advisor_link']): ?><p class="side-card__body"><a href="<?= h($operator['trip_advisor_link']) ?>" target="_blank" rel="noopener">TripAdvisor</a></p><?php endif; ?>
+          <?php if ($operator['website']): ?><p class="side-card__body"><a href="<?= h(external_url($operator['website'])) ?>" target="_blank" rel="noopener">Website</a></p><?php endif; ?>
+          <?php if ($operator['trip_advisor_link']): ?><p class="side-card__body"><a href="<?= h(external_url($operator['trip_advisor_link'])) ?>" target="_blank" rel="noopener">TripAdvisor</a></p><?php endif; ?>
         </div>
 
         <div class="side-card">
           <p class="side-card__title"><?= render_nav_glyph('tag') ?>At a glance</p>
-          <?php if ($operator['budget_type']): ?><p class="side-card__body"><strong>Budget:</strong> <?= h($operator['budget_type']) ?></p><?php endif; ?>
+          <?php if ($operator['office_location']): ?><p class="side-card__body"><strong>Location:</strong> <?= h($operator['office_location']) ?></p><?php endif; ?>
           <?php if ($operator['years_experience'] !== null): ?><p class="side-card__body"><strong>Experience:</strong> <?= (int) $operator['years_experience'] ?> years</p><?php endif; ?>
           <?php if ($operator['country_name']): ?><p class="side-card__body"><strong>Destination:</strong> <?= h($operator['country_name']) ?></p><?php endif; ?>
           <?php if ($operator['member_of']): ?><p class="side-card__body"><strong>Member of:</strong> <?= h($operator['member_of']) ?></p><?php endif; ?>
