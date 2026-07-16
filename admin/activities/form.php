@@ -2,11 +2,13 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/uploads.php';
+require_once __DIR__ . '/../../includes/media.php';
 require_login();
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $activity = [
-    'name' => '', 'phone' => '', 'email' => '', 'duration_hours' => '',
+    'name' => '', 'phone' => '', 'email' => '', 'duration_hours' => '', 'image_path' => null,
     'short_description' => '', 'full_description' => '', 'operator_id' => '', 'destination_id' => '',
 ];
 $errors = [];
@@ -42,16 +44,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['duration_hours'] = 'Enter a number of hours.';
     }
 
+    $imagePath = null;
+    try {
+        $imagePath = handle_image_upload('image');
+    } catch (RuntimeException $e) {
+        $errors['image'] = $e->getMessage();
+    }
+
     if (!$errors) {
+        if ($imagePath !== null) {
+            $activity['image_path'] = $imagePath;
+        }
         $params = [
-            $activity['name'], $activity['phone'], $activity['email'], $activity['duration_hours'],
+            $activity['name'], $activity['phone'], $activity['email'], $activity['duration_hours'], $activity['image_path'],
             $activity['short_description'], $activity['full_description'], $activity['operator_id'], $activity['destination_id'],
         ];
         if ($id) {
-            db()->prepare('UPDATE activities SET name=?, phone=?, email=?, duration_hours=?, short_description=?, full_description=?, operator_id=?, destination_id=? WHERE id=?')
+            db()->prepare('UPDATE activities SET name=?, phone=?, email=?, duration_hours=?, image_path=?, short_description=?, full_description=?, operator_id=?, destination_id=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO activities (name, phone, email, duration_hours, short_description, full_description, operator_id, destination_id) VALUES (?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO activities (name, phone, email, duration_hours, image_path, short_description, full_description, operator_id, destination_id) VALUES (?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -69,7 +81,7 @@ require __DIR__ . '/../includes/header.php';
 
 <div class="panel">
   <div class="panel__body">
-    <form method="post" novalidate>
+    <form method="post" enctype="multipart/form-data" novalidate>
       <?= csrf_field() ?>
       <div class="form-grid">
         <div class="form-field<?= isset($errors['name']) ? ' has-error' : '' ?>">
@@ -89,6 +101,15 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" value="<?= h($activity['email']) ?>">
+        </div>
+        <div class="form-field<?= isset($errors['image']) ? ' has-error' : '' ?> form-field--full">
+          <label for="image">Profile picture</label>
+          <?php if ($activity['image_path']): ?>
+            <img src="<?= h(url('/' . $activity['image_path'])) ?>" alt="" style="width:160px;height:100px;object-fit:cover;border-radius:6px;border:1px solid var(--line);margin-bottom:6px;display:block;">
+          <?php endif; ?>
+          <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp">
+          <span class="hint">Appears on this activity's own page. <?php if ($id): ?><a href="<?= h(url('/admin/media/index.php?entity_type=activity&entity_id=' . $id . '&title=' . urlencode($activity['name'] . ' gallery') . '&back=' . urlencode($_SERVER['REQUEST_URI']))) ?>">Manage gallery (<?= media_count('activity', $id) ?>)</a> for at least 3-5 more photos shown further down the page.<?php else: ?>Save the activity first to add a gallery of 3-5 more photos.<?php endif; ?></span>
+          <?php if (isset($errors['image'])): ?><span class="error-text"><?= h($errors['image']) ?></span><?php endif; ?>
         </div>
         <div class="form-field">
           <label for="operator_id">Company</label>

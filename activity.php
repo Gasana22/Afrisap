@@ -54,6 +54,12 @@ require __DIR__ . '/includes/site_header.php';
   </div>
 </header>
 
+<?php if ($activity['image_path']): ?>
+<div class="wrap" style="margin-top:-1px;">
+  <img src="<?= h(url('/' . $activity['image_path'])) ?>" alt="" style="width:100%;max-height:420px;object-fit:cover;border-radius:var(--radius);">
+</div>
+<?php endif; ?>
+
 <?php if ($gallery): ?>
 <div class="wrap" style="margin-top:-1px;">
   <div class="gallery-strip gallery-strip--hero">

@@ -19,6 +19,7 @@ CREATE TABLE `activities` (
   `phone` varchar(50) DEFAULT NULL,
   `email` varchar(150) DEFAULT NULL,
   `duration_hours` decimal(5,2) DEFAULT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
   `short_description` text DEFAULT NULL,
   `full_description` text DEFAULT NULL,
   `operator_id` int(10) unsigned DEFAULT NULL,

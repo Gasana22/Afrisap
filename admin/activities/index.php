@@ -30,6 +30,7 @@ require __DIR__ . '/../includes/header.php';
     <table class="table">
       <thead>
         <tr>
+          <th></th>
           <th>Name</th>
           <th>Destination</th>
           <th>Duration</th>
@@ -40,6 +41,11 @@ require __DIR__ . '/../includes/header.php';
       <tbody>
         <?php foreach ($activities as $activity): ?>
           <tr>
+            <td style="width:52px;">
+              <?php if ($activity['image_path']): ?>
+                <img src="<?= h(url('/' . $activity['image_path'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--line);">
+              <?php endif; ?>
+            </td>
             <td><?= h($activity['name']) ?></td>
             <td class="table__meta"><?= h($activity['destination_name'] ?? '—') ?></td>
             <td class="table__meta"><?= $activity['duration_hours'] !== null ? h((string) $activity['duration_hours']) . ' hrs' : '—' ?></td>
