@@ -496,7 +496,7 @@ DROP TABLE IF EXISTS `tour_categories`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tour_categories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `menu_group` enum('safari','trip','school') NOT NULL DEFAULT 'safari',
+  `menu_group` enum('safari','trip','school','specialised') NOT NULL DEFAULT 'safari',
   `name` varchar(100) NOT NULL,
   `slug` varchar(120) NOT NULL,
   `sort_order` int(10) unsigned NOT NULL DEFAULT 0,

@@ -9,9 +9,9 @@ $page_eyebrow = 'Lookups';
 $active_nav = 'categories';
 $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/categories/form.php')) . '">Add category</a>';
 
-$categories = db()->query("SELECT * FROM tour_categories ORDER BY FIELD(menu_group, 'safari','trip','school'), sort_order, name")->fetchAll();
+$categories = db()->query("SELECT * FROM tour_categories ORDER BY FIELD(menu_group, 'safari','trip','school','specialised'), sort_order, name")->fetchAll();
 
-$groupLabels = ['safari' => 'Safari Tours', 'trip' => 'Trip Tours', 'school' => 'School Trips'];
+$groupLabels = ['safari' => 'Safari Tours', 'trip' => 'Trip Tours', 'school' => 'School Trips', 'specialised' => 'Specialised Tours'];
 
 require __DIR__ . '/../includes/header.php';
 ?>

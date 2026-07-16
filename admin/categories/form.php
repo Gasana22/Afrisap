@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($category['name'] === '') {
         $errors['name'] = 'Enter a category name.';
     }
-    if (!in_array($category['menu_group'], ['safari', 'trip', 'school'], true)) {
+    if (!in_array($category['menu_group'], ['safari', 'trip', 'school', 'specialised'], true)) {
         $errors['menu_group'] = 'Choose a valid menu.';
     }
     if ($category['slug'] === '') {
@@ -84,7 +84,9 @@ require __DIR__ . '/../includes/header.php';
             <option value="safari" <?= $category['menu_group'] === 'safari' ? 'selected' : '' ?>>Safari Tours</option>
             <option value="trip" <?= $category['menu_group'] === 'trip' ? 'selected' : '' ?>>Trip Tours</option>
             <option value="school" <?= $category['menu_group'] === 'school' ? 'selected' : '' ?>>School Trips</option>
+            <option value="specialised" <?= $category['menu_group'] === 'specialised' ? 'selected' : '' ?>>Specialised Tours</option>
           </select>
+          <span class="hint">Specialised Tours shows in the nav alongside Scheduled Tours, Create Your Own Tour and Virtual Experience.</span>
         </div>
         <div class="form-field<?= isset($errors['slug']) ? ' has-error' : '' ?>">
           <label for="slug">Slug</label>

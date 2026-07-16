@@ -63,6 +63,7 @@ declare(strict_types=1);
         <button>Specialised Tours <span class="site-nav__caret">&#9662;</span></button>
         <div class="mega-menu mega-menu--narrow">
           <a href="<?= h(url('/scheduled-tours.php')) ?>"><?= render_nav_glyph('calendar') ?><span>Scheduled Tours</span></a>
+          <a href="<?= h(url('/tours.php?category=group-tours')) ?>"><?= render_nav_glyph('users') ?><span>Group Tours</span></a>
           <a href="<?= h(url('/create-your-own-tour.php')) ?>"><?= render_nav_glyph('sliders') ?><span>Create Your Own Tour</span></a>
           <a href="<?= h(url('/virtual-experience.php')) ?>"><?= render_nav_glyph('video') ?><span>Virtual Experience</span></a>
         </div>

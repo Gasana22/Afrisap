@@ -240,7 +240,8 @@ INSERT INTO `tour_categories` VALUES
 (12,'trip','Boat Cruise Trips','boat-cruise-trips',5),
 (13,'trip','Beach Trips (Lake Victoria)','beach-trips',6),
 (14,'trip','City Trips (East Africa)','city-trips',7),
-(15,'school','School Trips','school-trips',1);
+(15,'school','School Trips','school-trips',1),
+(16,'specialised','Group Tours','group-tours',1);
 /*!40000 ALTER TABLE `tour_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
