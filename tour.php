@@ -172,7 +172,7 @@ require __DIR__ . '/includes/site_header.php';
             <p class="side-card__title"><?= render_nav_glyph('briefcase') ?>Tour operator</p>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
               <?php if ($tour['operator_logo']): ?><img src="<?= h(url('/' . $tour['operator_logo'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><?php endif; ?>
-              <strong><?= h($tour['operator_name']) ?></strong>
+              <strong><a href="<?= h(url('/operator.php?id=' . $tour['operator_id'])) ?>" style="color:inherit;text-decoration:underline;"><?= h($tour['operator_name']) ?></a></strong>
             </div>
             <?php if ($tour['operator_phone']): ?><p class="side-card__body"><?= h($tour['operator_phone']) ?></p><?php endif; ?>
             <?php if ($tour['operator_email']): ?><p class="side-card__body"><?= h($tour['operator_email']) ?></p><?php endif; ?>

@@ -539,8 +539,20 @@ CREATE TABLE `tour_operators` (
   `logo_path` varchar(255) DEFAULT NULL,
   `phone` varchar(50) DEFAULT NULL,
   `email` varchar(150) DEFAULT NULL,
+  `contact_person` varchar(150) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `profile_image_path` varchar(255) DEFAULT NULL,
+  `tour_type` varchar(150) DEFAULT NULL,
+  `member_of` varchar(255) DEFAULT NULL,
+  `trip_advisor_link` varchar(255) DEFAULT NULL,
+  `budget_type` enum('Luxury','Mid-Range','Budget') DEFAULT NULL,
+  `years_experience` smallint(5) unsigned DEFAULT NULL,
+  `country_id` int(10) unsigned DEFAULT NULL,
+  `overview` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fk_tour_operators_country` (`country_id`),
+  CONSTRAINT `fk_tour_operators_country` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tours`;

@@ -290,7 +290,7 @@ require __DIR__ . '/includes/site_header.php';
     <?php else: ?>
       <div class="partner-grid">
         <?php foreach ($partners as $partner): ?>
-          <a href="<?= h(url('/operators.php')) ?>" class="partner-card">
+          <a href="<?= h(url('/operator.php?id=' . $partner['id'])) ?>" class="partner-card">
             <?php if ($partner['logo_path']): ?>
               <img class="partner-card__logo" src="<?= h(url('/' . $partner['logo_path'])) ?>" alt="<?= h($partner['company_name']) ?>" loading="lazy">
             <?php else: ?>

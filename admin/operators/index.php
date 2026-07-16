@@ -9,8 +9,9 @@ $page_eyebrow = 'Lookups';
 $active_nav = 'operators';
 $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/operators/form.php')) . '">Add operator</a>';
 
-$operators = db()->query('SELECT o.*, COUNT(t.id) AS tour_count
+$operators = db()->query('SELECT o.*, c.name AS country_name, COUNT(t.id) AS tour_count
     FROM tour_operators o
+    LEFT JOIN countries c ON c.id = o.country_id
     LEFT JOIN tours t ON t.operator_id = o.id
     GROUP BY o.id
     ORDER BY o.company_name')->fetchAll();
@@ -33,6 +34,7 @@ require __DIR__ . '/../includes/header.php';
           <th></th>
           <th>Company</th>
           <th>Contact</th>
+          <th>Country</th>
           <th>Tours</th>
           <th></th>
         </tr>
@@ -47,9 +49,11 @@ require __DIR__ . '/../includes/header.php';
             </td>
             <td><?= h($operator['company_name']) ?></td>
             <td class="table__meta"><?= h($operator['phone']) ?><?= $operator['phone'] && $operator['email'] ? ' · ' : '' ?><?= h($operator['email']) ?></td>
+            <td class="table__meta"><?= h($operator['country_name'] ?? '') ?: '&mdash;' ?></td>
             <td class="table__meta"><?= (int) $operator['tour_count'] ?></td>
             <td>
               <div class="table__actions">
+                <a class="btn btn--ghost btn--sm" href="<?= h(url('/operator.php?id=' . $operator['id'])) ?>" target="_blank">View</a>
                 <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/operators/form.php?id=' . $operator['id'])) ?>">Edit</a>
                 <form method="post" action="<?= h(url('/admin/operators/delete.php')) ?>" onsubmit="return confirm('Delete this operator?');">
                   <?= csrf_field() ?>

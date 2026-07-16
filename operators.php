@@ -28,7 +28,7 @@ require __DIR__ . '/includes/site_header.php';
     <?php else: ?>
       <div class="list-rows">
         <?php foreach ($operators as $operator): ?>
-          <div class="list-row">
+          <a href="<?= h(url('/operator.php?id=' . $operator['id'])) ?>" class="list-row">
             <div style="display:flex;align-items:center;gap:14px;">
               <?php if ($operator['logo_path']): ?>
                 <img src="<?= h(url('/' . $operator['logo_path'])) ?>" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:6px;">
@@ -42,7 +42,7 @@ require __DIR__ . '/includes/site_header.php';
                 </div>
               </div>
             </div>
-          </div>
+          </a>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
