@@ -13,6 +13,8 @@ $tour = [
 ];
 $errors = [];
 
+$extraCategoryIds = [];
+
 if ($id) {
     $stmt = db()->prepare('SELECT * FROM tours WHERE id = ?');
     $stmt->execute([$id]);
@@ -21,6 +23,9 @@ if ($id) {
         flash_set('error', 'That tour no longer exists.');
         redirect('/admin/tours/index.php');
     }
+    $extraStmt = db()->prepare('SELECT category_id FROM tour_extra_categories WHERE tour_id = ?');
+    $extraStmt->execute([$id]);
+    $extraCategoryIds = array_map('intval', $extraStmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
 $categories = db()->query("SELECT * FROM tour_categories ORDER BY FIELD(menu_group,'safari','trip','school'), sort_order, name")->fetchAll();
@@ -35,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $tour['title'] = trim($_POST['title'] ?? '');
     $tour['category_id'] = (int) ($_POST['category_id'] ?? 0);
+    $extraCategoryIds = array_values(array_unique(array_filter(array_map('intval', $_POST['extra_category_ids'] ?? []))));
     $tour['budget_type'] = $_POST['budget_type'] ?? 'Mid-Range';
     $tour['price'] = $_POST['price'] ?? '';
     $tour['discount_percent'] = $_POST['discount_percent'] ?? 0;
@@ -94,6 +100,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
+
+        $extraCategoryIds = array_values(array_diff($extraCategoryIds, [$tour['category_id']]));
+        db()->prepare('DELETE FROM tour_extra_categories WHERE tour_id = ?')->execute([$id]);
+        if ($extraCategoryIds) {
+            $insertExtra = db()->prepare('INSERT INTO tour_extra_categories (tour_id, category_id) VALUES (?, ?)');
+            foreach ($extraCategoryIds as $extraCategoryId) {
+                $insertExtra->execute([$id, $extraCategoryId]);
+            }
+        }
+
         flash_set('success', 'Tour saved. Now add its destinations, activities and gallery below.');
         redirect('/admin/tours/manage.php?id=' . $id);
     }
@@ -126,6 +142,18 @@ require __DIR__ . '/../includes/header.php';
             <?php endforeach; ?>
           </select>
           <?php if (isset($errors['category_id'])): ?><span class="error-text"><?= h($errors['category_id']) ?></span><?php endif; ?>
+        </div>
+        <div class="form-field form-field--full">
+          <label>Additional categories</label>
+          <span class="hint" style="display:block;margin-bottom:8px;">Pick any other categories this tour also belongs to -- useful when a multi-day itinerary spans more than one, e.g. day 1 is gorilla trekking, day 6 is a wildlife game drive.</span>
+          <div class="checkbox-grid">
+            <?php foreach ($categories as $category): ?>
+              <label class="checkbox-row">
+                <input type="checkbox" name="extra_category_ids[]" value="<?= (int) $category['id'] ?>" <?= in_array((int) $category['id'], $extraCategoryIds, true) ? 'checked' : '' ?>>
+                <?= h($category['name']) ?>
+              </label>
+            <?php endforeach; ?>
+          </div>
         </div>
         <div class="form-field">
           <label for="budget_type">Budget type</label>

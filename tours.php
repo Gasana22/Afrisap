@@ -35,7 +35,8 @@ $where = ["t.status = 'published'"];
 $params = [];
 
 if ($category) {
-    $where[] = 't.category_id = ?';
+    $where[] = '(t.category_id = ? OR EXISTS (SELECT 1 FROM tour_extra_categories tec WHERE tec.tour_id = t.id AND tec.category_id = ?))';
+    $params[] = $category['id'];
     $params[] = $category['id'];
 } elseif ($group === 'safari') {
     $where[] = "c.menu_group = 'safari'";
