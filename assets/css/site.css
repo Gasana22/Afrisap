@@ -1286,6 +1286,43 @@ a.hero-stat:hover {
 .activity-item__title { font-family: var(--font-display); font-size: 16.5px; font-weight: 600; margin: 0 0 4px; }
 .activity-item__body { font-size: 14px; opacity: 0.78; margin: 0; }
 
+/* Day-by-day itinerary */
+
+.itinerary-list { display: flex; flex-direction: column; gap: 12px; }
+
+.itinerary-day {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  transition: background-color var(--motion-fast), transform var(--motion-fast);
+}
+
+.itinerary-day:hover { background: var(--savanna); transform: translateX(2px); }
+
+.itinerary-day__badge {
+  flex: none;
+  min-width: 64px;
+  height: 38px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(181, 80, 43, 0.12);
+  color: var(--murram-dark);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.itinerary-day__content { flex: 1; min-width: 0; }
+
+.itinerary-day__title { font-family: var(--font-display); font-size: 16.5px; font-weight: 600; margin: 0 0 4px; }
+.itinerary-day__body { font-size: 14px; opacity: 0.78; margin: 0; }
+
 /* Includes / excludes */
 
 .includes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }

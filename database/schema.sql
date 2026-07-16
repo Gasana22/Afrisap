@@ -543,6 +543,20 @@ CREATE TABLE `tour_faqs` (
   CONSTRAINT `fk_tour_faqs_tour` FOREIGN KEY (`tour_id`) REFERENCES `tours` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tour_itinerary_days`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_itinerary_days` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tour_id` int(10) unsigned NOT NULL,
+  `day_number` int(10) unsigned NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_tour_itinerary_days_day` (`tour_id`,`day_number`),
+  CONSTRAINT `fk_tour_itinerary_days_tour` FOREIGN KEY (`tour_id`) REFERENCES `tours` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tour_operators`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;

@@ -31,6 +31,10 @@ $extraCategories = db()->prepare('SELECT c.name FROM tour_extra_categories tec J
 $extraCategories->execute([$id]);
 $extraCategories = array_column($extraCategories->fetchAll(), 'name');
 
+$itineraryDays = db()->prepare('SELECT * FROM tour_itinerary_days WHERE tour_id = ? ORDER BY day_number');
+$itineraryDays->execute([$id]);
+$itineraryDays = $itineraryDays->fetchAll();
+
 $activities = db()->prepare('SELECT * FROM tour_activities WHERE tour_id = ? ORDER BY sort_order, id');
 $activities->execute([$id]);
 $activities = $activities->fetchAll();
@@ -89,6 +93,21 @@ require __DIR__ . '/includes/site_header.php';
         <?php if ($tour['top_highlights']): ?>
           <h2 class="detail-heading">Top highlights</h2>
           <p class="detail-text"><?= nl2br(h($tour['top_highlights'])) ?></p>
+        <?php endif; ?>
+
+        <?php if ($itineraryDays): ?>
+          <h2 class="detail-heading">Day-by-day itinerary</h2>
+          <div class="itinerary-list">
+            <?php foreach ($itineraryDays as $day): ?>
+              <div class="itinerary-day">
+                <div class="itinerary-day__badge">Day <?= (int) $day['day_number'] ?></div>
+                <div class="itinerary-day__content">
+                  <h3 class="itinerary-day__title"><?= h($day['title']) ?></h3>
+                  <?php if ($day['description']): ?><p class="itinerary-day__body"><?= nl2br(h($day['description'])) ?></p><?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
         <?php endif; ?>
 
         <?php if ($activities): ?>

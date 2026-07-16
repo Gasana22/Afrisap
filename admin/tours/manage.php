@@ -25,6 +25,10 @@ $selectedStmt = db()->prepare('SELECT destination_id FROM tour_destinations WHER
 $selectedStmt->execute([$id]);
 $selectedIds = array_column($selectedStmt->fetchAll(), 'destination_id');
 
+$itineraryDays = db()->prepare('SELECT * FROM tour_itinerary_days WHERE tour_id = ? ORDER BY day_number');
+$itineraryDays->execute([$id]);
+$itineraryDays = $itineraryDays->fetchAll();
+
 $activities = db()->prepare('SELECT * FROM tour_activities WHERE tour_id = ? ORDER BY sort_order, id');
 $activities->execute([$id]);
 $activities = $activities->fetchAll();
@@ -46,6 +50,40 @@ $returnUrl = $_SERVER['REQUEST_URI'];
 <?php if (count($selectedIds) < 2): ?>
   <div class="flash flash--error">This tour needs at least 2 destinations before it can be published. Currently has <?= count($selectedIds) ?>.</div>
 <?php endif; ?>
+
+<div class="panel">
+  <div class="panel__header">
+    <div class="panel__title">Itinerary builder</div>
+    <a class="btn btn--primary btn--sm" href="<?= h(url('/admin/tours/itinerary/form.php?tour_id=' . $id)) ?>">Add day</a>
+  </div>
+  <div class="panel__body">
+    <?php if (!$itineraryDays): ?>
+      <div class="empty-state">
+        <div class="empty-state__title">No itinerary days added yet</div>
+      </div>
+    <?php else: ?>
+      <div class="sub-list">
+        <?php foreach ($itineraryDays as $day): ?>
+          <div class="sub-row">
+            <div class="sub-row__body">
+              <div class="sub-row__title">Day <?= (int) $day['day_number'] ?> &middot; <?= h($day['title']) ?></div>
+              <?php if ($day['description']): ?><div class="sub-row__meta"><?= h(mb_strimwidth($day['description'], 0, 140, '…')) ?></div><?php endif; ?>
+            </div>
+            <div class="table__actions">
+              <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/tours/itinerary/form.php?tour_id=' . $id . '&id=' . $day['id'])) ?>">Edit</a>
+              <form method="post" action="<?= h(url('/admin/tours/itinerary/delete.php')) ?>" onsubmit="return confirm('Remove this itinerary day?');">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= (int) $day['id'] ?>">
+                <input type="hidden" name="tour_id" value="<?= $id ?>">
+                <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+              </form>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </div>
+</div>
 
 <div class="panel">
   <div class="panel__header">
