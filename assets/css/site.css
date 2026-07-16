@@ -77,9 +77,8 @@ a { color: inherit; text-decoration: none; }
 .utility-bar {
   background: var(--murram-dark);
   color: var(--white);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  font-family: var(--font-ui);
+  font-size: 13px;
 }
 
 .utility-bar .wrap {
