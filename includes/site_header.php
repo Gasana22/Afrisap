@@ -6,10 +6,18 @@ require_once __DIR__ . '/site_svg.php';
 // Prefixed with nav_ and scoped inside a closure so the mega-menu's own loop
 // variables can never clobber same-named variables set by the including page
 $render_site_nav = static function () {
-    $nav_safari_categories = db()->query("SELECT name, slug FROM tour_categories WHERE menu_group = 'safari' ORDER BY sort_order")->fetchAll();
-    $nav_trip_categories = db()->query("SELECT name, slug FROM tour_categories WHERE menu_group IN ('trip', 'school') ORDER BY FIELD(menu_group, 'trip', 'school'), sort_order")->fetchAll();
+    $nav_safari_categories = db()->query("SELECT id, name, slug FROM tour_categories WHERE menu_group = 'safari' ORDER BY sort_order")->fetchAll();
+    $nav_trip_categories = db()->query("SELECT id, name, slug FROM tour_categories WHERE menu_group IN ('trip', 'school') ORDER BY FIELD(menu_group, 'trip', 'school'), sort_order")->fetchAll();
     $nav_experience_types = db()->query('SELECT name, slug FROM experience_types ORDER BY name')->fetchAll();
     $nav_activities = db()->query('SELECT id, name FROM activities ORDER BY name')->fetchAll();
+
+    // Published-tour count per category (primary category OR tagged as an
+    // Additional category), keyed by category id, for the nav dropdown badges.
+    $nav_category_tour_counts = db()->query("SELECT c.id, COUNT(DISTINCT t.id) AS tour_count
+        FROM tour_categories c
+        LEFT JOIN tours t ON t.status = 'published' AND (t.category_id = c.id OR EXISTS (SELECT 1 FROM tour_extra_categories tec WHERE tec.tour_id = t.id AND tec.category_id = c.id))
+        GROUP BY c.id")->fetchAll(PDO::FETCH_KEY_PAIR);
+
     require __DIR__ . '/site_nav.php';
 };
 
