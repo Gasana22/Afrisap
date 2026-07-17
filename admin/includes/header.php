@@ -20,6 +20,7 @@ $counts = [
     'careers' => (int) db()->query('SELECT COUNT(*) FROM careers')->fetchColumn(),
     'blog' => (int) db()->query('SELECT COUNT(*) FROM blog_posts')->fetchColumn(),
     'bookings' => (int) db()->query("SELECT COUNT(*) FROM bookings WHERE status = 'pending'")->fetchColumn(),
+    'tour-inquiries' => (int) db()->query("SELECT COUNT(*) FROM tour_itinerary_inquiries WHERE status = 'new'")->fetchColumn(),
     'quotes' => (int) db()->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn(),
     'car-rental' => (int) db()->query("SELECT COUNT(*) FROM car_rental_requests WHERE status = 'new'")->fetchColumn(),
     'flight-booking' => (int) db()->query("SELECT COUNT(*) FROM flight_booking_requests WHERE status = 'new'")->fetchColumn(),
@@ -115,6 +116,9 @@ $active_nav = $active_nav ?? '';
         <div class="nav-group__label">Inbox</div>
         <a class="nav-link<?= $active_nav === 'bookings' ? ' is-active' : '' ?>" href="<?= h(url('/admin/bookings/index.php')) ?>">
           <?= render_nav_glyph('calendar') ?>Bookings <span class="nav-link__count"><?= $counts['bookings'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'tour-inquiries' ? ' is-active' : '' ?>" href="<?= h(url('/admin/tour-inquiries/index.php')) ?>">
+          <?= render_nav_glyph('tag') ?>Tour Itinerary Inquiries <span class="nav-link__count"><?= $counts['tour-inquiries'] ?></span>
         </a>
         <a class="nav-link<?= $active_nav === 'quotes' ? ' is-active' : '' ?>" href="<?= h(url('/admin/quotes/index.php')) ?>">
           <?= render_nav_glyph('tag') ?>Quote Requests <span class="nav-link__count"><?= $counts['quotes'] ?></span>

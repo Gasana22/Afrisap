@@ -231,11 +231,11 @@ require __DIR__ . '/includes/site_header.php';
     <?php if ($bookingSent): ?>
       <div class="flash flash--success">Thanks — your enquiry has been sent. We'll be in touch shortly.</div>
     <?php else: ?>
-      <form class="site-form" method="post" action="<?= h(url('/book.php')) ?>">
+      <form class="site-form" method="post" action="<?= h(url('/tour-inquiry-submit.php')) ?>">
         <input type="hidden" name="tour_id" value="<?= (int) $tour['id'] ?>">
         <?= csrf_field() ?>
         <div class="site-form__row">
-          <label for="customer_name">Full name</label>
+          <label for="customer_name">Name</label>
           <input type="text" id="customer_name" name="customer_name" required>
         </div>
         <div class="site-form__row">
@@ -243,16 +243,20 @@ require __DIR__ . '/includes/site_header.php';
           <input type="email" id="customer_email" name="customer_email" required>
         </div>
         <div class="site-form__row">
-          <label for="customer_phone">Phone</label>
-          <input type="text" id="customer_phone" name="customer_phone">
+          <label for="whatsapp_number">WhatsApp number</label>
+          <input type="text" id="whatsapp_number" name="whatsapp_number">
         </div>
         <div class="site-form__row">
-          <label for="travel_date">Preferred travel date</label>
+          <label for="num_visitors">Number of visitors</label>
+          <input type="number" id="num_visitors" name="num_visitors" min="1" value="<?= (int) $tour['min_pax'] ?>">
+        </div>
+        <div class="site-form__row">
+          <label for="country">Country</label>
+          <input type="text" id="country" name="country">
+        </div>
+        <div class="site-form__row">
+          <label for="travel_date">Expected travel date</label>
           <input type="date" id="travel_date" name="travel_date">
-        </div>
-        <div class="site-form__row">
-          <label for="num_people">Number of people</label>
-          <input type="number" id="num_people" name="num_people" min="1" value="<?= (int) $tour['min_pax'] ?>">
         </div>
         <div class="site-form__row">
           <label for="message">Message</label>
