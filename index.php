@@ -26,13 +26,31 @@ $partners = db()->query('SELECT id, company_name, logo_path FROM tour_operators 
 
 $siteSettings = db()->query('SELECT * FROM site_settings WHERE id = 1')->fetch() ?: [];
 $heroEyebrowCountries = [
-    ['label' => 'East Africa', 'href' => null],
-    ['label' => 'Uganda', 'href' => 'tours.php?country=1'],
-    ['label' => 'Kenya', 'href' => 'tours.php?country=2'],
-    ['label' => 'Tanzania', 'href' => 'tours.php?country=3'],
-    ['label' => 'Rwanda', 'href' => 'tours.php?country=4'],
-    ['label' => 'DR Congo', 'href' => 'tours.php?country=7'],
+    ['label' => 'East Africa', 'href' => null, 'country_id' => null],
+    ['label' => 'Uganda', 'href' => 'tours.php?country=1', 'country_id' => 1],
+    ['label' => 'Kenya', 'href' => 'tours.php?country=2', 'country_id' => 2],
+    ['label' => 'Tanzania', 'href' => 'tours.php?country=3', 'country_id' => 3],
+    ['label' => 'Rwanda', 'href' => 'tours.php?country=4', 'country_id' => 4],
+    ['label' => 'DR Congo', 'href' => 'tours.php?country=7', 'country_id' => 7],
 ];
+
+// Tour count per country -- same matching logic as tours.php's country
+// filter (a tour's tagged destinations OR its own explicit Countries
+// selection), so a chip's count always matches what clicking it shows.
+$countryTourCountStmt = db()->prepare("SELECT COUNT(DISTINCT t.id) FROM tours t
+    WHERE t.status = 'published' AND (
+        EXISTS (SELECT 1 FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id AND d.country_id = ?)
+        OR EXISTS (SELECT 1 FROM tour_countries tc WHERE tc.tour_id = t.id AND tc.country_id = ?)
+    )");
+$totalPublishedTours = (int) db()->query("SELECT COUNT(*) FROM tours WHERE status = 'published'")->fetchColumn();
+foreach ($heroEyebrowCountries as $i => $country) {
+    if ($country['country_id'] === null) {
+        $heroEyebrowCountries[$i]['count'] = $totalPublishedTours;
+    } else {
+        $countryTourCountStmt->execute([$country['country_id'], $country['country_id']]);
+        $heroEyebrowCountries[$i]['count'] = (int) $countryTourCountStmt->fetchColumn();
+    }
+}
 $heroTitle = $siteSettings['hero_title'] ?? '' ?: 'Explore. Experience. Belong.';
 $heroSubtitle = $siteSettings['hero_subtitle'] ?? '' ?: "Gorilla treks through misty forest, a boat cruise past hippos, a drumming circle in a Buganda village. Safarisap plans East Africa on your terms.";
 $heroBackground = $siteSettings['hero_background_path'] ?? null;
@@ -62,9 +80,9 @@ require __DIR__ . '/includes/site_header.php';
   <div class="hero__countries">
     <?php foreach ($heroEyebrowCountries as $country): ?>
       <?php if ($country['href']): ?>
-        <a href="<?= h(url('/' . $country['href'])) ?>" class="hero__country-chip"><?= h($country['label']) ?></a>
+        <a href="<?= h(url('/' . $country['href'])) ?>" class="hero__country-chip"><?= h($country['label']) ?> <span class="hero__country-count"><?= $country['count'] ?></span></a>
       <?php else: ?>
-        <span class="hero__country-chip"><?= h($country['label']) ?></span>
+        <span class="hero__country-chip"><?= h($country['label']) ?> <span class="hero__country-count"><?= $country['count'] ?></span></span>
       <?php endif; ?>
     <?php endforeach; ?>
   </div>
