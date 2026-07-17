@@ -40,10 +40,13 @@ require __DIR__ . '/includes/site_header.php';
 ?>
 
 <header class="page-header">
-  <div class="wrap">
-    <p class="page-header__eyebrow">Who Runs The Tours</p>
-    <h1 class="page-header__title">Tour Operators</h1>
-    <p class="page-header__lead">Every Safarisap tour is run by a named, licensed operator on the ground -- not a call centre. Here's who they are.</p>
+  <div class="wrap" style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div>
+      <p class="page-header__eyebrow">Who Runs The Tours</p>
+      <h1 class="page-header__title">Tour Operators</h1>
+      <p class="page-header__lead">Every Safarisap tour is run by a named, licensed operator on the ground -- not a call centre. Here's who they are.</p>
+    </div>
+    <a href="<?= h(url('/contact.php?subject=' . rawurlencode('Tour Operator Partnership Request'))) ?>" class="btn btn--outline" style="flex:none;">Send a request to join</a>
   </div>
 </header>
 

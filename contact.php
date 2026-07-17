@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site_bootstrap.php';
 
 $sent = isset($_GET['sent']) && $_GET['sent'] === '1';
+$prefillSubject = trim($_GET['subject'] ?? '');
 
 $page_title = 'Contact Us — Safarisap';
 require __DIR__ . '/includes/site_header.php';
@@ -39,7 +40,7 @@ require __DIR__ . '/includes/site_header.php';
           </div>
           <div class="site-form__row">
             <label for="subject">Subject</label>
-            <input type="text" id="subject" name="subject">
+            <input type="text" id="subject" name="subject" value="<?= h($prefillSubject) ?>">
           </div>
           <div class="site-form__row">
             <label for="message">Message</label>
