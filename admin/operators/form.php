@@ -10,7 +10,7 @@ $operator = [
     'company_name' => '', 'phone' => '', 'email' => '', 'logo_path' => null,
     'contact_person' => '', 'office_location' => '', 'website' => '', 'profile_image_path' => null,
     'tour_type' => '', 'member_of' => '', 'trip_advisor_link' => '',
-    'budget_type' => '', 'years_experience' => '', 'country_id' => '', 'overview' => '',
+    'years_experience' => '', 'country_id' => '', 'overview' => '',
 ];
 $errors = [];
 
@@ -37,16 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $operator['tour_type'] = trim($_POST['tour_type'] ?? '');
     $operator['member_of'] = trim($_POST['member_of'] ?? '');
     $operator['trip_advisor_link'] = external_url($_POST['trip_advisor_link'] ?? '');
-    $operator['budget_type'] = $_POST['budget_type'] ?? '';
     $operator['years_experience'] = trim($_POST['years_experience'] ?? '');
     $operator['country_id'] = (int) ($_POST['country_id'] ?? 0);
     $operator['overview'] = trim($_POST['overview'] ?? '');
 
     if ($operator['company_name'] === '') {
         $errors['company_name'] = 'Enter a company name.';
-    }
-    if ($operator['budget_type'] !== '' && !in_array($operator['budget_type'], ['Luxury', 'Mid-Range', 'Budget'], true)) {
-        $errors['budget_type'] = 'Choose a valid budget type.';
     }
     if ($operator['years_experience'] !== '' && (!ctype_digit($operator['years_experience']) || (int) $operator['years_experience'] > 100)) {
         $errors['years_experience'] = 'Enter a whole number of years.';
@@ -74,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $operator['profile_image_path'] = $profileImagePath;
         }
 
-        $budgetType = $operator['budget_type'] !== '' ? $operator['budget_type'] : null;
         $yearsExperience = $operator['years_experience'] !== '' ? (int) $operator['years_experience'] : null;
         $countryId = $operator['country_id'] ?: null;
 
@@ -82,20 +77,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $operator['company_name'], $operator['logo_path'], $operator['phone'], $operator['email'],
             $operator['contact_person'] ?: null, $operator['office_location'] ?: null, $operator['website'] ?: null, $operator['profile_image_path'],
             $operator['tour_type'] ?: null, $operator['member_of'] ?: null, $operator['trip_advisor_link'] ?: null,
-            $budgetType, $yearsExperience, $countryId, $operator['overview'] ?: null,
+            $yearsExperience, $countryId, $operator['overview'] ?: null,
         ];
 
         if ($id) {
             $stmt = db()->prepare('UPDATE tour_operators SET company_name = ?, logo_path = ?, phone = ?, email = ?,
                 contact_person = ?, office_location = ?, website = ?, profile_image_path = ?, tour_type = ?, member_of = ?,
-                trip_advisor_link = ?, budget_type = ?, years_experience = ?, country_id = ?, overview = ?
+                trip_advisor_link = ?, years_experience = ?, country_id = ?, overview = ?
                 WHERE id = ?');
             $stmt->execute([...$params, $id]);
         } else {
             $stmt = db()->prepare('INSERT INTO tour_operators (company_name, logo_path, phone, email,
                 contact_person, office_location, website, profile_image_path, tour_type, member_of, trip_advisor_link,
-                budget_type, years_experience, country_id, overview)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                years_experience, country_id, overview)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $stmt->execute($params);
         }
         flash_set('success', 'Operator saved.');
@@ -168,16 +163,6 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field">
           <label for="member_of">Member of</label>
           <input type="text" id="member_of" name="member_of" value="<?= h($operator['member_of']) ?>" placeholder="e.g. AUTO, UTB, UWA">
-        </div>
-        <div class="form-field<?= isset($errors['budget_type']) ? ' has-error' : '' ?>">
-          <label for="budget_type">Budget type</label>
-          <select id="budget_type" name="budget_type">
-            <option value="">Not specified</option>
-            <option value="Luxury" <?= $operator['budget_type'] === 'Luxury' ? 'selected' : '' ?>>Luxury</option>
-            <option value="Mid-Range" <?= $operator['budget_type'] === 'Mid-Range' ? 'selected' : '' ?>>Mid-Range</option>
-            <option value="Budget" <?= $operator['budget_type'] === 'Budget' ? 'selected' : '' ?>>Budget</option>
-          </select>
-          <?php if (isset($errors['budget_type'])): ?><span class="error-text"><?= h($errors['budget_type']) ?></span><?php endif; ?>
         </div>
         <div class="form-field<?= isset($errors['years_experience']) ? ' has-error' : '' ?>">
           <label for="years_experience">Years of experience</label>

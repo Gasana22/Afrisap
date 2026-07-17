@@ -585,7 +585,6 @@ CREATE TABLE `tour_operators` (
   `tour_type` varchar(150) DEFAULT NULL,
   `member_of` varchar(255) DEFAULT NULL,
   `trip_advisor_link` varchar(255) DEFAULT NULL,
-  `budget_type` enum('Luxury','Mid-Range','Budget') DEFAULT NULL,
   `years_experience` smallint(5) unsigned DEFAULT NULL,
   `country_id` int(10) unsigned DEFAULT NULL,
   `overview` text DEFAULT NULL,
