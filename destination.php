@@ -53,21 +53,16 @@ require __DIR__ . '/includes/site_header.php';
   </div>
 </header>
 
-<?php if ($gallery): ?>
-<div class="wrap" style="margin-top:-1px;">
-  <div class="gallery-strip gallery-strip--hero">
-    <?php foreach ($gallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?>
-  </div>
-</div>
-<?php endif; ?>
-
 <section class="section">
   <div class="wrap">
     <div class="detail-grid">
       <div class="detail-main">
-        <?php if ($destination['overview']): ?>
+        <?php if ($destination['overview'] || $gallery): ?>
           <h2 class="detail-heading">Overview</h2>
-          <p class="detail-text"><?= nl2br(h($destination['overview'])) ?></p>
+          <?php if ($destination['overview']): ?><p class="detail-text"><?= nl2br(h($destination['overview'])) ?></p><?php endif; ?>
+          <?php if ($gallery): ?>
+            <div class="gallery-strip"><?php foreach ($gallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+          <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($activities): ?>
