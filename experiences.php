@@ -101,8 +101,11 @@ $tours = $stmt->fetchAll();
       <div class="tile-rail">
         <?php foreach ($typeDestinations as $dest): ?>
           <a href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>" class="tile">
-            <h3 class="tile__title"><?= h($dest['name']) ?></h3>
-            <?php if ($dest['location']): ?><p class="tile__meta"><?= h($dest['location']) ?></p><?php endif; ?>
+            <div class="tile__media"><?php if ($cover = get_cover_image('experience_destination', $dest['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?></div>
+            <div class="tile__body">
+              <h3 class="tile__title"><?= h($dest['name']) ?></h3>
+              <?php if ($dest['location']): ?><p class="tile__meta"><?= h($dest['location']) ?></p><?php endif; ?>
+            </div>
           </a>
         <?php endforeach; ?>
       </div>

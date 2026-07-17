@@ -248,8 +248,11 @@ require __DIR__ . '/includes/site_header.php';
       <div class="tile-rail">
         <?php foreach ($tourParks as $park): ?>
           <a href="<?= h(url('/destination.php?id=' . $park['id'])) ?>" class="tile">
-            <h3 class="tile__title"><?= h($park['name']) ?></h3>
-            <p class="tile__meta"><?= h($park['country_name']) ?></p>
+            <div class="tile__media"><?php if ($cover = get_cover_image('destination', $park['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?></div>
+            <div class="tile__body">
+              <h3 class="tile__title"><?= h($park['name']) ?></h3>
+              <p class="tile__meta"><?= h($park['country_name']) ?></p>
+            </div>
           </a>
         <?php endforeach; ?>
       </div>

@@ -131,8 +131,11 @@ require __DIR__ . '/includes/site_header.php';
     <div class="tile-rail">
       <?php foreach ($destinationPages as $row): ?>
         <a href="<?= h(url('/destination.php?id=' . $row['destination_id'])) ?>" class="tile">
-          <h3 class="tile__title"><?= h($row['destination_name']) ?></h3>
-          <p class="tile__meta">Listed as "<?= h($row['title']) ?>"</p>
+          <div class="tile__media"><?php if ($cover = get_cover_image('destination', $row['destination_id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?></div>
+          <div class="tile__body">
+            <h3 class="tile__title"><?= h($row['destination_name']) ?></h3>
+            <p class="tile__meta">Listed as "<?= h($row['title']) ?>"</p>
+          </div>
         </a>
       <?php endforeach; ?>
     </div>
