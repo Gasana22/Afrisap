@@ -4,8 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site_bootstrap.php';
 
 $operators = db()->query("SELECT o.*, c.name AS country_name,
-        COUNT(DISTINCT t.id) AS tour_count,
-        MIN(t.price) AS price_min, MAX(t.price) AS price_max
+        COUNT(DISTINCT t.id) AS tour_count
     FROM tour_operators o
     LEFT JOIN countries c ON c.id = o.country_id
     LEFT JOIN tours t ON t.operator_id = o.id AND t.status = 'published'
@@ -69,8 +68,8 @@ require __DIR__ . '/includes/site_header.php';
                   <?php if ($operator['country_name']): ?>
                     <div><dt>Office in</dt><dd><?= country_flag($operator['country_name']) ?> <?= h($operator['country_name']) ?></dd></div>
                   <?php endif; ?>
-                  <?php if ($operator['price_min'] !== null): ?>
-                    <div><dt>Price range</dt><dd>$<?= number_format((float) $operator['price_min'], 0) ?> to $<?= number_format((float) $operator['price_max'], 0) ?> per person <span class="operator-card__unit">(USD)</span></dd></div>
+                  <?php if ($operator['years_experience'] !== null): ?>
+                    <div><dt>Experience</dt><dd><?= (int) $operator['years_experience'] ?> years</dd></div>
                   <?php endif; ?>
                   <?php if ($operator['tour_type']): ?>
                     <div><dt>Tour types</dt><dd><?= h($operator['tour_type']) ?></dd></div>

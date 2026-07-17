@@ -6,9 +6,10 @@ require_once __DIR__ . '/includes/site_svg.php';
 require_once __DIR__ . '/includes/media.php';
 
 $featuredTours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.discount_percent, t.days, t.short_overview,
-        c.name AS category_name
+        c.name AS category_name, o.company_name AS operator_name
     FROM tours t
     JOIN tour_categories c ON c.id = t.category_id
+    LEFT JOIN tour_operators o ON o.id = t.operator_id
     WHERE t.status = 'published' AND t.is_featured = 1
     ORDER BY t.created_at DESC
     LIMIT 6")->fetchAll();
@@ -204,6 +205,7 @@ require __DIR__ . '/includes/site_header.php';
             <div class="tour-card__body">
               <p class="tour-card__meta"><?= h($tour['category_name']) ?> &middot; <?= (int) $tour['days'] ?> days</p>
               <h3 class="tour-card__title"><?= h($tour['title']) ?></h3>
+              <?php if ($tour['operator_name']): ?><p class="tour-card__operator">Offered by: <?= h($tour['operator_name']) ?></p><?php endif; ?>
               <p class="tour-card__overview"><?= h(mb_strimwidth((string) $tour['short_overview'], 0, 110, '…')) ?></p>
               <div class="tour-card__footer">
                 <div class="tour-card__price">
