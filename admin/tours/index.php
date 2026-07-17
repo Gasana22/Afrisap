@@ -52,7 +52,7 @@ require __DIR__ . '/../includes/header.php';
             <td class="table__meta">$<?= number_format((float) $tour['price'], 2) ?></td>
             <td class="table__meta"><?= (int) $tour['days'] ?></td>
             <td class="table__meta"><?= $tour['scheduled_date'] ? h(formatDate($tour['scheduled_date'], 'M j, Y')) : '—' ?></td>
-            <td class="table__meta"><?= (int) $tour['destination_count'] ?><?= (int) $tour['destination_count'] < 2 ? ' ⚠' : '' ?></td>
+            <td class="table__meta"><?= (int) $tour['destination_count'] ?><?= (int) $tour['destination_count'] < 1 ? ' ⚠' : '' ?></td>
             <td class="table__meta"><?= h(ucfirst($tour['status'])) ?></td>
             <td class="table__meta"><?= $tour['is_featured'] ? 'Yes' : '&mdash;' ?></td>
             <td>

@@ -47,8 +47,8 @@ require __DIR__ . '/../includes/header.php';
 $returnUrl = $_SERVER['REQUEST_URI'];
 ?>
 
-<?php if (count($selectedIds) < 2): ?>
-  <div class="flash flash--error">This tour needs at least 2 destinations before it can be published. Currently has <?= count($selectedIds) ?>.</div>
+<?php if (count($selectedIds) < 1): ?>
+  <div class="flash flash--error">This tour needs at least 1 destination before it can be published. Currently has 0.</div>
 <?php endif; ?>
 
 <div class="panel">
@@ -100,7 +100,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
     <form method="post" action="<?= h(url('/admin/tours/destinations.php')) ?>">
       <?= csrf_field() ?>
       <input type="hidden" name="tour_id" value="<?= $id ?>">
-      <span class="hint" style="display:block;margin-bottom:8px;">Tick every park/destination this tour visits -- no limit, any country, any combination (e.g. Murchison Falls, Kibale, and Bwindi for one multi-stop tour). Just pick at least 2.</span>
+      <span class="hint" style="display:block;margin-bottom:8px;">Tick every park/destination this tour visits -- no limit, any country, any combination. Some tours visit just one park, others a multi-stop route (e.g. Murchison Falls, Kibale, and Bwindi) -- pick as many as apply.</span>
       <div class="checkbox-grid">
         <?php foreach ($allDestinations as $destination): ?>
           <label class="checkbox-row">
@@ -110,7 +110,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
         <?php endforeach; ?>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary btn--sm">Save destinations (2 or more)</button>
+        <button type="submit" class="btn btn--primary btn--sm">Save destinations</button>
       </div>
     </form>
     <?php endif; ?>

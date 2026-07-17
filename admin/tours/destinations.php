@@ -14,8 +14,8 @@ $tourId = (int) ($_POST['tour_id'] ?? 0);
 $destinationIds = array_map('intval', $_POST['destination_ids'] ?? []);
 $destinationIds = array_unique(array_filter($destinationIds));
 
-if (count($destinationIds) < 2) {
-    flash_set('error', 'Select at least 2 destinations for this tour.');
+if (count($destinationIds) < 1) {
+    flash_set('error', 'Select at least 1 destination for this tour.');
     redirect('/admin/tours/manage.php?id=' . $tourId);
 }
 
