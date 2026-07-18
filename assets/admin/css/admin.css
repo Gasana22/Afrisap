@@ -7,7 +7,7 @@
   --canopy-dim: #172d23;
   --canopy-line: #2c4a3b;
   --murram: #b5502b;
-  --murram-dark: #93401f;
+  --crimson: #a50a08;
   --danger: #a8392b;
   --danger-dark: #862d21;
   --sand: #e8dcc3;
@@ -153,7 +153,7 @@ a { color: inherit; }
   font-weight: 500;
 }
 
-.nav-link.is-active:hover { background: var(--murram-dark); transform: none; }
+.nav-link.is-active:hover { background: var(--crimson); transform: none; }
 
 .nav-icon {
   flex: none;
@@ -339,7 +339,7 @@ a { color: inherit; }
   justify-content: center;
   border-radius: 50%;
   background: #fbf1ea;
-  color: var(--murram-dark);
+  color: var(--crimson);
 }
 
 .stat-tile__icon .nav-icon { width: 20px; height: 20px; opacity: 1; }
@@ -387,7 +387,7 @@ a { color: inherit; }
   background: var(--murram);
   color: var(--white);
 }
-.btn--primary:hover { background: var(--murram-dark); }
+.btn--primary:hover { background: var(--crimson); }
 
 .btn--ghost {
   background: var(--white);
@@ -769,7 +769,7 @@ a { color: inherit; }
 }
 
 .status-pill--new,
-.status-pill--pending { color: var(--murram-dark); border-color: #e7c7b8; background: #fbf1ea; }
+.status-pill--pending { color: var(--crimson); border-color: #e7c7b8; background: #fbf1ea; }
 
 .status-pill--confirmed,
 .status-pill--approved,
