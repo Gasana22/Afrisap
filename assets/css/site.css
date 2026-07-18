@@ -1,5 +1,5 @@
 /* Safarisap public site
-   Canopy green + burnt clay + warm savanna sand, with a dusk-indigo/ember
+   Canopy green + crimson red + warm savanna sand, with a dusk-indigo
    hero moment. Fraunces for display headlines, IBM Plex Sans for body,
    IBM Plex Mono for data/labels (continuing the admin panel's system). */
 
@@ -8,13 +8,12 @@
   --canopy-light: #2f5c46;
   --canopy-dark: #14201b;
   --canopy-line: #2c4a3a;
-  --murram: #b5502b;
   --crimson: #a50a08;
+  --crimson-dark: #770706;
   --savanna: #e8ddbc;
   --savanna-line: #cdbb8c;
   --paper: #f4efe0;
   --dusk: #241b34;
-  --ember: #e8823c;
   --gold: #a97f2e;
   --ink: #14201b;
   --white: #ffffff;
@@ -121,7 +120,7 @@ a { color: inherit; text-decoration: none; }
   margin-right: auto;
 }
 
-.site-nav__brand span { color: var(--ember); }
+.site-nav__brand span { color: var(--crimson); }
 
 .site-nav__links {
   display: flex;
@@ -160,13 +159,13 @@ a { color: inherit; text-decoration: none; }
 .site-nav__caret { font-size: 10px; opacity: 0.7; }
 
 .site-nav__links > li > a.site-nav__cta {
-  background: var(--murram);
+  background: var(--crimson);
   color: var(--white);
   padding: 10px 18px;
   border-radius: 0;
   font-weight: 600;
 }
-.site-nav__links > li > a.site-nav__cta:hover { background: var(--crimson); }
+.site-nav__links > li > a.site-nav__cta:hover { background: var(--crimson-dark); }
 
 /* Mega menu */
 
@@ -236,7 +235,7 @@ a { color: inherit; text-decoration: none; }
 
 .hero {
   position: relative;
-  background: linear-gradient(180deg, var(--dusk) 0%, #4a3454 45%, var(--ember) 100%);
+  background: linear-gradient(180deg, var(--dusk) 0%, #4a3454 45%, var(--crimson) 100%);
   overflow: hidden;
   padding-top: 64px;
   min-height: 522px;
@@ -332,7 +331,7 @@ a.hero__country-chip {
 a.hero__country-chip:hover {
   background: rgba(0, 0, 0, 0.6);
   border-color: rgba(255, 255, 255, 0.5);
-  color: var(--ember);
+  color: var(--crimson);
   transform: translateY(-3px);
 }
 
@@ -341,7 +340,7 @@ a.hero__country-chip:hover {
   min-width: 18px;
   padding: 1px 5px;
   border-radius: 0;
-  background: var(--murram);
+  background: var(--crimson);
   color: var(--white);
   font-size: 10px;
   font-weight: 700;
@@ -416,8 +415,8 @@ a.hero-stat:hover {
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  background: rgba(232, 130, 60, 0.18);
-  color: var(--ember);
+  background: rgba(165, 10, 8, 0.18);
+  color: var(--crimson);
 }
 
 .hero-stat__icon svg { width: 18px; height: 18px; }
@@ -499,8 +498,8 @@ a.hero-stat:hover {
   cursor: pointer;
 }
 
-.btn--primary { background: var(--murram); color: var(--white); }
-.btn--primary:hover { background: var(--crimson); }
+.btn--primary { background: var(--crimson); color: var(--white); }
+.btn--primary:hover { background: var(--crimson-dark); }
 
 .btn--outline { background: transparent; border-color: rgba(255, 255, 255, 0.5); color: var(--white); }
 .btn--outline:hover { background: rgba(255, 255, 255, 0.12); }
@@ -599,7 +598,7 @@ a.hero-stat:hover {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--murram);
+  color: var(--crimson);
   margin: 0 0 16px;
 }
 
@@ -872,8 +871,8 @@ a.hero-stat:hover {
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  background: rgba(232, 130, 60, 0.16);
-  color: var(--ember);
+  background: rgba(165, 10, 8, 0.16);
+  color: var(--crimson);
 }
 
 .experience-tile__mark .nav-icon { width: 20px; height: 20px; opacity: 1; }
@@ -885,7 +884,7 @@ a.hero-stat:hover {
 .experience-tile__number {
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--ember);
+  color: var(--crimson);
   opacity: 0.85;
   margin-top: 10px;
 }
@@ -956,7 +955,7 @@ a.hero-stat:hover {
 }
 
 .section__more { text-align: center; margin: 24px 0 0; }
-.section__more a { color: var(--murram); font-weight: 600; text-decoration: none; }
+.section__more a { color: var(--crimson); font-weight: 600; text-decoration: none; }
 .section__more a:hover { text-decoration: underline; }
 
 /* Stat band (About page, etc.) */
@@ -996,7 +995,7 @@ a.hero-stat:hover {
 /* Slim ribbon CTA -- lighter-weight than .cta-band, for a one-line prompt
    between two homepage sections rather than a full padded band. */
 .ribbon-cta {
-  background: var(--murram);
+  background: var(--crimson);
   color: var(--white);
 }
 
@@ -1085,7 +1084,7 @@ a.hero-stat:hover {
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--white);
-  background: var(--murram);
+  background: var(--crimson);
   padding: 3px 9px;
   border-radius: 0;
   margin-top: 2px;
@@ -1108,9 +1107,9 @@ a.hero-stat:hover {
   margin-bottom: 8px;
 }
 
-.footer-brand span { color: var(--ember); }
+.footer-brand span { color: var(--crimson); }
 
-.footer-tagline { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ember); }
+.footer-tagline { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--crimson); }
 
 .footer-product-of { font-size: 12.5px; color: var(--savanna); opacity: 0.6; margin-top: 10px; }
 .footer-product-of a { text-decoration: underline; text-underline-offset: 2px; }
@@ -1163,7 +1162,7 @@ a.hero-stat:hover {
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--crimson);
   margin: 0 0 10px;
 }
 
@@ -1257,7 +1256,7 @@ a.hero-stat:hover {
   font-size: 10.5px;
   letter-spacing: 0.06em;
   color: var(--white);
-  background: var(--murram);
+  background: var(--crimson);
   padding: 4px 10px;
   border-radius: 0;
   margin: 0 0 16px;
@@ -1438,7 +1437,7 @@ a.hero-stat:hover {
   background: var(--white);
 }
 
-a.list-row:hover { border-color: var(--murram); }
+a.list-row:hover { border-color: var(--crimson); }
 
 .list-row__title { font-family: var(--font-display); font-weight: 600; font-size: 16px; margin: 0 0 2px; }
 .list-row__meta { font-size: 13px; opacity: 0.65; }
@@ -1539,7 +1538,7 @@ a.list-row:hover { border-color: var(--murram); }
   transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
 }
 
-.faq-item:hover { border-color: var(--murram); }
+.faq-item:hover { border-color: var(--crimson); }
 .faq-item[open] { box-shadow: var(--shadow-card); }
 
 .faq-item summary {
@@ -1666,11 +1665,11 @@ a.list-row:hover { border-color: var(--murram); }
 .site-form__row input:focus,
 .site-form__row select:focus,
 .site-form__row textarea:focus {
-  border-bottom-color: var(--murram);
+  border-bottom-color: var(--crimson);
 }
 
 .site-form__row textarea { resize: vertical; border: 1px solid var(--savanna-line); padding: 10px 12px; background: var(--white); }
-.site-form__row textarea:focus { border-color: var(--murram); }
+.site-form__row textarea:focus { border-color: var(--crimson); }
 
 /* Checkbox groups (public forms with multi-select options, e.g. Create
    Your Own Tour) -- a bordered, scrollable box rather than a bare list of

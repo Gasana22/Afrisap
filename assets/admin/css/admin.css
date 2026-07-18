@@ -6,8 +6,8 @@
   --canopy: #1f3a2e;
   --canopy-dim: #172d23;
   --canopy-line: #2c4a3b;
-  --murram: #b5502b;
   --crimson: #a50a08;
+  --crimson-dark: #770706;
   --danger: #a8392b;
   --danger-dark: #862d21;
   --sand: #e8dcc3;
@@ -147,13 +147,13 @@ a { color: inherit; }
 }
 
 .nav-link.is-active {
-  background: var(--murram);
+  background: var(--crimson);
   color: var(--white);
   opacity: 1;
   font-weight: 500;
 }
 
-.nav-link.is-active:hover { background: var(--crimson); transform: none; }
+.nav-link.is-active:hover { background: var(--crimson-dark); transform: none; }
 
 .nav-icon {
   flex: none;
@@ -250,7 +250,7 @@ a { color: inherit; }
   font-size: 10.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--murram);
+  color: var(--crimson);
   margin-bottom: 2px;
 }
 
@@ -384,10 +384,10 @@ a { color: inherit; }
 .btn:active { transform: scale(0.97); }
 
 .btn--primary {
-  background: var(--murram);
+  background: var(--crimson);
   color: var(--white);
 }
-.btn--primary:hover { background: var(--crimson); }
+.btn--primary:hover { background: var(--crimson-dark); }
 
 .btn--ghost {
   background: var(--white);
@@ -587,7 +587,7 @@ a { color: inherit; }
   font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--murram);
+  color: var(--crimson);
 }
 
 .login-card h1 {
@@ -752,7 +752,7 @@ a { color: inherit; }
 .tab-nav a.is-active {
   opacity: 1;
   color: var(--canopy);
-  border-bottom-color: var(--murram);
+  border-bottom-color: var(--crimson);
 }
 
 /* ---------- Inbox (bookings, quotes, applications, messages) ---------- */
