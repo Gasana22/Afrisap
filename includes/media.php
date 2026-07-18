@@ -19,6 +19,7 @@ const MEDIA_ENTITY_TYPES = [
     'experience_destination_activity',
     'experience_tour',
     'experience_tour_overview',
+    'experience_tour_activity',
     'service_provider',
 ];
 

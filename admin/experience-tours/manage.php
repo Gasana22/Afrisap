@@ -81,13 +81,15 @@ $returnUrl = $_SERVER['REQUEST_URI'];
       </div>
     <?php else: ?>
       <div class="sub-list">
-        <?php foreach ($activities as $activity): ?>
+        <?php foreach ($activities as $activity): $g = media_count('experience_tour_activity', $activity['id']); ?>
           <div class="sub-row">
             <div class="sub-row__body">
               <div class="sub-row__title"><?= h($activity['title']) ?></div>
               <div class="sub-row__meta"><?= h(mb_strimwidth($activity['description'] ?? '', 0, 140, '…')) ?></div>
+              <div class="sub-row__meta"><?= $g ?> gallery image<?= $g === 1 ? '' : 's' ?></div>
             </div>
             <div class="table__actions">
+              <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/media/index.php?entity_type=experience_tour_activity&entity_id=' . $activity['id'] . '&title=' . urlencode($activity['title'] . ' gallery') . '&back=' . urlencode($returnUrl))) ?>">Gallery</a>
               <a class="btn btn--ghost btn--sm" href="<?= h(url('/admin/experience-tours/activities/form.php?tour_id=' . $id . '&id=' . $activity['id'])) ?>">Edit</a>
               <form method="post" action="<?= h(url('/admin/experience-tours/activities/delete.php')) ?>" onsubmit="return confirm('Remove this activity?');">
                 <?= csrf_field() ?>

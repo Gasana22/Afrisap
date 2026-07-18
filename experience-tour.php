@@ -81,12 +81,17 @@ require __DIR__ . '/includes/site_header.php';
         <?php if ($activities): ?>
           <h2 class="detail-heading">Activities on this tour</h2>
           <div class="activity-list">
-            <?php foreach ($activities as $activity): ?>
+            <?php foreach ($activities as $activity):
+              $activityGallery = get_media('experience_tour_activity', $activity['id']);
+            ?>
               <div class="activity-item">
                 <div class="activity-item__icon"><?= render_nav_glyph(nav_icon_for($activity['title'])) ?></div>
                 <div class="activity-item__content">
                   <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
                   <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
+                  <?php if ($activityGallery): ?>
+                    <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+                  <?php endif; ?>
                 </div>
               </div>
             <?php endforeach; ?>
