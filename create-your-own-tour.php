@@ -9,7 +9,7 @@ $destinations = db()->query('SELECT d.id, d.name, c.name AS country_name FROM de
 $activities = db()->query('SELECT id, name FROM activities ORDER BY name')->fetchAll();
 $experienceTypes = db()->query('SELECT id, name FROM experience_types ORDER BY name')->fetchAll();
 
-$page_title = 'Create Your Own Tour — Safarisap';
+$page_title = 'Create Your Own Tour - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

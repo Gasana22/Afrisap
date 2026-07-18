@@ -13,7 +13,7 @@ $career = $stmt->fetch();
 
 if (!$career) {
     http_response_code(404);
-    $page_title = 'Listing not found — Safarisap';
+    $page_title = 'Listing not found - Safarisap';
     require __DIR__ . '/includes/site_header.php';
     echo '<div class="wrap section"><p class="empty-note">That listing isn\'t available. <a href="' . h(url('/careers.php')) . '">See open roles</a>.</p></div>';
     require __DIR__ . '/includes/site_footer.php';
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_title = $career['title'] . ' — Safarisap';
+$page_title = $career['title'] . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

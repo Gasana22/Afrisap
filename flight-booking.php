@@ -21,7 +21,7 @@ if (!isset($flightTypes[$selectedType])) {
 }
 $sent = isset($_GET['sent']) && $_GET['sent'] === '1';
 
-$page_title = 'Flight Booking — Safarisap';
+$page_title = 'Flight Booking - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

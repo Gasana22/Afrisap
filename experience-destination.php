@@ -12,7 +12,7 @@ $destination = $stmt->fetch();
 
 if (!$destination) {
     http_response_code(404);
-    $page_title = 'Destination not found — Safarisap';
+    $page_title = 'Destination not found - Safarisap';
     require __DIR__ . '/includes/site_header.php';
     echo '<div class="wrap section"><p class="empty-note">That destination isn\'t available. <a href="' . h(url('/experiences.php')) . '">Browse experiences</a>.</p></div>';
     require __DIR__ . '/includes/site_footer.php';
@@ -33,7 +33,7 @@ $relatedTours = db()->prepare("SELECT et.id, et.title, et.price, et.discount_per
 $relatedTours->execute([$id]);
 $relatedTours = $relatedTours->fetchAll();
 
-$page_title = $destination['name'] . ' — Safarisap';
+$page_title = $destination['name'] . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

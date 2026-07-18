@@ -15,7 +15,7 @@ $tour = $stmt->fetch();
 
 if (!$tour) {
     http_response_code(404);
-    $page_title = 'Tour not found — Safarisap';
+    $page_title = 'Tour not found - Safarisap';
     require __DIR__ . '/includes/site_header.php';
     echo '<div class="wrap section"><p class="empty-note">That tour isn\'t available. <a href="' . h(url('/experiences.php')) . '">Browse experiences</a>.</p></div>';
     require __DIR__ . '/includes/site_footer.php';
@@ -36,7 +36,7 @@ $overviewGallery = get_media('experience_tour_overview', $id);
 $bookingSent = isset($_GET['sent']) && $_GET['sent'] === '1';
 $netPrice = (float) $tour['price'] * (1 - (float) $tour['discount_percent'] / 100);
 
-$page_title = $tour['title'] . ' — Safarisap';
+$page_title = $tour['title'] . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

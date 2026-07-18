@@ -15,7 +15,7 @@ $operator = $stmt->fetch();
 
 if (!$operator) {
     http_response_code(404);
-    $page_title = 'Operator not found — Safarisap';
+    $page_title = 'Operator not found - Safarisap';
     require __DIR__ . '/includes/site_header.php';
     echo '<div class="wrap section"><p class="empty-note">That operator isn\'t available. <a href="' . h(url('/operators.php')) . '">Browse all tour operators</a>.</p></div>';
     require __DIR__ . '/includes/site_footer.php';
@@ -30,7 +30,7 @@ $tours = db()->prepare("SELECT t.id, t.title, t.budget_type, t.price, t.discount
 $tours->execute([$id]);
 $tours = $tours->fetchAll();
 
-$page_title = $operator['company_name'] . ' — Safarisap';
+$page_title = $operator['company_name'] . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

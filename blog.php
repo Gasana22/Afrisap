@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/site_bootstrap.php';
 
 $posts = db()->query("SELECT * FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC")->fetchAll();
 
-$page_title = 'Blog — Safarisap';
+$page_title = 'Blog - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

@@ -29,7 +29,7 @@ if (!isset($vehicleTypes[$selectedType])) {
 }
 $sent = isset($_GET['sent']) && $_GET['sent'] === '1';
 
-$page_title = 'Car Rental — Safarisap';
+$page_title = 'Car Rental - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

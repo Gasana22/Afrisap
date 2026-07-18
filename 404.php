@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/site_bootstrap.php';
 
 http_response_code(404);
 
-$page_title = 'Page not found — Safarisap';
+$page_title = 'Page not found - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

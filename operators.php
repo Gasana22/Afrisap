@@ -35,7 +35,7 @@ foreach ($operators as &$operator) {
 }
 unset($operator);
 
-$page_title = 'Tour Operators — Safarisap';
+$page_title = 'Tour Operators - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

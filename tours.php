@@ -118,7 +118,7 @@ if ($categoryPage) {
 $groupTitle = $group === 'trip' ? 'Trip Tours' : ($group === 'safari' ? 'Safari Tours' : 'Safari Tours');
 $isEastAfrica = $region === 'east-africa';
 $pageHeading = $isEastAfrica ? 'East Africa' : ($category ? $category['name'] : $groupTitle);
-$page_title = $pageHeading . ' — Safarisap';
+$page_title = $pageHeading . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

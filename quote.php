@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/site_bootstrap.php';
 $type = ($_GET['type'] ?? 'safari') === 'experiential' ? 'experiential' : 'safari';
 $sent = isset($_GET['sent']) && $_GET['sent'] === '1';
 
-$page_title = ($type === 'safari' ? 'Safari Quote' : 'Experiential Quote') . ' — Safarisap';
+$page_title = ($type === 'safari' ? 'Safari Quote' : 'Experiential Quote') . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

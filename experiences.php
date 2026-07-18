@@ -15,7 +15,7 @@ if ($typeSlug !== '') {
 
 $allTypes = db()->query('SELECT * FROM experience_types ORDER BY name')->fetchAll();
 
-$page_title = ($type ? $type['name'] : 'Experiential Tours') . ' — Safarisap';
+$page_title = ($type ? $type['name'] : 'Experiential Tours') . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

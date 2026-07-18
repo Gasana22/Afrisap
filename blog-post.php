@@ -11,14 +11,14 @@ $post = $stmt->fetch();
 
 if (!$post) {
     http_response_code(404);
-    $page_title = 'Post not found — Safarisap';
+    $page_title = 'Post not found - Safarisap';
     require __DIR__ . '/includes/site_header.php';
     echo '<div class="wrap section"><p class="empty-note">That post isn\'t available. <a href="' . h(url('/blog.php')) . '">Back to the blog</a>.</p></div>';
     require __DIR__ . '/includes/site_footer.php';
     exit;
 }
 
-$page_title = $post['title'] . ' — Safarisap';
+$page_title = $post['title'] . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

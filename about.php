@@ -14,7 +14,7 @@ $stats = [
     ['value' => 4, 'label' => 'Branch Offices'],
 ];
 
-$page_title = ($page['title'] ?? 'About Us') . ' — Safarisap';
+$page_title = ($page['title'] ?? 'About Us') . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

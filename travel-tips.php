@@ -7,7 +7,7 @@ $stmt = db()->prepare('SELECT * FROM pages WHERE slug = ?');
 $stmt->execute(['uganda-travel-tips']);
 $page = $stmt->fetch();
 
-$page_title = ($page['title'] ?? 'Travel Tips') . ' — Safarisap';
+$page_title = ($page['title'] ?? 'Travel Tips') . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

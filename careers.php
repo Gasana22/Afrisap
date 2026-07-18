@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/site_bootstrap.php';
 
 $careers = db()->query("SELECT * FROM careers WHERE status = 'open' ORDER BY posted_at DESC")->fetchAll();
 
-$page_title = 'Careers — Safarisap';
+$page_title = 'Careers - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

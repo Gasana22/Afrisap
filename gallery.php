@@ -19,7 +19,7 @@ $images = db()->query("
     LIMIT 60
 ")->fetchAll();
 
-$page_title = 'Gallery — Safarisap';
+$page_title = 'Gallery - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

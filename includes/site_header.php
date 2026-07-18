@@ -21,7 +21,7 @@ $render_site_nav = static function () {
     require __DIR__ . '/site_nav.php';
 };
 
-$pageTitle = $page_title ?? 'Safarisap — Explore. Experience. Belong.';
+$pageTitle = $page_title ?? 'Safarisap - Explore. Experience. Belong.';
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -75,7 +75,7 @@ $statExperienceTours = (int) db()->query("SELECT COUNT(*) FROM experience_tours 
 $statActivities = (int) db()->query('SELECT COUNT(*) FROM activities')->fetchColumn();
 $statTripTours = (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group IN ('trip', 'school') AND t.status = 'published'")->fetchColumn();
 
-$page_title = 'Safarisap — Explore. Experience. Belong.';
+$page_title = 'Safarisap - Explore. Experience. Belong.';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

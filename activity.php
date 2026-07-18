@@ -16,7 +16,7 @@ $activity = $stmt->fetch();
 
 if (!$activity) {
     http_response_code(404);
-    $page_title = 'Activity not found — Safarisap';
+    $page_title = 'Activity not found - Safarisap';
     require __DIR__ . '/includes/site_header.php';
     echo '<div class="wrap section"><p class="empty-note">That activity isn\'t available. <a href="' . h(url('/tours.php')) . '">Browse tours</a>.</p></div>';
     require __DIR__ . '/includes/site_footer.php';
@@ -42,7 +42,7 @@ $destinationPages = db()->prepare("SELECT da.title, d.id AS destination_id, d.na
 $destinationPages->execute([$id]);
 $destinationPages = $destinationPages->fetchAll();
 
-$page_title = $activity['name'] . ' — Safarisap';
+$page_title = $activity['name'] . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

@@ -10,7 +10,7 @@ $tours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.discount_p
     WHERE t.status = 'published' AND t.scheduled_date IS NOT NULL AND t.scheduled_date >= CURDATE()
     ORDER BY t.scheduled_date ASC")->fetchAll();
 
-$page_title = 'Scheduled Tours — Safarisap';
+$page_title = 'Scheduled Tours - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 

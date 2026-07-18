@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/site_bootstrap.php';
 
 $sent = isset($_GET['sent']) && $_GET['sent'] === '1';
 
-$page_title = 'Virtual Experience — Safarisap';
+$page_title = 'Virtual Experience - Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
