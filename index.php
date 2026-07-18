@@ -14,6 +14,15 @@ $featuredTours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.di
     ORDER BY t.created_at DESC
     LIMIT 6")->fetchAll();
 
+$featuredExperiences = db()->query("SELECT et.id, et.title, et.price, et.discount_percent, et.days, et.short_overview,
+        ety.name AS type_name, sp.company_name AS provider_name
+    FROM experience_tours et
+    JOIN experience_types ety ON ety.id = et.experience_type_id
+    LEFT JOIN service_providers sp ON sp.id = et.provider_id
+    WHERE et.status = 'published' AND et.is_featured = 1
+    ORDER BY et.created_at DESC
+    LIMIT 6")->fetchAll();
+
 $destinations = db()->query("SELECT d.id, d.name, c.name AS country_name
     FROM destinations d
     JOIN countries c ON c.id = d.country_id
@@ -234,6 +243,40 @@ require __DIR__ . '/includes/site_header.php';
     <?php endif; ?>
   </div>
 </section>
+
+<?php if ($featuredExperiences): ?>
+<section class="section">
+  <div class="wrap">
+    <div class="section__header">
+      <p class="section__eyebrow">Featured Experiences</p>
+      <h2 class="section__title">Recently added experiences</h2>
+    </div>
+    <div class="card-grid">
+      <?php foreach ($featuredExperiences as $tour): ?>
+        <a href="<?= h(url('/experience-tour.php?id=' . $tour['id'])) ?>" class="tour-card">
+          <div class="tour-card__media">
+            <?php if ($cover = get_cover_image('experience_tour', $tour['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?>
+            <span class="tour-card__badge"><?= h($tour['type_name']) ?></span>
+          </div>
+          <div class="tour-card__body">
+            <p class="tour-card__meta"><?= (int) $tour['days'] ?> days</p>
+            <h3 class="tour-card__title"><?= h($tour['title']) ?></h3>
+            <?php if ($tour['provider_name']): ?><p class="tour-card__operator">Offered by: <?= h($tour['provider_name']) ?></p><?php endif; ?>
+            <p class="tour-card__overview"><?= h(mb_strimwidth((string) $tour['short_overview'], 0, 110, '…')) ?></p>
+            <div class="tour-card__footer">
+              <div class="tour-card__price">
+                <span class="tour-card__price-label">Starting from</span>$<?= number_format((float) $tour['price'], 0) ?><span class="tour-card__price-unit">/ person</span>
+                <?php if ((float) $tour['discount_percent'] > 0): ?><small><?= (float) $tour['discount_percent'] ?>% off</small><?php endif; ?>
+              </div>
+              <span class="btn btn--dark" style="padding:8px 14px;font-size:13px;">View Details</span>
+            </div>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
 
 <section class="section">
   <div class="wrap">

@@ -8,6 +8,7 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $tour = [
     'title' => '', 'experience_type_id' => '', 'provider_id' => '', 'price' => '', 'discount_percent' => 0, 'days' => '',
     'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '', 'top_highlights' => '', 'status' => 'draft',
+    'is_featured' => 0,
 ];
 $errors = [];
 
@@ -43,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tour['full_overview'] = trim($_POST['full_overview'] ?? '');
     $tour['top_highlights'] = trim($_POST['top_highlights'] ?? '');
     $tour['status'] = $_POST['status'] ?? 'draft';
+    $tour['is_featured'] = isset($_POST['is_featured']) ? 1 : 0;
 
     if ($tour['title'] === '') {
         $errors['title'] = 'Enter a tour title.';
@@ -84,13 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params = [
             $tour['title'], $tour['experience_type_id'], $tour['provider_id'], $tour['price'], $tour['discount_percent'],
             $tour['days'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'],
-            $tour['full_overview'], $tour['top_highlights'], $tour['status'],
+            $tour['full_overview'], $tour['top_highlights'], $tour['status'], $tour['is_featured'],
         ];
         if ($id) {
-            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, status=? WHERE id=?')
+            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, status=?, is_featured=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -141,6 +143,9 @@ require __DIR__ . '/../includes/header.php';
             <option value="draft" <?= $tour['status'] === 'draft' ? 'selected' : '' ?>>Draft</option>
             <option value="published" <?= $tour['status'] === 'published' ? 'selected' : '' ?>>Published</option>
           </select>
+        </div>
+        <div class="form-field">
+          <label style="font-weight:400;"><input type="checkbox" name="is_featured" value="1" <?= $tour['is_featured'] ? 'checked' : '' ?>> Feature on the homepage</label>
         </div>
         <div class="form-field<?= isset($errors['price']) ? ' has-error' : '' ?>">
           <label for="price">Price (USD)</label>

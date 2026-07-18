@@ -348,6 +348,7 @@ CREATE TABLE `experience_tours` (
   `full_overview` text DEFAULT NULL,
   `top_highlights` text DEFAULT NULL,
   `status` enum('draft','published') NOT NULL DEFAULT 'draft',
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
