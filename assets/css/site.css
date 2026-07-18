@@ -10,6 +10,7 @@
   --canopy-line: #2c4a3a;
   --murram: #b5502b;
   --murram-dark: #93401f;
+  --crimson: #a50a08;
   --savanna: #e8ddbc;
   --savanna-line: #cdbb8c;
   --paper: #f4efe0;
@@ -638,7 +639,7 @@ a.hero-stat:hover {
 .door:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); z-index: 2; }
 
 .door--safari { background: var(--canopy); }
-.door--experiential { background: var(--murram-dark); }
+.door--experiential { background: var(--crimson); }
 
 .door__route {
   font-family: var(--font-mono);
