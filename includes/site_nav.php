@@ -84,7 +84,7 @@ declare(strict_types=1);
           <a href="<?= h(url('/flight-booking.php?type=chartered-flights')) ?>"><?= render_nav_glyph('plane') ?><span>Chartered Flights</span></a>
         </div>
       </li>
-      <li><a href="<?= h(url('/operators.php')) ?>" class="site-nav__cta">Tour Operators</a></li>
+      <li><a href="<?= h(url('/operators.php')) ?>" class="site-nav__cta">Tour Operators <span class="site-nav__cta-count"><?= $nav_operator_count ?></span></a></li>
     </ul>
   </div>
 </nav>

@@ -18,6 +18,8 @@ $render_site_nav = static function () {
         LEFT JOIN tours t ON t.status = 'published' AND (t.category_id = c.id OR EXISTS (SELECT 1 FROM tour_extra_categories tec WHERE tec.tour_id = t.id AND tec.category_id = c.id))
         GROUP BY c.id")->fetchAll(PDO::FETCH_KEY_PAIR);
 
+    $nav_operator_count = (int) db()->query('SELECT COUNT(*) FROM tour_operators')->fetchColumn();
+
     require __DIR__ . '/site_nav.php';
 };
 
