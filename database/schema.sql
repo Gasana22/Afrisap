@@ -280,6 +280,7 @@ CREATE TABLE `experience_destination_activities` (
   `experience_destination_id` int(10) unsigned NOT NULL,
   `title` varchar(150) NOT NULL,
   `description` text DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
   `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fk_eda_destination` (`experience_destination_id`),

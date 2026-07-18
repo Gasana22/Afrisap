@@ -16,7 +16,7 @@ if (!$destination) {
     redirect('/admin/experience-destinations/index.php');
 }
 
-$activity = ['title' => '', 'description' => ''];
+$activity = ['title' => '', 'description' => '', 'amount' => ''];
 $errors = [];
 
 if ($id) {
@@ -33,21 +33,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $activity['title'] = trim($_POST['title'] ?? '');
     $activity['description'] = trim($_POST['description'] ?? '');
+    $activity['amount'] = trim($_POST['amount'] ?? '');
 
     if ($activity['title'] === '') {
         $errors['title'] = 'Enter a title.';
     }
+    if ($activity['amount'] !== '' && (!is_numeric($activity['amount']) || (float) $activity['amount'] < 0)) {
+        $errors['amount'] = 'Enter a valid amount, or leave it blank.';
+    }
 
     if (!$errors) {
+        $amount = $activity['amount'] !== '' ? $activity['amount'] : null;
         if ($id) {
-            db()->prepare('UPDATE experience_destination_activities SET title = ?, description = ? WHERE id = ?')
-                ->execute([$activity['title'], $activity['description'], $id]);
+            db()->prepare('UPDATE experience_destination_activities SET title = ?, description = ?, amount = ? WHERE id = ?')
+                ->execute([$activity['title'], $activity['description'], $amount, $id]);
         } else {
             $stmt = db()->prepare('SELECT COALESCE(MAX(sort_order), -1) + 1 FROM experience_destination_activities WHERE experience_destination_id = ?');
             $stmt->execute([$destinationId]);
             $nextOrder = (int) $stmt->fetchColumn();
-            db()->prepare('INSERT INTO experience_destination_activities (experience_destination_id, title, description, sort_order) VALUES (?, ?, ?, ?)')
-                ->execute([$destinationId, $activity['title'], $activity['description'], $nextOrder]);
+            db()->prepare('INSERT INTO experience_destination_activities (experience_destination_id, title, description, amount, sort_order) VALUES (?, ?, ?, ?, ?)')
+                ->execute([$destinationId, $activity['title'], $activity['description'], $amount, $nextOrder]);
         }
         flash_set('success', 'Activity saved.');
         redirect('/admin/experience-destinations/manage.php?id=' . $destinationId);
@@ -74,6 +79,11 @@ require __DIR__ . '/../../includes/header.php';
         <div class="form-field form-field--full">
           <label for="description">Description</label>
           <textarea id="description" name="description"><?= h($activity['description']) ?></textarea>
+        </div>
+        <div class="form-field<?= isset($errors['amount']) ? ' has-error' : '' ?>">
+          <label for="amount">Amount (USD)</label>
+          <input type="number" step="0.01" min="0" id="amount" name="amount" value="<?= h((string) $activity['amount']) ?>" placeholder="Leave blank if not priced separately">
+          <?php if (isset($errors['amount'])): ?><span class="error-text"><?= h($errors['amount']) ?></span><?php endif; ?>
         </div>
         <?php if ($id): ?>
         <div class="form-field form-field--full">

@@ -55,29 +55,50 @@ require __DIR__ . '/includes/site_header.php';
 
 <section class="section">
   <div class="wrap">
-    <?php if ($destination['short_overview']): ?>
-      <p class="detail-lead" style="max-width:760px;"><?= nl2br(h($destination['short_overview'])) ?></p>
-    <?php endif; ?>
+    <div class="detail-grid">
+      <div class="detail-main">
+        <?php if ($destination['short_overview']): ?>
+          <p class="detail-lead" style="max-width:760px;"><?= nl2br(h($destination['short_overview'])) ?></p>
+        <?php endif; ?>
 
-    <?php if ($activities): ?>
-      <h2 class="detail-heading">Activities &amp; cultural uniqueness</h2>
-      <div class="activity-list">
-        <?php foreach ($activities as $activity):
-          $activityGallery = get_media('experience_destination_activity', $activity['id']);
-        ?>
-          <div class="activity-item">
-            <div class="activity-item__icon"><?= render_nav_glyph(nav_icon_for($activity['title'])) ?></div>
-            <div class="activity-item__content">
-              <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
-              <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
-              <?php if ($activityGallery): ?>
-                <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
-              <?php endif; ?>
+        <?php if ($activities): ?>
+          <h2 class="detail-heading">Activities &amp; cultural uniqueness</h2>
+          <div class="activity-list">
+            <?php foreach ($activities as $activity):
+              $activityGallery = get_media('experience_destination_activity', $activity['id']);
+            ?>
+              <div class="activity-item">
+                <div class="activity-item__icon"><?= render_nav_glyph(nav_icon_for($activity['title'])) ?></div>
+                <div class="activity-item__content">
+                  <h3 class="activity-item__title"><?= h($activity['title']) ?></h3>
+                  <?php if ($activity['description']): ?><p class="activity-item__body"><?= nl2br(h($activity['description'])) ?></p><?php endif; ?>
+                  <?php if ($activityGallery): ?>
+                    <div class="gallery-strip"><?php foreach ($activityGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+                  <?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <?php $pricedActivities = array_filter($activities, static fn ($a) => $a['amount'] !== null); ?>
+      <?php if ($pricedActivities): ?>
+        <aside class="detail-side">
+          <div class="side-card">
+            <p class="side-card__title"><?= render_nav_glyph('tag') ?>Activity pricing</p>
+            <div class="list-rows">
+              <?php foreach ($pricedActivities as $activity): ?>
+                <div class="list-row">
+                  <div class="list-row__title"><?= h($activity['title']) ?></div>
+                  <div class="list-row__meta">$<?= number_format((float) $activity['amount'], 0) ?></div>
+                </div>
+              <?php endforeach; ?>
             </div>
           </div>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
+        </aside>
+      <?php endif; ?>
+    </div>
   </div>
 </section>
 
