@@ -30,6 +30,7 @@ $budget = $_GET['budget'] ?? '';
 $countryId = (int) ($_GET['country'] ?? 0);
 $daysBucket = $_GET['days'] ?? '';
 $destinationId = (int) ($_GET['destination'] ?? 0);
+$region = $_GET['region'] ?? '';
 
 $where = ["t.status = 'published'"];
 $params = [];
@@ -63,6 +64,21 @@ if ($destinationId) {
     // a country without a specific named destination attached yet.
     $where[] = '(EXISTS (SELECT 1 FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id AND d.country_id = ' . (int) $countryId . ')' .
         ' OR EXISTS (SELECT 1 FROM tour_countries tc WHERE tc.tour_id = t.id AND tc.country_id = ' . (int) $countryId . '))';
+}
+if ($region === 'east-africa') {
+    // Client: a tour that starts in Kenya, crosses into Uganda and ends in
+    // Tanzania is its own product ("East Africa"), independent of any
+    // single country -- so this matches tours whose combined footprint
+    // (tagged destinations' countries, plus the explicit Countries picker)
+    // spans 2 or more distinct countries. Written as two correlated scalar
+    // subqueries rather than a UNIONed derived table, since MariaDB can't
+    // correlate a FROM-clause subquery back to the outer tour without
+    // LATERAL.
+    $where[] = "(
+        (SELECT COUNT(DISTINCT d.country_id) FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id)
+        + (SELECT COUNT(DISTINCT tc.country_id) FROM tour_countries tc WHERE tc.tour_id = t.id
+            AND tc.country_id NOT IN (SELECT d2.country_id FROM tour_destinations td2 JOIN destinations d2 ON d2.id = td2.destination_id WHERE td2.tour_id = t.id))
+    ) >= 2";
 }
 
 $sql = 'SELECT t.id, t.title, t.budget_type, t.price, t.discount_percent, t.days, t.short_overview, c.name AS category_name
@@ -100,15 +116,19 @@ if ($categoryPage) {
 }
 
 $groupTitle = $group === 'trip' ? 'Trip Tours' : ($group === 'safari' ? 'Safari Tours' : 'Safari Tours');
-$page_title = ($category ? $category['name'] : $groupTitle) . ' — Safarisap';
+$isEastAfrica = $region === 'east-africa';
+$pageHeading = $isEastAfrica ? 'East Africa' : ($category ? $category['name'] : $groupTitle);
+$page_title = $pageHeading . ' — Safarisap';
 require __DIR__ . '/includes/site_header.php';
 ?>
 
 <header class="page-header">
   <div class="wrap">
-    <p class="page-header__eyebrow"><?= h($groupTitle) ?></p>
-    <h1 class="page-header__title"><?= h($category ? $category['name'] : $groupTitle) ?></h1>
-    <?php if ($categoryPage && $categoryPage['brief_overview']): ?>
+    <p class="page-header__eyebrow"><?= h($isEastAfrica ? 'Multi-Country Safaris' : $groupTitle) ?></p>
+    <h1 class="page-header__title"><?= h($pageHeading) ?></h1>
+    <?php if ($isEastAfrica): ?>
+      <p class="page-header__lead">Itineraries that cross borders -- start in one country, pass through another, and end in a third. Browse every published tour that spans two or more countries.</p>
+    <?php elseif ($categoryPage && $categoryPage['brief_overview']): ?>
       <p class="page-header__lead"><?= h($categoryPage['brief_overview']) ?></p>
     <?php elseif (!$category): ?>
       <p class="page-header__lead">Gorilla and chimpanzee trekking, wildlife drives, birding and combined East Africa itineraries -- browse every published safari, or filter by budget, country, length and destination below.</p>
@@ -177,12 +197,13 @@ require __DIR__ . '/includes/site_header.php';
   <div class="wrap">
     <div class="section__header" style="margin-bottom:28px;">
       <p class="section__eyebrow">Itineraries</p>
-      <h2 class="section__title"><?= h($category ? $category['name'] . ' Tours' : 'All ' . $groupTitle) ?></h2>
+      <h2 class="section__title"><?= h($isEastAfrica ? 'East Africa Tours' : ($category ? $category['name'] . ' Tours' : 'All ' . $groupTitle)) ?></h2>
     </div>
 
     <form class="filter-bar" method="get">
       <?php if ($categorySlug !== ''): ?><input type="hidden" name="category" value="<?= h($categorySlug) ?>"><?php endif; ?>
       <?php if ($group !== ''): ?><input type="hidden" name="group" value="<?= h($group) ?>"><?php endif; ?>
+      <?php if ($region !== ''): ?><input type="hidden" name="region" value="<?= h($region) ?>"><?php endif; ?>
       <div class="filter-bar__field">
         <label for="f-budget"><?= render_nav_glyph('tag') ?>Budget</label>
         <select id="f-budget" name="budget">

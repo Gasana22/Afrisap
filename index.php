@@ -27,7 +27,7 @@ $partners = db()->query('SELECT id, company_name, logo_path FROM tour_operators 
 
 $siteSettings = db()->query('SELECT * FROM site_settings WHERE id = 1')->fetch() ?: [];
 $heroEyebrowCountries = [
-    ['label' => 'East Africa', 'href' => null, 'country_id' => null],
+    ['label' => 'East Africa', 'href' => 'tours.php?region=east-africa', 'country_id' => null],
     ['label' => 'Uganda', 'href' => 'tours.php?country=1', 'country_id' => 1],
     ['label' => 'Kenya', 'href' => 'tours.php?country=2', 'country_id' => 2],
     ['label' => 'Tanzania', 'href' => 'tours.php?country=3', 'country_id' => 3],
@@ -43,10 +43,23 @@ $countryTourCountStmt = db()->prepare("SELECT COUNT(DISTINCT t.id) FROM tours t
         EXISTS (SELECT 1 FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id WHERE td.tour_id = t.id AND d.country_id = ?)
         OR EXISTS (SELECT 1 FROM tour_countries tc WHERE tc.tour_id = t.id AND tc.country_id = ?)
     )");
-$totalPublishedTours = (int) db()->query("SELECT COUNT(*) FROM tours WHERE status = 'published'")->fetchColumn();
+// "East Africa" is its own product, not a sum of the country chips -- a
+// tour that starts in Kenya, crosses into Uganda and ends in Tanzania is
+// counted once here, the same "spans 2+ countries" test tours.php uses
+// for ?region=east-africa (see below).
+$eastAfricaTourCount = (int) db()->query("SELECT COUNT(*) FROM (
+        SELECT ac.tour_id FROM (
+            SELECT td.tour_id, d.country_id FROM tour_destinations td JOIN destinations d ON d.id = td.destination_id
+            UNION
+            SELECT tc.tour_id, tc.country_id FROM tour_countries tc
+        ) ac
+        JOIN tours t ON t.id = ac.tour_id AND t.status = 'published'
+        GROUP BY ac.tour_id
+        HAVING COUNT(DISTINCT ac.country_id) >= 2
+    ) multi_country_tours")->fetchColumn();
 foreach ($heroEyebrowCountries as $i => $country) {
     if ($country['country_id'] === null) {
-        $heroEyebrowCountries[$i]['count'] = $totalPublishedTours;
+        $heroEyebrowCountries[$i]['count'] = $eastAfricaTourCount;
     } else {
         $countryTourCountStmt->execute([$country['country_id'], $country['country_id']]);
         $heroEyebrowCountries[$i]['count'] = (int) $countryTourCountStmt->fetchColumn();
