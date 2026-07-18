@@ -13,8 +13,8 @@ csrf_verify();
 $tourId = (int) ($_POST['tour_id'] ?? 0);
 $submittedIds = array_unique(array_filter(array_map('intval', $_POST['destination_ids'] ?? [])));
 
-if (count($submittedIds) < 2) {
-    flash_set('error', 'Select at least 2 destinations for this tour.');
+if (count($submittedIds) < 1) {
+    flash_set('error', 'Select at least 1 destination for this tour.');
     redirect('/admin/experience-tours/manage.php?id=' . $tourId);
 }
 

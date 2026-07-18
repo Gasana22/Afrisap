@@ -37,7 +37,7 @@ require __DIR__ . '/../includes/header.php';
             <td class="table__meta"><?= h($tour['type_name']) ?></td>
             <td class="table__meta">$<?= number_format((float) $tour['price'], 2) ?></td>
             <td class="table__meta"><?= (int) $tour['days'] ?></td>
-            <td class="table__meta"><?= (int) $tour['destination_count'] ?><?= (int) $tour['destination_count'] < 2 ? ' ⚠' : '' ?></td>
+            <td class="table__meta"><?= (int) $tour['destination_count'] ?><?= (int) $tour['destination_count'] < 1 ? ' ⚠' : '' ?></td>
             <td class="table__meta"><?= h(ucfirst($tour['status'])) ?></td>
             <td>
               <div class="table__actions">

@@ -36,8 +36,8 @@ require __DIR__ . '/../includes/header.php';
 $returnUrl = $_SERVER['REQUEST_URI'];
 ?>
 
-<?php if (count($selectedIds) < 2): ?>
-  <div class="flash flash--error">This tour needs at least 2 destinations before it can be published. Currently has <?= count($selectedIds) ?>.</div>
+<?php if (count($selectedIds) < 1): ?>
+  <div class="flash flash--error">This tour needs at least 1 destination before it can be published. Currently has 0.</div>
 <?php endif; ?>
 
 <div class="panel">
@@ -60,7 +60,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
           <?php endforeach; ?>
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn btn--primary btn--sm">Save destinations (pick at least 2)</button>
+          <button type="submit" class="btn btn--primary btn--sm">Save destinations</button>
         </div>
         <p class="section-hint" style="margin-top:10px;">Selecting a new destination automatically pulls its activities in below &mdash; edit or remove them freely afterward.</p>
       </form>
