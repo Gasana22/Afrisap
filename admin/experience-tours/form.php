@@ -6,7 +6,7 @@ require_login();
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $tour = [
-    'title' => '', 'experience_type_id' => '', 'price' => '', 'discount_percent' => 0, 'days' => '',
+    'title' => '', 'experience_type_id' => '', 'provider_id' => '', 'price' => '', 'discount_percent' => 0, 'days' => '',
     'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '', 'top_highlights' => '', 'status' => 'draft',
 ];
 $errors = [];
@@ -22,6 +22,7 @@ if ($id) {
 }
 
 $types = db()->query('SELECT id, name FROM experience_types ORDER BY name')->fetchAll();
+$providers = db()->query('SELECT id, company_name FROM service_providers ORDER BY company_name')->fetchAll();
 
 if (!$types) {
     flash_set('error', 'Experience types are missing from the database.');
@@ -32,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $tour['title'] = trim($_POST['title'] ?? '');
     $tour['experience_type_id'] = (int) ($_POST['experience_type_id'] ?? 0);
+    $tour['provider_id'] = $_POST['provider_id'] !== '' ? (int) $_POST['provider_id'] : null;
     $tour['price'] = $_POST['price'] ?? '';
     $tour['discount_percent'] = $_POST['discount_percent'] ?? 0;
     $tour['days'] = $_POST['days'] ?? '';
@@ -80,15 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         $params = [
-            $tour['title'], $tour['experience_type_id'], $tour['price'], $tour['discount_percent'],
+            $tour['title'], $tour['experience_type_id'], $tour['provider_id'], $tour['price'], $tour['discount_percent'],
             $tour['days'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'],
             $tour['full_overview'], $tour['top_highlights'], $tour['status'],
         ];
         if ($id) {
-            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, status=? WHERE id=?')
+            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, status=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -123,6 +125,15 @@ require __DIR__ . '/../includes/header.php';
             <?php endforeach; ?>
           </select>
           <?php if (isset($errors['experience_type_id'])): ?><span class="error-text"><?= h($errors['experience_type_id']) ?></span><?php endif; ?>
+        </div>
+        <div class="form-field">
+          <label for="provider_id">Service provider in charge</label>
+          <select id="provider_id" name="provider_id">
+            <option value="">None</option>
+            <?php foreach ($providers as $provider): ?>
+              <option value="<?= (int) $provider['id'] ?>" <?= (string) $tour['provider_id'] === (string) $provider['id'] ? 'selected' : '' ?>><?= h($provider['company_name']) ?></option>
+            <?php endforeach; ?>
+          </select>
         </div>
         <div class="form-field">
           <label for="status">Status</label>

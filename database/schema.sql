@@ -338,6 +338,7 @@ CREATE TABLE `experience_tours` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(200) NOT NULL,
   `experience_type_id` int(10) unsigned NOT NULL,
+  `provider_id` int(10) unsigned DEFAULT NULL,
   `price` decimal(12,2) NOT NULL,
   `discount_percent` decimal(5,2) NOT NULL DEFAULT 0.00,
   `days` int(10) unsigned NOT NULL,
@@ -351,7 +352,9 @@ CREATE TABLE `experience_tours` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `fk_experience_tours_type` (`experience_type_id`),
-  CONSTRAINT `fk_experience_tours_type` FOREIGN KEY (`experience_type_id`) REFERENCES `experience_types` (`id`)
+  KEY `fk_experience_tours_provider` (`provider_id`),
+  CONSTRAINT `fk_experience_tours_type` FOREIGN KEY (`experience_type_id`) REFERENCES `experience_types` (`id`),
+  CONSTRAINT `fk_experience_tours_provider` FOREIGN KEY (`provider_id`) REFERENCES `service_providers` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `experience_types`;

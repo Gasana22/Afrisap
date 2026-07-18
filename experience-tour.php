@@ -6,9 +6,10 @@ require_once __DIR__ . '/includes/media.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
-$stmt = db()->prepare("SELECT et.*, ety.name AS type_name
+$stmt = db()->prepare("SELECT et.*, ety.name AS type_name, sp.company_name AS provider_name
     FROM experience_tours et
     JOIN experience_types ety ON ety.id = et.experience_type_id
+    LEFT JOIN service_providers sp ON sp.id = et.provider_id
     WHERE et.id = ? AND et.status = 'published'");
 $stmt->execute([$id]);
 $tour = $stmt->fetch();
@@ -103,9 +104,19 @@ require __DIR__ . '/includes/site_header.php';
             <span class="side-card__unit">/ person</span>
           </div>
           <ul class="side-card__facts">
+            <li><span>Tour name</span><span><?= h($tour['title']) ?></span></li>
+            <?php
+              $experienceLocations = array_unique(array_filter(array_column($destinations, 'location')));
+            ?>
+            <?php if ($experienceLocations): ?>
+              <li><span>Location</span><span><?= h(implode(', ', $experienceLocations)) ?></span></li>
+            <?php endif; ?>
+            <?php if ($tour['provider_name']): ?>
+              <li><span>Service provider in charge</span><span><?= h($tour['provider_name']) ?></span></li>
+            <?php endif; ?>
+            <li><span>Tour type</span><span><?= h($tour['type_name']) ?></span></li>
             <li><span>Duration</span><span><?= (int) $tour['days'] ?> days</span></li>
             <li><span>Group size</span><span><?= (int) $tour['min_pax'] ?>–<?= (int) $tour['max_pax'] ?> people</span></li>
-            <li><span>Type</span><span><?= h($tour['type_name']) ?></span></li>
           </ul>
           <a href="#enquire" class="btn btn--primary btn--pill" style="width:100%;justify-content:center;">Enquire About This Tour <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
