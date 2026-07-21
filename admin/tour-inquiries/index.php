@@ -20,6 +20,17 @@ $stmt = db()->prepare($sql);
 $stmt->execute($params);
 $inquiries = $stmt->fetchAll();
 
+$addOnsByInquiry = [];
+if ($inquiries) {
+    $ids = array_column($inquiries, 'id');
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $addOnStmt = db()->prepare("SELECT inquiry_id, experience_tour_title FROM tour_itinerary_inquiry_addons WHERE inquiry_id IN ($placeholders) ORDER BY id");
+    $addOnStmt->execute($ids);
+    foreach ($addOnStmt->fetchAll() as $addOn) {
+        $addOnsByInquiry[$addOn['inquiry_id']][] = $addOn['experience_tour_title'];
+    }
+}
+
 require __DIR__ . '/../includes/header.php';
 ?>
 
@@ -60,6 +71,7 @@ require __DIR__ . '/../includes/header.php';
               <?php endif; ?>
               <?php if ($inquiry['operator_name']): ?><br>Operator: <?= h($inquiry['operator_name']) ?><?php endif; ?>
               <?php if ($inquiry['travel_date']): ?><br>Travel date: <?= h(date('M j, Y', strtotime((string) $inquiry['travel_date']))) ?><?php endif; ?>
+              <?php if (!empty($addOnsByInquiry[$inquiry['id']])): ?><br>+ <?= h(implode(', ', $addOnsByInquiry[$inquiry['id']])) ?><?php endif; ?>
             </td>
             <td class="inbox-message"><?= h(mb_strimwidth((string) $inquiry['message'], 0, 140, '…')) ?></td>
             <td class="table__meta"><?= h(date('M j, Y', strtotime($inquiry['created_at']))) ?></td>

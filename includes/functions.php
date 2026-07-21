@@ -63,6 +63,29 @@ function external_url(string $value): string
     return 'https://' . $value;
 }
 
+/**
+ * Turns a YouTube watch/share URL (youtube.com/watch?v=, youtu.be/, or an
+ * already-embeddable youtube.com/embed/ link) into an embeddable URL, or
+ * null if it doesn't look like a YouTube video link at all.
+ */
+function youtube_embed_url(?string $url): ?string
+{
+    $url = trim((string) $url);
+    if ($url === '') {
+        return null;
+    }
+
+    $videoId = null;
+    if (preg_match('#youtube\.com/watch\?v=([\w-]{6,})#i', $url, $m)
+        || preg_match('#youtu\.be/([\w-]{6,})#i', $url, $m)
+        || preg_match('#youtube\.com/embed/([\w-]{6,})#i', $url, $m)
+        || preg_match('#youtube\.com/shorts/([\w-]{6,})#i', $url, $m)) {
+        $videoId = $m[1];
+    }
+
+    return $videoId !== null ? 'https://www.youtube.com/embed/' . $videoId : null;
+}
+
 function assetUrl(string $path): string
 {
     return url('assets/' . ltrim($path, '/'));

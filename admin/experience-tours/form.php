@@ -7,8 +7,8 @@ require_login();
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $tour = [
     'title' => '', 'experience_type_id' => '', 'provider_id' => '', 'price' => '', 'discount_percent' => 0, 'days' => '',
-    'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '', 'top_highlights' => '', 'status' => 'draft',
-    'is_featured' => 0,
+    'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '', 'top_highlights' => '', 'video_url' => '',
+    'status' => 'draft', 'is_featured' => 0,
 ];
 $errors = [];
 
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tour['short_overview'] = trim($_POST['short_overview'] ?? '');
     $tour['full_overview'] = trim($_POST['full_overview'] ?? '');
     $tour['top_highlights'] = trim($_POST['top_highlights'] ?? '');
+    $tour['video_url'] = trim($_POST['video_url'] ?? '');
     $tour['status'] = $_POST['status'] ?? 'draft';
     $tour['is_featured'] = isset($_POST['is_featured']) ? 1 : 0;
 
@@ -54,6 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($tour['price'] === '' || !is_numeric($tour['price']) || (float) $tour['price'] < 0) {
         $errors['price'] = 'Enter a valid price.';
+    }
+    if ($tour['video_url'] !== '' && !youtube_embed_url($tour['video_url'])) {
+        $errors['video_url'] = 'Enter a valid YouTube link (youtube.com/watch?v=... or youtu.be/...).';
     }
     if ($tour['days'] === '' || !ctype_digit((string) $tour['days']) || (int) $tour['days'] < 1) {
         $errors['days'] = 'Enter the number of days.';
@@ -86,13 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params = [
             $tour['title'], $tour['experience_type_id'], $tour['provider_id'], $tour['price'], $tour['discount_percent'],
             $tour['days'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'],
-            $tour['full_overview'], $tour['top_highlights'], $tour['status'], $tour['is_featured'],
+            $tour['full_overview'], $tour['top_highlights'], $tour['video_url'] !== '' ? $tour['video_url'] : null,
+            $tour['status'], $tour['is_featured'],
         ];
         if ($id) {
-            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, status=?, is_featured=? WHERE id=?')
+            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, video_url=?, status=?, is_featured=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, video_url, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -183,6 +188,12 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field form-field--full">
           <label for="top_highlights">Top highlights</label>
           <textarea id="top_highlights" name="top_highlights"><?= h($tour['top_highlights']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full<?= isset($errors['video_url']) ? ' has-error' : '' ?>">
+          <label for="video_url">Video (YouTube link)</label>
+          <input type="text" id="video_url" name="video_url" value="<?= h($tour['video_url']) ?>" placeholder="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...">
+          <span class="hint">Optional. Shown embedded on this tour's public page.</span>
+          <?php if (isset($errors['video_url'])): ?><span class="error-text"><?= h($errors['video_url']) ?></span><?php endif; ?>
         </div>
       </div>
       <div class="form-actions">

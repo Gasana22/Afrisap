@@ -65,6 +65,10 @@ require __DIR__ . '/includes/site_header.php';
       <div class="detail-main">
         <?php if ($tour['short_overview']): ?><p class="detail-lead"><?= nl2br(h($tour['short_overview'])) ?></p><?php endif; ?>
 
+        <?php if ($videoEmbedUrl = youtube_embed_url($tour['video_url'])): ?>
+          <div class="video-embed"><iframe src="<?= h($videoEmbedUrl) ?>" title="<?= h($tour['title']) ?>" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+        <?php endif; ?>
+
         <?php if ($tour['full_overview']): ?>
           <h2 class="detail-heading">Full overview</h2>
           <p class="detail-text"><?= nl2br(h($tour['full_overview'])) ?></p>

@@ -348,6 +348,7 @@ CREATE TABLE `experience_tours` (
   `short_overview` text DEFAULT NULL,
   `full_overview` text DEFAULT NULL,
   `top_highlights` text DEFAULT NULL,
+  `video_url` varchar(255) DEFAULT NULL,
   `status` enum('draft','published') NOT NULL DEFAULT 'draft',
   `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -597,6 +598,22 @@ CREATE TABLE `tour_itinerary_inquiries` (
   PRIMARY KEY (`id`),
   KEY `fk_tour_itinerary_inquiries_tour` (`tour_id`),
   CONSTRAINT `fk_tour_itinerary_inquiries_tour` FOREIGN KEY (`tour_id`) REFERENCES `tours` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tour_itinerary_inquiry_addons`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_itinerary_inquiry_addons` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int(10) unsigned NOT NULL,
+  `experience_tour_id` int(10) unsigned DEFAULT NULL,
+  `experience_tour_title` varchar(200) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_itinerary_addons_inquiry` (`inquiry_id`),
+  KEY `fk_itinerary_addons_experience_tour` (`experience_tour_id`),
+  CONSTRAINT `fk_itinerary_addons_inquiry` FOREIGN KEY (`inquiry_id`) REFERENCES `tour_itinerary_inquiries` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_itinerary_addons_experience_tour` FOREIGN KEY (`experience_tour_id`) REFERENCES `experience_tours` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tour_operators`;

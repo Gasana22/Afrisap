@@ -54,6 +54,12 @@ $hotelGallery = get_media('tour_hotel', $id);
 $vehicleGallery = get_media('tour_vehicle', $id);
 $flightGallery = get_media('tour_flight', $id);
 
+$addOnExperiences = db()->query("SELECT et.id, et.title, et.price, et.discount_percent, ety.name AS type_name
+    FROM experience_tours et
+    JOIN experience_types ety ON ety.id = et.experience_type_id
+    WHERE et.status = 'published'
+    ORDER BY et.title")->fetchAll();
+
 $bookingSent = isset($_GET['sent']) && $_GET['sent'] === '1';
 $netPrice = (float) $tour['price'] * (1 - (float) $tour['discount_percent'] / 100);
 
@@ -258,6 +264,21 @@ require __DIR__ . '/includes/site_header.php';
           <label for="travel_date">Expected travel date</label>
           <input type="date" id="travel_date" name="travel_date">
         </div>
+        <?php if ($addOnExperiences): ?>
+          <div class="site-form__row">
+            <label>Add an experience to this trip? (optional)</label>
+            <p style="font-size:13px;opacity:.65;margin:-4px 0 8px;">Combine your safari with a day of culture, farm life or local sport -- tick any you'd like included in the same enquiry.</p>
+            <div class="check-group">
+              <?php foreach ($addOnExperiences as $exp): ?>
+                <label class="check-row">
+                  <input type="checkbox" name="experience_tour_ids[]" value="<?= (int) $exp['id'] ?>">
+                  <?= h($exp['title']) ?>
+                  <span style="opacity:.55;">(<?= h($exp['type_name']) ?> &middot; from $<?= number_format((float) $exp['price'] * (1 - (float) $exp['discount_percent'] / 100), 0) ?>)</span>
+                </label>
+              <?php endforeach; ?>
+            </div>
+          </div>
+        <?php endif; ?>
         <div class="site-form__row">
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="4"></textarea>
