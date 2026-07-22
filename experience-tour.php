@@ -99,7 +99,7 @@ require __DIR__ . '/includes/site_header.php';
       </div>
 
       <aside class="detail-side">
-        <div class="side-card side-card--price">
+        <div class="side-card side-card--price side-card--price--experience">
           <p class="side-card__permit-no">ITINERARY NO. SX&ndash;<?= str_pad((string) $tour['id'], 4, '0', STR_PAD_LEFT) ?></p>
           <div class="side-card__price">
             <span class="side-card__price-label">Starting from</span>

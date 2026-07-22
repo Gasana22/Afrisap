@@ -1266,6 +1266,11 @@ a.hero-stat:hover {
   box-shadow: var(--shadow-card);
 }
 
+/* Experiential tours get a barkcloth (lubugo) brown instead of the Safari
+   side's canopy green -- Safari stays wildlife-themed, Experiential reads
+   as everyday/cultural Uganda. */
+.side-card--price--experience { background: var(--drum); }
+
 .side-card__permit-no {
   display: inline-block;
   font-family: var(--font-mono);
