@@ -296,6 +296,7 @@ CREATE TABLE `experience_destinations` (
   `name` varchar(150) NOT NULL,
   `location` varchar(150) DEFAULT NULL,
   `short_overview` text DEFAULT NULL,
+  `video_url` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),

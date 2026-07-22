@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../includes/bootstrap.php';
 require_login();
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
-$destination = ['experience_type_id' => '', 'name' => '', 'location' => '', 'short_overview' => ''];
+$destination = ['experience_type_id' => '', 'name' => '', 'location' => '', 'short_overview' => '', 'video_url' => ''];
 $errors = [];
 
 if ($id) {
@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $destination['name'] = trim($_POST['name'] ?? '');
     $destination['location'] = trim($_POST['location'] ?? '');
     $destination['short_overview'] = trim($_POST['short_overview'] ?? '');
+    $destination['video_url'] = trim($_POST['video_url'] ?? '');
 
     if ($destination['name'] === '') {
         $errors['name'] = 'Enter a name.';
@@ -33,14 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$destination['experience_type_id']) {
         $errors['experience_type_id'] = 'Choose an experience type.';
     }
+    if ($destination['video_url'] !== '' && !youtube_embed_url($destination['video_url'])) {
+        $errors['video_url'] = 'Enter a valid YouTube link (youtube.com/watch?v=... or youtu.be/...).';
+    }
 
     if (!$errors) {
+        $videoUrl = $destination['video_url'] !== '' ? $destination['video_url'] : null;
         if ($id) {
-            db()->prepare('UPDATE experience_destinations SET experience_type_id=?, name=?, location=?, short_overview=? WHERE id=?')
-                ->execute([$destination['experience_type_id'], $destination['name'], $destination['location'], $destination['short_overview'], $id]);
+            db()->prepare('UPDATE experience_destinations SET experience_type_id=?, name=?, location=?, short_overview=?, video_url=? WHERE id=?')
+                ->execute([$destination['experience_type_id'], $destination['name'], $destination['location'], $destination['short_overview'], $videoUrl, $id]);
         } else {
-            db()->prepare('INSERT INTO experience_destinations (experience_type_id, name, location, short_overview) VALUES (?,?,?,?)')
-                ->execute([$destination['experience_type_id'], $destination['name'], $destination['location'], $destination['short_overview']]);
+            db()->prepare('INSERT INTO experience_destinations (experience_type_id, name, location, short_overview, video_url) VALUES (?,?,?,?,?)')
+                ->execute([$destination['experience_type_id'], $destination['name'], $destination['location'], $destination['short_overview'], $videoUrl]);
             $id = (int) db()->lastInsertId();
         }
         flash_set('success', 'Destination saved.');
@@ -82,6 +87,12 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field form-field--full">
           <label for="short_overview">Short overview</label>
           <textarea id="short_overview" name="short_overview"><?= h($destination['short_overview']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full<?= isset($errors['video_url']) ? ' has-error' : '' ?>">
+          <label for="video_url">Video (YouTube link)</label>
+          <input type="text" id="video_url" name="video_url" value="<?= h($destination['video_url']) ?>" placeholder="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...">
+          <span class="hint">Optional. Shown embedded on this destination's public page.</span>
+          <?php if (isset($errors['video_url'])): ?><span class="error-text"><?= h($errors['video_url']) ?></span><?php endif; ?>
         </div>
         <div class="form-field form-field--full">
           <span class="hint">Activities and gallery are managed from the destination detail screen once it's saved.</span>

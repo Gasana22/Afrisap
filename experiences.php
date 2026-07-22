@@ -92,12 +92,17 @@ $tours = $stmt->fetchAll();
 <section class="section">
   <div class="wrap">
     <div class="section__header" style="margin-bottom:28px;">
-      <p class="section__eyebrow">Destinations</p>
-      <h2 class="section__title">Browse by <?= h(strtolower(str_replace(' Experience', '', $type['name']))) === 'cultural' ? 'tribe' : 'destination' ?></h2>
+      <p class="section__eyebrow"><?= h(str_replace(' Experience', '', $type['name'])) ?> Destinations</p>
+      <h2 class="section__title section__title--sm">Browse by <?= h(strtolower(str_replace(' Experience', '', $type['name']))) === 'cultural' ? 'tribe' : 'destination' ?></h2>
     </div>
     <?php if (!$typeDestinations): ?>
       <p class="empty-note">Destinations for this experience type are being added.</p>
     <?php else: ?>
+      <div class="tag-list tag-list--center">
+        <?php foreach ($typeDestinations as $dest): ?>
+          <a class="tag-link" href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>"><?= h($dest['name']) ?></a>
+        <?php endforeach; ?>
+      </div>
       <div class="tile-rail">
         <?php foreach ($typeDestinations as $dest): ?>
           <a href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>" class="tile">

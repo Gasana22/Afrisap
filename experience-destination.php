@@ -61,6 +61,10 @@ require __DIR__ . '/includes/site_header.php';
           <p class="detail-lead" style="max-width:760px;"><?= nl2br(h($destination['short_overview'])) ?></p>
         <?php endif; ?>
 
+        <?php if ($videoEmbedUrl = youtube_embed_url($destination['video_url'])): ?>
+          <div class="video-embed"><iframe src="<?= h($videoEmbedUrl) ?>" title="<?= h($destination['name']) ?>" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+        <?php endif; ?>
+
         <?php if ($activities): ?>
           <h2 class="detail-heading">Activities &amp; cultural uniqueness</h2>
           <div class="activity-list">
