@@ -31,6 +31,10 @@ $activities = db()->prepare('SELECT * FROM experience_tour_activities WHERE expe
 $activities->execute([$id]);
 $activities = $activities->fetchAll();
 
+$itineraryDays = db()->prepare('SELECT * FROM experience_tour_itinerary_days WHERE experience_tour_id = ? ORDER BY day_number');
+$itineraryDays->execute([$id]);
+$itineraryDays = $itineraryDays->fetchAll();
+
 $mainGallery = get_media('experience_tour', $id);
 $overviewGallery = get_media('experience_tour_overview', $id);
 
@@ -75,6 +79,21 @@ require __DIR__ . '/includes/site_header.php';
         <?php if ($tour['top_highlights']): ?>
           <h2 class="detail-heading">Top highlights</h2>
           <p class="detail-text"><?= nl2br(h($tour['top_highlights'])) ?></p>
+        <?php endif; ?>
+
+        <?php if ($itineraryDays): ?>
+          <h2 class="detail-heading">Day-by-day itinerary</h2>
+          <div class="itinerary-list">
+            <?php foreach ($itineraryDays as $day): ?>
+              <div class="itinerary-day">
+                <div class="itinerary-day__badge">Day <?= (int) $day['day_number'] ?></div>
+                <div class="itinerary-day__content">
+                  <h3 class="itinerary-day__title"><?= h($day['title']) ?></h3>
+                  <?php if ($day['description']): ?><p class="itinerary-day__body"><?= nl2br(h($day['description'])) ?></p><?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
         <?php endif; ?>
 
         <?php if ($activities): ?>
