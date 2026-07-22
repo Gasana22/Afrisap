@@ -125,26 +125,10 @@ $tours = $stmt->fetchAll();
       <h2 class="section__title"><?= h($type['name']) ?> Tours</h2>
     </div>
 
-    <?php if ($typeDestinations): ?>
-      <form class="filter-bar" method="get" style="grid-template-columns: 1fr auto;">
-        <input type="hidden" name="type" value="<?= h($typeSlug) ?>">
-        <div class="filter-bar__field">
-          <label for="f-destination"><?= render_nav_glyph('pin') ?>Destination</label>
-          <select id="f-destination" name="destination">
-            <option value="">Any destination</option>
-            <?php foreach ($typeDestinations as $dest): ?>
-              <option value="<?= (int) $dest['id'] ?>" <?= $destinationId === (int) $dest['id'] ? 'selected' : '' ?>><?= h($dest['name']) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <button type="submit" class="btn btn--dark">Search</button>
-      </form>
-    <?php endif; ?>
-
     <?php if (!$tours): ?>
       <p class="empty-note" style="margin-top:24px;">No <?= h(strtolower($type['name'])) ?> tours match yet. <a href="<?= h(url('/quote.php?type=experiential')) ?>">Tell us what you're picturing</a> and we'll build one.</p>
     <?php else: ?>
-      <div class="card-grid" style="margin-top:28px;">
+      <div class="card-grid">
         <?php foreach ($tours as $tour): ?>
           <a href="<?= h(url('/experience-tour.php?id=' . $tour['id'])) ?>" class="tour-card">
             <div class="tour-card__media">
@@ -165,6 +149,22 @@ $tours = $stmt->fetchAll();
           </a>
         <?php endforeach; ?>
       </div>
+    <?php endif; ?>
+
+    <?php if ($typeDestinations): ?>
+      <form class="filter-bar" method="get" style="grid-template-columns: 1fr auto;margin-top:28px;">
+        <input type="hidden" name="type" value="<?= h($typeSlug) ?>">
+        <div class="filter-bar__field">
+          <label for="f-destination"><?= render_nav_glyph('pin') ?>Destination</label>
+          <select id="f-destination" name="destination">
+            <option value="">Any destination</option>
+            <?php foreach ($typeDestinations as $dest): ?>
+              <option value="<?= (int) $dest['id'] ?>" <?= $destinationId === (int) $dest['id'] ? 'selected' : '' ?>><?= h($dest['name']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <button type="submit" class="btn btn--dark">Search</button>
+      </form>
     <?php endif; ?>
   </div>
 </section>
