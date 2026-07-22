@@ -89,35 +89,6 @@ $stmt->execute($params);
 $tours = $stmt->fetchAll();
 ?>
 
-<section class="section">
-  <div class="wrap">
-    <div class="section__header" style="margin-bottom:28px;">
-      <p class="section__eyebrow"><?= h(str_replace(' Experience', '', $type['name'])) ?> Destinations</p>
-      <h2 class="section__title section__title--sm">Browse by <?= h(strtolower(str_replace(' Experience', '', $type['name']))) === 'cultural' ? 'tribe' : 'destination' ?></h2>
-    </div>
-    <?php if (!$typeDestinations): ?>
-      <p class="empty-note">Destinations for this experience type are being added.</p>
-    <?php else: ?>
-      <div class="tag-list tag-list--center">
-        <?php foreach ($typeDestinations as $dest): ?>
-          <a class="tag-link" href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>"><?= h($dest['name']) ?></a>
-        <?php endforeach; ?>
-      </div>
-      <div class="tile-rail">
-        <?php foreach ($typeDestinations as $dest): ?>
-          <a href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>" class="tile">
-            <div class="tile__media"><?php if ($cover = get_cover_image('experience_destination', $dest['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?></div>
-            <div class="tile__body">
-              <h3 class="tile__title"><?= h($dest['name']) ?></h3>
-              <?php if ($dest['location']): ?><p class="tile__meta"><?= h($dest['location']) ?></p><?php endif; ?>
-            </div>
-          </a>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
-  </div>
-</section>
-
 <section class="section section--savanna">
   <div class="wrap">
     <div class="section__header" style="margin-bottom:28px;">
@@ -165,6 +136,35 @@ $tours = $stmt->fetchAll();
         </div>
         <button type="submit" class="btn btn--dark">Search</button>
       </form>
+    <?php endif; ?>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section__header" style="margin-bottom:28px;">
+      <p class="section__eyebrow"><?= h(str_replace(' Experience', '', $type['name'])) ?> Destinations</p>
+      <h2 class="section__title section__title--sm">Browse by <?= h(strtolower(str_replace(' Experience', '', $type['name']))) === 'cultural' ? 'tribe' : 'destination' ?></h2>
+    </div>
+    <?php if (!$typeDestinations): ?>
+      <p class="empty-note">Destinations for this experience type are being added.</p>
+    <?php else: ?>
+      <div class="tag-list tag-list--center">
+        <?php foreach ($typeDestinations as $dest): ?>
+          <a class="tag-link" href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>"><?= h($dest['name']) ?></a>
+        <?php endforeach; ?>
+      </div>
+      <div class="tile-rail">
+        <?php foreach ($typeDestinations as $dest): ?>
+          <a href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>" class="tile">
+            <div class="tile__media"><?php if ($cover = get_cover_image('experience_destination', $dest['id'])): ?><img src="<?= h(url('/' . $cover)) ?>" alt="" loading="lazy"><?php endif; ?></div>
+            <div class="tile__body">
+              <h3 class="tile__title"><?= h($dest['name']) ?></h3>
+              <?php if ($dest['location']): ?><p class="tile__meta"><?= h($dest['location']) ?></p><?php endif; ?>
+            </div>
+          </a>
+        <?php endforeach; ?>
+      </div>
     <?php endif; ?>
   </div>
 </section>
