@@ -7,7 +7,7 @@ require_login();
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $tour = [
     'title' => '', 'experience_type_id' => '', 'provider_id' => '', 'price' => '', 'discount_percent' => 0, 'days' => '',
-    'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '', 'top_highlights' => '', 'video_url' => '',
+    'min_pax' => 1, 'max_pax' => '', 'short_overview' => '', 'full_overview' => '', 'top_highlights' => '', 'accommodation_info' => '', 'video_url' => '',
     'status' => 'draft', 'is_featured' => 0,
 ];
 $errors = [];
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tour['short_overview'] = trim($_POST['short_overview'] ?? '');
     $tour['full_overview'] = trim($_POST['full_overview'] ?? '');
     $tour['top_highlights'] = trim($_POST['top_highlights'] ?? '');
+    $tour['accommodation_info'] = trim($_POST['accommodation_info'] ?? '');
     $tour['video_url'] = trim($_POST['video_url'] ?? '');
     $tour['status'] = $_POST['status'] ?? 'draft';
     $tour['is_featured'] = isset($_POST['is_featured']) ? 1 : 0;
@@ -90,14 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params = [
             $tour['title'], $tour['experience_type_id'], $tour['provider_id'], $tour['price'], $tour['discount_percent'],
             $tour['days'], $tour['min_pax'], $tour['max_pax'], $tour['short_overview'],
-            $tour['full_overview'], $tour['top_highlights'], $tour['video_url'] !== '' ? $tour['video_url'] : null,
+            $tour['full_overview'], $tour['top_highlights'], $tour['accommodation_info'], $tour['video_url'] !== '' ? $tour['video_url'] : null,
             $tour['status'], $tour['is_featured'],
         ];
         if ($id) {
-            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, video_url=?, status=?, is_featured=? WHERE id=?')
+            db()->prepare('UPDATE experience_tours SET title=?, experience_type_id=?, provider_id=?, price=?, discount_percent=?, days=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, accommodation_info=?, video_url=?, status=?, is_featured=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, video_url, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO experience_tours (title, experience_type_id, provider_id, price, discount_percent, days, min_pax, max_pax, short_overview, full_overview, top_highlights, accommodation_info, video_url, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -188,6 +189,11 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field form-field--full">
           <label for="top_highlights">Top highlights</label>
           <textarea id="top_highlights" name="top_highlights"><?= h($tour['top_highlights']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full">
+          <label for="accommodation_info">Accommodation</label>
+          <span class="hint">Gallery managed after saving. e.g. sleeping in the village with locals in grass-thatched houses.</span>
+          <textarea id="accommodation_info" name="accommodation_info"><?= h($tour['accommodation_info']) ?></textarea>
         </div>
         <div class="form-field form-field--full<?= isset($errors['video_url']) ? ' has-error' : '' ?>">
           <label for="video_url">Video (YouTube link)</label>

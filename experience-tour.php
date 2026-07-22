@@ -37,6 +37,7 @@ $itineraryDays = $itineraryDays->fetchAll();
 
 $mainGallery = get_media('experience_tour', $id);
 $overviewGallery = get_media('experience_tour_overview', $id);
+$accommodationGallery = get_media('experience_tour_accommodation', $id);
 
 $bookingSent = isset($_GET['sent']) && $_GET['sent'] === '1';
 $netPrice = (float) $tour['price'] * (1 - (float) $tour['discount_percent'] / 100);
@@ -114,6 +115,14 @@ require __DIR__ . '/includes/site_header.php';
               </div>
             <?php endforeach; ?>
           </div>
+        <?php endif; ?>
+
+        <?php if ($tour['accommodation_info']): ?>
+          <h2 class="detail-heading">Accommodation</h2>
+          <p class="detail-text"><?= nl2br(h($tour['accommodation_info'])) ?></p>
+          <?php if ($accommodationGallery): ?>
+            <div class="gallery-strip"><?php foreach ($accommodationGallery as $img): ?><img src="<?= h(url('/' . $img['file_path'])) ?>" alt="<?= h($img['caption'] ?? '') ?>" loading="lazy"><?php endforeach; ?></div>
+          <?php endif; ?>
         <?php endif; ?>
       </div>
 

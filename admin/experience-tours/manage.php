@@ -149,7 +149,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
   <div class="panel__body">
     <div class="sub-list">
       <?php
-      $galleries = ['experience_tour' => 'Main gallery', 'experience_tour_overview' => 'Full overview gallery'];
+      $galleries = ['experience_tour' => 'Main gallery', 'experience_tour_overview' => 'Full overview gallery', 'experience_tour_accommodation' => 'Accommodation gallery'];
       foreach ($galleries as $type => $label):
           $count = media_count($type, $id);
       ?>

@@ -362,6 +362,7 @@ CREATE TABLE `experience_tours` (
   `short_overview` text DEFAULT NULL,
   `full_overview` text DEFAULT NULL,
   `top_highlights` text DEFAULT NULL,
+  `accommodation_info` text DEFAULT NULL,
   `video_url` varchar(255) DEFAULT NULL,
   `status` enum('draft','published') NOT NULL DEFAULT 'draft',
   `is_featured` tinyint(1) NOT NULL DEFAULT 0,
