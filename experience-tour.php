@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/media.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
-$stmt = db()->prepare("SELECT et.*, ety.name AS type_name, sp.company_name AS provider_name
+$stmt = db()->prepare("SELECT et.*, ety.name AS type_name, sp.company_name AS provider_name, sp.logo_path AS provider_logo
     FROM experience_tours et
     JOIN experience_types ety ON ety.id = et.experience_type_id
     LEFT JOIN service_providers sp ON sp.id = et.provider_id
@@ -152,6 +152,16 @@ require __DIR__ . '/includes/site_header.php';
           </ul>
           <a href="#enquire" class="btn btn--primary btn--pill" style="width:100%;justify-content:center;">Enquire About This Tour <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
+
+        <?php if ($tour['provider_name']): ?>
+          <div class="side-card">
+            <p class="side-card__title"><?= render_nav_glyph('briefcase') ?>Service provider</p>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <?php if ($tour['provider_logo']): ?><img src="<?= h(url('/' . $tour['provider_logo'])) ?>" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><?php endif; ?>
+              <strong><a href="<?= h(url('/provider.php?id=' . $tour['provider_id'])) ?>" style="color:inherit;text-decoration:underline;"><?= h($tour['provider_name']) ?></a></strong>
+            </div>
+          </div>
+        <?php endif; ?>
       </aside>
     </div>
   </div>
