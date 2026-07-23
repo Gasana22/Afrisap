@@ -149,11 +149,6 @@ $tours = $stmt->fetchAll();
     <?php if (!$typeDestinations): ?>
       <p class="empty-note">Destinations for this experience type are being added.</p>
     <?php else: ?>
-      <div class="tag-list tag-list--center">
-        <?php foreach ($typeDestinations as $dest): ?>
-          <a class="tag-link" href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>"><?= h($dest['name']) ?></a>
-        <?php endforeach; ?>
-      </div>
       <div class="tile-rail">
         <?php foreach ($typeDestinations as $dest): ?>
           <a href="<?= h(url('/experience-destination.php?id=' . $dest['id'])) ?>" class="tile">

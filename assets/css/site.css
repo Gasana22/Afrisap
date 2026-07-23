@@ -1621,24 +1621,7 @@ a.list-row:hover { border-color: var(--crimson); }
   font-size: 12px;
 }
 
-/* Quick-jump tag chips (clickable), same look as .tag-static */
-
-.tag-link {
-  display: inline-block;
-  padding: 4px 10px;
-  background: var(--white);
-  border: 1px solid var(--savanna-line);
-  border-radius: 0;
-  font-size: 12px;
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.tag-link:hover { border-color: var(--crimson); color: var(--crimson); }
-
-.tag-list--center { justify-content: center; margin: 0 0 28px; }
-
-/* Smaller section title, used where .section__title reads too large next to a tag-list */
+/* Smaller section title, used where .section__title reads too large */
 
 .section__title--sm { font-size: clamp(18px, 2vw, 22px); }
 
