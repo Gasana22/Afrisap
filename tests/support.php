@@ -34,12 +34,6 @@ function smoke_setup_database(): void
         exit(1);
     }
 
-    $seedOut = smoke_shell('mysql -u root ' . TEST_DB_NAME . ' < ' . escapeshellarg(__DIR__ . '/../database/seed.sql'));
-    if (str_contains($seedOut, 'ERROR')) {
-        fwrite(STDERR, "seed.sql failed to apply:\n$seedOut\n");
-        exit(1);
-    }
-
     // A dedicated TCP-auth app user -- root's default auth_socket plugin
     // (common on Debian/Ubuntu MySQL/MariaDB packages) doesn't work over
     // TCP, which is what the app's own db.php connects with.

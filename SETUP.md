@@ -7,10 +7,13 @@ Plain PHP (PDO/MySQLi) + MySQL/MariaDB, no framework.
 ```
 mysql -u root -e "CREATE DATABASE safarisap CHARACTER SET utf8mb4;"
 mysql -u root safarisap < database/schema.sql
-mysql -u root safarisap < database/seed.sql
 ```
 
-## 2. Create your first admin user
+`schema.sql` is the whole database in one file -- structure and starter data (categories, activities, experience types, sample destinations, and a default admin login) together. One import, nothing else to run.
+
+## 2. Admin login
+
+A default admin user comes with the import. To add another (or change the password), generate a hash and insert it:
 
 ```
 php -r "echo password_hash('choose-a-password', PASSWORD_DEFAULT);"
