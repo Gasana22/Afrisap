@@ -50,6 +50,9 @@ $returnUrl = $_SERVER['REQUEST_URI'];
 <?php if (count($selectedIds) < 1): ?>
   <div class="flash flash--error">This tour needs at least 1 destination before it can be published. Currently has 0.</div>
 <?php endif; ?>
+<?php if (!$itineraryDays): ?>
+  <div class="flash flash--error">Safari tours need a day-by-day itinerary before they can be published. Currently has 0 days.</div>
+<?php endif; ?>
 
 <div class="panel">
   <div class="panel__header">

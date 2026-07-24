@@ -65,6 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($tour['days'] === '' || !ctype_digit((string) $tour['days']) || (int) $tour['days'] < 1) {
         $errors['days'] = 'Enter the number of days.';
+    } elseif ((int) $tour['days'] > 2) {
+        $errors['days'] = 'Trip tours are short outings (max 2 days). For longer itineraries, add it under Tours instead.';
     }
     if ($tour['scheduled_date'] !== null && !DateTime::createFromFormat('Y-m-d', $tour['scheduled_date'])) {
         $errors['scheduled_date'] = 'Enter a valid date.';
@@ -158,7 +160,8 @@ require __DIR__ . '/../includes/header.php';
         </div>
         <div class="form-field<?= isset($errors['days']) ? ' has-error' : '' ?>">
           <label for="days">Number of days</label>
-          <input type="number" min="1" id="days" name="days" value="<?= h((string) $tour['days']) ?>" required>
+          <input type="number" min="1" max="2" id="days" name="days" value="<?= h((string) $tour['days']) ?>" required>
+          <span class="hint">Trip tours are short, usually one-off outings -- 1 or 2 days max.</span>
           <?php if (isset($errors['days'])): ?><span class="error-text"><?= h($errors['days']) ?></span><?php endif; ?>
         </div>
         <div class="form-field<?= isset($errors['scheduled_date']) ? ' has-error' : '' ?>">
