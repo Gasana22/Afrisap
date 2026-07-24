@@ -77,12 +77,31 @@ require __DIR__ . '/includes/site_header.php';
           <h2 class="detail-heading">About this activity</h2>
           <p class="detail-text"><?= nl2br(h($activity['full_description'])) ?></p>
         <?php endif; ?>
+
+        <?php if ($activity['national_parks_around']): ?>
+          <h2 class="detail-heading">National parks around</h2>
+          <p class="detail-text"><?= nl2br(h($activity['national_parks_around'])) ?></p>
+        <?php endif; ?>
+
+        <?php if ($activity['additional_info']): ?>
+          <h2 class="detail-heading">Additional information</h2>
+          <p class="detail-text"><?= nl2br(h($activity['additional_info'])) ?></p>
+        <?php endif; ?>
+
+        <?php if ($activity['includes'] || $activity['excludes']): ?>
+          <h2 class="detail-heading">Includes &amp; excludes</h2>
+          <div class="includes-grid">
+            <?php if ($activity['includes']): ?><div><p class="includes-grid__label">Includes</p><p class="detail-text"><?= nl2br(h($activity['includes'])) ?></p></div><?php endif; ?>
+            <?php if ($activity['excludes']): ?><div><p class="includes-grid__label includes-grid__label--excl">Excludes</p><p class="detail-text"><?= nl2br(h($activity['excludes'])) ?></p></div><?php endif; ?>
+          </div>
+        <?php endif; ?>
       </div>
       <aside class="detail-side">
-        <?php if ($activity['operator_name'] || $activity['phone'] || $activity['email'] || $activity['destination_name']): ?>
+        <?php if ($activity['operator_name'] || $activity['phone'] || $activity['email'] || $activity['destination_name'] || $activity['location']): ?>
           <div class="side-card">
             <p class="side-card__title"><?= render_nav_glyph('tag') ?>Details</p>
             <?php if ($activity['operator_name']): ?><p class="side-card__body"><strong><?= h($activity['operator_name']) ?></strong></p><?php endif; ?>
+            <?php if ($activity['location']): ?><p class="side-card__body"><?= h($activity['location']) ?></p><?php endif; ?>
             <?php if ($activity['phone']): ?><p class="side-card__body"><?= h($activity['phone']) ?></p><?php endif; ?>
             <?php if ($activity['email']): ?><p class="side-card__body"><?= h($activity['email']) ?></p><?php endif; ?>
             <?php if ($activity['destination_name']): ?>

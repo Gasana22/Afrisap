@@ -10,6 +10,7 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 $activity = [
     'name' => '', 'phone' => '', 'email' => '', 'duration_hours' => '', 'image_path' => null,
     'short_description' => '', 'full_description' => '', 'operator_id' => '', 'destination_id' => '',
+    'location' => '', 'national_parks_around' => '', 'additional_info' => '', 'includes' => '', 'excludes' => '',
 ];
 $errors = [];
 
@@ -36,6 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $activity['full_description'] = trim($_POST['full_description'] ?? '');
     $activity['operator_id'] = $_POST['operator_id'] !== '' ? (int) $_POST['operator_id'] : null;
     $activity['destination_id'] = $_POST['destination_id'] !== '' ? (int) $_POST['destination_id'] : null;
+    $activity['location'] = trim($_POST['location'] ?? '');
+    $activity['national_parks_around'] = trim($_POST['national_parks_around'] ?? '');
+    $activity['additional_info'] = trim($_POST['additional_info'] ?? '');
+    $activity['includes'] = trim($_POST['includes'] ?? '');
+    $activity['excludes'] = trim($_POST['excludes'] ?? '');
 
     if ($activity['name'] === '') {
         $errors['name'] = 'Enter an activity name.';
@@ -58,12 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params = [
             $activity['name'], $activity['phone'], $activity['email'], $activity['duration_hours'], $activity['image_path'],
             $activity['short_description'], $activity['full_description'], $activity['operator_id'], $activity['destination_id'],
+            $activity['location'], $activity['national_parks_around'], $activity['additional_info'], $activity['includes'], $activity['excludes'],
         ];
         if ($id) {
-            db()->prepare('UPDATE activities SET name=?, phone=?, email=?, duration_hours=?, image_path=?, short_description=?, full_description=?, operator_id=?, destination_id=? WHERE id=?')
+            db()->prepare('UPDATE activities SET name=?, phone=?, email=?, duration_hours=?, image_path=?, short_description=?, full_description=?, operator_id=?, destination_id=?, location=?, national_parks_around=?, additional_info=?, includes=?, excludes=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO activities (name, phone, email, duration_hours, image_path, short_description, full_description, operator_id, destination_id) VALUES (?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO activities (name, phone, email, duration_hours, image_path, short_description, full_description, operator_id, destination_id, location, national_parks_around, additional_info, includes, excludes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
@@ -136,6 +143,26 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field form-field--full">
           <label for="full_description">Full description</label>
           <textarea id="full_description" name="full_description"><?= h($activity['full_description']) ?></textarea>
+        </div>
+        <div class="form-field">
+          <label for="location">Location</label>
+          <input type="text" id="location" name="location" value="<?= h($activity['location']) ?>" placeholder="e.g. Bwindi Impenetrable Forest area">
+        </div>
+        <div class="form-field form-field--full">
+          <label for="national_parks_around">National parks around</label>
+          <textarea id="national_parks_around" name="national_parks_around" placeholder="e.g. Bwindi Impenetrable Forest, Mgahinga Gorilla National Park"><?= h($activity['national_parks_around']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full">
+          <label for="additional_info">Additional information</label>
+          <textarea id="additional_info" name="additional_info"><?= h($activity['additional_info']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full">
+          <label for="includes">Includes</label>
+          <textarea id="includes" name="includes"><?= h($activity['includes']) ?></textarea>
+        </div>
+        <div class="form-field form-field--full">
+          <label for="excludes">Excludes</label>
+          <textarea id="excludes" name="excludes"><?= h($activity['excludes']) ?></textarea>
         </div>
       </div>
       <div class="form-actions">

@@ -53,6 +53,7 @@ $returnUrl = $_SERVER['REQUEST_URI'];
       <?= $activity['duration_hours'] !== null ? h((string) $activity['duration_hours']) . ' hrs · ' : '' ?>
       <?= h($activity['operator_name'] ?? 'No company linked') ?>
       <?= $activity['destination_name'] ? ' · ' . h($activity['destination_name']) : '' ?>
+      <?= $activity['location'] ? ' · ' . h($activity['location']) : '' ?>
     </p>
   </div>
 </div>
