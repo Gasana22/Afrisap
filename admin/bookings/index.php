@@ -17,10 +17,11 @@ if (in_array($statusFilter, ['pending', 'confirmed', 'cancelled'], true)) {
 }
 
 $bookings = db()->prepare("SELECT b.*,
-        CASE b.bookable_type WHEN 'tour' THEN t.title ELSE et.title END AS item_title,
-        CASE b.bookable_type WHEN 'tour' THEN CONCAT('/admin/tours/manage.php?id=', t.id) ELSE CONCAT('/admin/experience-tours/manage.php?id=', et.id) END AS item_link
+        CASE b.bookable_type WHEN 'tour' THEN t.title WHEN 'trip_tour' THEN tt.title ELSE et.title END AS item_title,
+        CASE b.bookable_type WHEN 'tour' THEN CONCAT('/admin/tours/manage.php?id=', t.id) WHEN 'trip_tour' THEN CONCAT('/admin/trip-tours/manage.php?id=', tt.id) ELSE CONCAT('/admin/experience-tours/manage.php?id=', et.id) END AS item_link
     FROM bookings b
     LEFT JOIN tours t ON t.id = b.bookable_id AND b.bookable_type = 'tour'
+    LEFT JOIN trip_tours tt ON tt.id = b.bookable_id AND b.bookable_type = 'trip_tour'
     LEFT JOIN experience_tours et ON et.id = b.bookable_id AND b.bookable_type = 'experience_tour'
     $where
     ORDER BY b.created_at DESC");
@@ -61,7 +62,7 @@ require __DIR__ . '/../includes/header.php';
               <?php else: ?>
                 <span class="table__meta">Deleted</span>
               <?php endif; ?>
-              <br><span class="table__meta"><?= $booking['bookable_type'] === 'tour' ? 'Safari' : 'Experiential' ?></span>
+              <br><span class="table__meta"><?= ['tour' => 'Safari', 'trip_tour' => 'Trip', 'experience_tour' => 'Experiential'][$booking['bookable_type']] ?? $booking['bookable_type'] ?></span>
             </td>
             <td class="table__meta"><?= h($booking['travel_date'] ?: '—') ?></td>
             <td class="table__meta"><?= (int) $booking['num_people'] ?></td>

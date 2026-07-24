@@ -7,7 +7,7 @@ require_once __DIR__ . '/site_svg.php';
 // variables can never clobber same-named variables set by the including page
 $render_site_nav = static function () {
     $nav_safari_categories = db()->query("SELECT id, name, slug FROM tour_categories WHERE menu_group = 'safari' ORDER BY sort_order")->fetchAll();
-    $nav_trip_categories = db()->query("SELECT id, name, slug, sort_order FROM tour_categories WHERE menu_group IN ('trip', 'school') ORDER BY FIELD(menu_group, 'trip', 'school'), sort_order")->fetchAll();
+    $nav_trip_categories = db()->query('SELECT id, name, slug, sort_order FROM trip_tour_categories ORDER BY sort_order')->fetchAll();
     $nav_experience_types = db()->query('SELECT name, slug, sort_order FROM experience_types ORDER BY sort_order')->fetchAll();
     $nav_activities = db()->query('SELECT id, name FROM activities ORDER BY name')->fetchAll();
 

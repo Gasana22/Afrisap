@@ -33,7 +33,7 @@ declare(strict_types=1);
         <button>Trip Tours <span class="site-nav__caret">&#9662;</span></button>
         <div class="mega-menu">
           <?php foreach ($nav_trip_categories as $nav_category): ?>
-            <a href="<?= h(url('/tours.php?category=' . $nav_category['slug'])) ?>"><?= render_nav_glyph(nav_icon_for($nav_category['name'])) ?><span><?= h($nav_category['name']) ?></span><span class="mega-menu__count"><?= str_pad((string) $nav_category['sort_order'], 2, '0', STR_PAD_LEFT) ?></span></a>
+            <a href="<?= h(url('/trip-tours.php?category=' . $nav_category['slug'])) ?>"><?= render_nav_glyph(nav_icon_for($nav_category['name'])) ?><span><?= h($nav_category['name']) ?></span><span class="mega-menu__count"><?= str_pad((string) $nav_category['sort_order'], 2, '0', STR_PAD_LEFT) ?></span></a>
           <?php endforeach; ?>
         </div>
       </li>

@@ -93,7 +93,7 @@ DROP TABLE IF EXISTS `bookings`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bookings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `bookable_type` enum('tour','experience_tour') NOT NULL,
+  `bookable_type` enum('tour','experience_tour','trip_tour') NOT NULL,
   `bookable_id` int(10) unsigned NOT NULL,
   `customer_name` varchar(150) NOT NULL,
   `customer_email` varchar(150) NOT NULL,
@@ -697,6 +697,109 @@ CREATE TABLE `tours` (
   CONSTRAINT `fk_tours_operator` FOREIGN KEY (`operator_id`) REFERENCES `tour_operators` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `trip_tour_activities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `trip_tour_activities` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `trip_tour_id` int(10) unsigned NOT NULL,
+  `activity_id` int(10) unsigned DEFAULT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `fk_trip_tour_activities_tour` (`trip_tour_id`),
+  KEY `fk_trip_tour_activities_activity` (`activity_id`),
+  CONSTRAINT `fk_trip_tour_activities_activity` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_trip_tour_activities_tour` FOREIGN KEY (`trip_tour_id`) REFERENCES `trip_tours` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `trip_tour_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `trip_tour_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(120) NOT NULL,
+  `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `trip_tour_destinations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `trip_tour_destinations` (
+  `trip_tour_id` int(10) unsigned NOT NULL,
+  `destination_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`trip_tour_id`,`destination_id`),
+  KEY `fk_trip_tour_destinations_destination` (`destination_id`),
+  CONSTRAINT `fk_trip_tour_destinations_destination` FOREIGN KEY (`destination_id`) REFERENCES `destinations` (`id`),
+  CONSTRAINT `fk_trip_tour_destinations_tour` FOREIGN KEY (`trip_tour_id`) REFERENCES `trip_tours` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `trip_tour_faqs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `trip_tour_faqs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `trip_tour_id` int(10) unsigned NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer` text NOT NULL,
+  `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `fk_trip_tour_faqs_tour` (`trip_tour_id`),
+  CONSTRAINT `fk_trip_tour_faqs_tour` FOREIGN KEY (`trip_tour_id`) REFERENCES `trip_tours` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `trip_tour_itinerary_days`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `trip_tour_itinerary_days` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `trip_tour_id` int(10) unsigned NOT NULL,
+  `day_number` int(10) unsigned NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_trip_tour_itinerary_days_day` (`trip_tour_id`,`day_number`),
+  CONSTRAINT `fk_trip_tour_itinerary_days_tour` FOREIGN KEY (`trip_tour_id`) REFERENCES `trip_tours` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `trip_tours`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `trip_tours` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL,
+  `category_id` int(10) unsigned NOT NULL,
+  `budget_type` enum('Luxury','Mid-Range','Budget') NOT NULL,
+  `price` decimal(12,2) NOT NULL,
+  `discount_percent` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `days` int(10) unsigned NOT NULL,
+  `scheduled_date` date DEFAULT NULL,
+  `min_pax` int(10) unsigned NOT NULL DEFAULT 1,
+  `max_pax` int(10) unsigned NOT NULL,
+  `short_overview` text DEFAULT NULL,
+  `full_overview` text DEFAULT NULL,
+  `top_highlights` text DEFAULT NULL,
+  `hotel_info` text DEFAULT NULL,
+  `vehicle_info` text DEFAULT NULL,
+  `flight_info` text DEFAULT NULL,
+  `includes` text DEFAULT NULL,
+  `excludes` text DEFAULT NULL,
+  `operator_id` int(10) unsigned DEFAULT NULL,
+  `status` enum('draft','published') NOT NULL DEFAULT 'draft',
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_trip_tours_category` (`category_id`),
+  KEY `fk_trip_tours_operator` (`operator_id`),
+  CONSTRAINT `fk_trip_tours_category` FOREIGN KEY (`category_id`) REFERENCES `trip_tour_categories` (`id`),
+  CONSTRAINT `fk_trip_tours_operator` FOREIGN KEY (`operator_id`) REFERENCES `tour_operators` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `virtual_experience_signups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -939,14 +1042,6 @@ INSERT INTO `tour_categories` VALUES
 (5,'safari','Mixed Safaris','mixed-safaris',5),
 (6,'safari','Adventure Safaris','adventure-safaris',6),
 (7,'safari','East Africa Combined Safaris','east-africa-combined-safaris',7),
-(8,'trip','Island Trips','island-trips',1),
-(9,'trip','Camping Trips','camping-trips',2),
-(10,'trip','Flying Experience Trips','flying-experience-trips',3),
-(11,'trip','Shopping Trips (East Africa)','shopping-trips',4),
-(12,'trip','Boat Cruise Trips','boat-cruise-trips',5),
-(13,'trip','Beach Trips (Lake Victoria)','beach-trips',6),
-(14,'trip','City Trips (East Africa)','city-trips',7),
-(15,'school','School Trips','school-trips',8),
 (16,'specialised','Group Tours','group-tours',1);
 /*!40000 ALTER TABLE `tour_categories` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -969,6 +1064,45 @@ UNLOCK TABLES;
 LOCK TABLES `tours` WRITE;
 /*!40000 ALTER TABLE `tours` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tours` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `trip_tour_activities` WRITE;
+/*!40000 ALTER TABLE `trip_tour_activities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trip_tour_activities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `trip_tour_categories` WRITE;
+/*!40000 ALTER TABLE `trip_tour_categories` DISABLE KEYS */;
+INSERT INTO `trip_tour_categories` (`name`, `slug`, `sort_order`) VALUES
+('Island Trips','island-trips',1),
+('Camping Trips','camping-trips',2),
+('Flying Experience Trips','flying-experience-trips',3),
+('Shopping Trips (East Africa)','shopping-trips',4),
+('Boat Cruise Trips','boat-cruise-trips',5),
+('Beach Trips (Lake Victoria)','beach-trips',6),
+('City Trips (East Africa)','city-trips',7),
+('School Trips','school-trips',8);
+/*!40000 ALTER TABLE `trip_tour_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `trip_tour_destinations` WRITE;
+/*!40000 ALTER TABLE `trip_tour_destinations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trip_tour_destinations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `trip_tour_faqs` WRITE;
+/*!40000 ALTER TABLE `trip_tour_faqs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trip_tour_faqs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `trip_tour_itinerary_days` WRITE;
+/*!40000 ALTER TABLE `trip_tour_itinerary_days` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trip_tour_itinerary_days` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `trip_tours` WRITE;
+/*!40000 ALTER TABLE `trip_tours` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trip_tours` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `virtual_experience_signups` WRITE;

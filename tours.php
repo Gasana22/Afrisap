@@ -9,7 +9,7 @@ $category = null;
 $categoryPage = null;
 
 $group = $_GET['group'] ?? '';
-if (!in_array($group, ['safari', 'trip'], true)) {
+if ($group !== 'safari') {
     $group = '';
 }
 
@@ -41,8 +41,6 @@ if ($category) {
     $params[] = $category['id'];
 } elseif ($group === 'safari') {
     $where[] = "c.menu_group = 'safari'";
-} elseif ($group === 'trip') {
-    $where[] = "c.menu_group IN ('trip', 'school')";
 }
 if (in_array($budget, ['Luxury', 'Mid-Range', 'Budget'], true)) {
     $where[] = 't.budget_type = ?';
@@ -115,7 +113,7 @@ if ($categoryPage) {
     $categoryParks = $parkStmt->fetchAll();
 }
 
-$groupTitle = $group === 'trip' ? 'Trip Tours' : ($group === 'safari' ? 'Safari Tours' : 'Safari Tours');
+$groupTitle = 'Safari Tours';
 $isEastAfrica = $region === 'east-africa';
 $pageHeading = $isEastAfrica ? 'East Africa' : ($category ? $category['name'] : $groupTitle);
 $page_title = $pageHeading . ' - Safarisap';

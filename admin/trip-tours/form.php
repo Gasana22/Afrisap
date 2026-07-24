@@ -13,41 +13,28 @@ $tour = [
 ];
 $errors = [];
 
-$extraCategoryIds = [];
-$countryIds = [];
-
 if ($id) {
-    $stmt = db()->prepare('SELECT * FROM tours WHERE id = ?');
+    $stmt = db()->prepare('SELECT * FROM trip_tours WHERE id = ?');
     $stmt->execute([$id]);
     $tour = $stmt->fetch();
     if (!$tour) {
         flash_set('error', 'That tour no longer exists.');
-        redirect('/admin/tours/index.php');
+        redirect('/admin/trip-tours/index.php');
     }
-    $extraStmt = db()->prepare('SELECT category_id FROM tour_extra_categories WHERE tour_id = ?');
-    $extraStmt->execute([$id]);
-    $extraCategoryIds = array_map('intval', $extraStmt->fetchAll(PDO::FETCH_COLUMN));
-
-    $countryStmt = db()->prepare('SELECT country_id FROM tour_countries WHERE tour_id = ?');
-    $countryStmt->execute([$id]);
-    $countryIds = array_map('intval', $countryStmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
-$categories = db()->query("SELECT * FROM tour_categories ORDER BY FIELD(menu_group,'safari','specialised'), sort_order, name")->fetchAll();
+$categories = db()->query('SELECT * FROM trip_tour_categories ORDER BY sort_order, name')->fetchAll();
 $operators = db()->query('SELECT id, company_name FROM tour_operators ORDER BY company_name')->fetchAll();
-$countries = db()->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
 
 if (!$categories) {
-    flash_set('error', 'Add a tour category before creating tours.');
-    redirect('/admin/categories/form.php');
+    flash_set('error', 'Add a trip tour category before creating tours.');
+    redirect('/admin/trip-tour-categories/form.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $tour['title'] = trim($_POST['title'] ?? '');
     $tour['category_id'] = (int) ($_POST['category_id'] ?? 0);
-    $extraCategoryIds = array_values(array_unique(array_filter(array_map('intval', $_POST['extra_category_ids'] ?? []))));
-    $countryIds = array_values(array_unique(array_filter(array_map('intval', $_POST['country_ids'] ?? []))));
     $tour['budget_type'] = $_POST['budget_type'] ?? 'Mid-Range';
     $tour['price'] = $_POST['price'] ?? '';
     $tour['discount_percent'] = $_POST['discount_percent'] ?? 0;
@@ -101,39 +88,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
 
         if ($id) {
-            db()->prepare('UPDATE tours SET title=?, category_id=?, budget_type=?, price=?, discount_percent=?, days=?, scheduled_date=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, hotel_info=?, vehicle_info=?, flight_info=?, includes=?, excludes=?, operator_id=?, status=?, is_featured=? WHERE id=?')
+            db()->prepare('UPDATE trip_tours SET title=?, category_id=?, budget_type=?, price=?, discount_percent=?, days=?, scheduled_date=?, min_pax=?, max_pax=?, short_overview=?, full_overview=?, top_highlights=?, hotel_info=?, vehicle_info=?, flight_info=?, includes=?, excludes=?, operator_id=?, status=?, is_featured=? WHERE id=?')
                 ->execute([...$params, $id]);
         } else {
-            db()->prepare('INSERT INTO tours (title, category_id, budget_type, price, discount_percent, days, scheduled_date, min_pax, max_pax, short_overview, full_overview, top_highlights, hotel_info, vehicle_info, flight_info, includes, excludes, operator_id, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            db()->prepare('INSERT INTO trip_tours (title, category_id, budget_type, price, discount_percent, days, scheduled_date, min_pax, max_pax, short_overview, full_overview, top_highlights, hotel_info, vehicle_info, flight_info, includes, excludes, operator_id, status, is_featured) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute($params);
             $id = (int) db()->lastInsertId();
         }
 
-        $extraCategoryIds = array_values(array_diff($extraCategoryIds, [$tour['category_id']]));
-        db()->prepare('DELETE FROM tour_extra_categories WHERE tour_id = ?')->execute([$id]);
-        if ($extraCategoryIds) {
-            $insertExtra = db()->prepare('INSERT INTO tour_extra_categories (tour_id, category_id) VALUES (?, ?)');
-            foreach ($extraCategoryIds as $extraCategoryId) {
-                $insertExtra->execute([$id, $extraCategoryId]);
-            }
-        }
-
-        db()->prepare('DELETE FROM tour_countries WHERE tour_id = ?')->execute([$id]);
-        if ($countryIds) {
-            $insertCountry = db()->prepare('INSERT INTO tour_countries (tour_id, country_id) VALUES (?, ?)');
-            foreach ($countryIds as $countryId) {
-                $insertCountry->execute([$id, $countryId]);
-            }
-        }
-
         flash_set('success', 'Tour saved. Now add its destinations, activities and gallery below.');
-        redirect('/admin/tours/manage.php?id=' . $id);
+        redirect('/admin/trip-tours/manage.php?id=' . $id);
     }
 }
 
-$page_title = $id ? 'Edit tour' : 'Add tour';
-$page_eyebrow = 'Safari';
-$active_nav = 'tours';
+$page_title = $id ? 'Edit trip tour' : 'Add trip tour';
+$page_eyebrow = 'Trip';
+$active_nav = 'trip-tours';
 
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -146,7 +116,7 @@ require __DIR__ . '/../includes/header.php';
       <div class="form-grid">
         <div class="form-field form-field--full<?= isset($errors['title']) ? ' has-error' : '' ?>">
           <label for="title">Tour title</label>
-          <input type="text" id="title" name="title" value="<?= h($tour['title']) ?>" placeholder="e.g. 5-Day Bwindi Gorilla &amp; Queen Elizabeth Safari" autofocus required>
+          <input type="text" id="title" name="title" value="<?= h($tour['title']) ?>" placeholder="e.g. 3-Day Ssese Islands Getaway" autofocus required>
           <?php if (isset($errors['title'])): ?><span class="error-text"><?= h($errors['title']) ?></span><?php endif; ?>
         </div>
         <div class="form-field<?= isset($errors['category_id']) ? ' has-error' : '' ?>">
@@ -158,18 +128,6 @@ require __DIR__ . '/../includes/header.php';
             <?php endforeach; ?>
           </select>
           <?php if (isset($errors['category_id'])): ?><span class="error-text"><?= h($errors['category_id']) ?></span><?php endif; ?>
-        </div>
-        <div class="form-field form-field--full">
-          <label>Additional categories</label>
-          <span class="hint" style="display:block;margin-bottom:8px;">Pick any other categories this tour also belongs to -- useful when a multi-day itinerary spans more than one, e.g. day 1 is gorilla trekking, day 6 is a wildlife game drive.</span>
-          <div class="checkbox-grid">
-            <?php foreach ($categories as $category): ?>
-              <label class="checkbox-row">
-                <input type="checkbox" name="extra_category_ids[]" value="<?= (int) $category['id'] ?>" <?= in_array((int) $category['id'], $extraCategoryIds, true) ? 'checked' : '' ?>>
-                <?= h($category['name']) ?>
-              </label>
-            <?php endforeach; ?>
-          </div>
         </div>
         <div class="form-field">
           <label for="budget_type">Budget type</label>
@@ -228,18 +186,6 @@ require __DIR__ . '/../includes/header.php';
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="form-field form-field--full">
-          <label>Countries</label>
-          <span class="hint" style="display:block;margin-bottom:8px;">Tick every country this tour covers -- one, or several for a multi-country itinerary.</span>
-          <div class="checkbox-grid">
-            <?php foreach ($countries as $country): ?>
-              <label class="checkbox-row">
-                <input type="checkbox" name="country_ids[]" value="<?= (int) $country['id'] ?>" <?= in_array((int) $country['id'], $countryIds, true) ? 'checked' : '' ?>>
-                <?= h($country['name']) ?>
-              </label>
-            <?php endforeach; ?>
-          </div>
-        </div>
       </div>
 
       <p class="section-title" style="margin-top:26px;">Overview</p>
@@ -288,7 +234,7 @@ require __DIR__ . '/../includes/header.php';
 
       <div class="form-actions">
         <button type="submit" class="btn btn--primary">Save tour</button>
-        <a class="btn btn--ghost" href="<?= h(url('/admin/tours/index.php')) ?>">Cancel</a>
+        <a class="btn btn--ghost" href="<?= h(url('/admin/trip-tours/index.php')) ?>">Cancel</a>
       </div>
     </form>
   </div>

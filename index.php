@@ -82,7 +82,7 @@ $heroSlides = get_media('hero_slideshow', 1);
 $statSafariTours = (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group = 'safari' AND t.status = 'published'")->fetchColumn();
 $statExperienceTours = (int) db()->query("SELECT COUNT(*) FROM experience_tours WHERE status = 'published'")->fetchColumn();
 $statActivities = (int) db()->query('SELECT COUNT(*) FROM activities')->fetchColumn();
-$statTripTours = (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group IN ('trip', 'school') AND t.status = 'published'")->fetchColumn();
+$statTripTours = (int) db()->query("SELECT COUNT(*) FROM trip_tours WHERE status = 'published'")->fetchColumn();
 
 $page_title = 'Safarisap - Explore. Experience. Belong.';
 require __DIR__ . '/includes/site_header.php';
@@ -139,7 +139,7 @@ require __DIR__ . '/includes/site_header.php';
         <span class="hero-stat__value"><?= $statActivities ?></span>
       </span>
     </div>
-    <a href="<?= h(url('/tours.php?group=trip')) ?>" class="hero-stat">
+    <a href="<?= h(url('/trip-tours.php')) ?>" class="hero-stat">
       <span class="hero-stat__icon"><?= render_nav_glyph('compass') ?></span>
       <span class="hero-stat__text">
         <span class="hero-stat__label">Trip Tours</span>
