@@ -11,6 +11,7 @@ $counts = [
     'operators' => (int) db()->query('SELECT COUNT(*) FROM tour_operators')->fetchColumn(),
     'destinations' => (int) db()->query('SELECT COUNT(*) FROM destinations')->fetchColumn(),
     'tours' => (int) db()->query('SELECT COUNT(*) FROM tours')->fetchColumn(),
+    'trip-tours' => (int) db()->query("SELECT COUNT(*) FROM tours t JOIN tour_categories c ON c.id = t.category_id WHERE c.menu_group IN ('trip', 'school')")->fetchColumn(),
     'activities' => (int) db()->query('SELECT COUNT(*) FROM activities')->fetchColumn(),
     'experience-types' => (int) db()->query('SELECT COUNT(*) FROM experience_types')->fetchColumn(),
     'providers' => (int) db()->query('SELECT COUNT(*) FROM service_providers')->fetchColumn(),
@@ -77,6 +78,9 @@ $active_nav = $active_nav ?? '';
         </a>
         <a class="nav-link<?= $active_nav === 'tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/tours/index.php')) ?>">
           <?= render_nav_glyph('compass') ?>Tours <span class="nav-link__count"><?= $counts['tours'] ?></span>
+        </a>
+        <a class="nav-link<?= $active_nav === 'trip-tours' ? ' is-active' : '' ?>" href="<?= h(url('/admin/tours/index.php?menu_group=trip')) ?>">
+          <?= render_nav_glyph('pin') ?>Trip Tours <span class="nav-link__count"><?= $counts['trip-tours'] ?></span>
         </a>
       </div>
       <div class="nav-group">

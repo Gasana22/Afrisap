@@ -4,17 +4,22 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../includes/bootstrap.php';
 require_login();
 
-$page_title = 'Tours';
-$page_eyebrow = 'Safari';
-$active_nav = 'tours';
+$menuGroup = $_GET['menu_group'] ?? '';
+$isTripFilter = $menuGroup === 'trip';
+
+$page_title = $isTripFilter ? 'Trip Tours' : 'Tours';
+$page_eyebrow = $isTripFilter ? 'Trip' : 'Safari';
+$active_nav = $isTripFilter ? 'trip-tours' : 'tours';
 $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/tours/form.php')) . '">Add tour</a>';
 
+$where = $isTripFilter ? "WHERE c.menu_group IN ('trip', 'school')" : '';
 $tours = db()->query("SELECT t.id, t.title, t.budget_type, t.price, t.days, t.scheduled_date, t.status, t.is_featured,
         c.name AS category_name, o.company_name AS operator_name,
         (SELECT COUNT(*) FROM tour_destinations td WHERE td.tour_id = t.id) AS destination_count
     FROM tours t
     JOIN tour_categories c ON c.id = t.category_id
     LEFT JOIN tour_operators o ON o.id = t.operator_id
+    $where
     ORDER BY t.created_at DESC")->fetchAll();
 
 require __DIR__ . '/../includes/header.php';
@@ -23,9 +28,9 @@ require __DIR__ . '/../includes/header.php';
 <div class="panel">
   <?php if (!$tours): ?>
     <div class="empty-state">
-      <div class="empty-state__title">No tours yet</div>
-      <div class="empty-state__body">Add Countries, Tour Categories and Destinations first, then build your first tour itinerary here.</div>
-      <a class="btn btn--primary" href="<?= h(url('/admin/tours/form.php')) ?>">Add the first tour</a>
+      <div class="empty-state__title"><?= $isTripFilter ? 'No trip tours yet' : 'No tours yet' ?></div>
+      <div class="empty-state__body"><?= $isTripFilter ? 'Add a tour and choose a Trip Tours or School Trips category to see it here.' : 'Add Countries, Tour Categories and Destinations first, then build your first tour itinerary here.' ?></div>
+      <a class="btn btn--primary" href="<?= h(url('/admin/tours/form.php')) ?>">Add <?= $isTripFilter ? 'a trip tour' : 'the first tour' ?></a>
     </div>
   <?php else: ?>
     <table class="table">
