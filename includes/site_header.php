@@ -11,13 +11,6 @@ $render_site_nav = static function () {
     $nav_experience_types = db()->query('SELECT name, slug, sort_order FROM experience_types ORDER BY sort_order')->fetchAll();
     $nav_activities = db()->query('SELECT id, name FROM activities ORDER BY name')->fetchAll();
 
-    // Published-tour count per category (primary category OR tagged as an
-    // Additional category), keyed by category id, for the nav dropdown badges.
-    $nav_category_tour_counts = db()->query("SELECT c.id, COUNT(DISTINCT t.id) AS tour_count
-        FROM tour_categories c
-        LEFT JOIN tours t ON t.status = 'published' AND (t.category_id = c.id OR EXISTS (SELECT 1 FROM tour_extra_categories tec WHERE tec.tour_id = t.id AND tec.category_id = c.id))
-        GROUP BY c.id")->fetchAll(PDO::FETCH_KEY_PAIR);
-
     $nav_operator_count = (int) db()->query('SELECT COUNT(*) FROM tour_operators')->fetchColumn();
 
     require __DIR__ . '/site_nav.php';
