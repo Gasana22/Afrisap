@@ -13,7 +13,7 @@ if ($typeSlug !== '') {
     $type = $stmt->fetch();
 }
 
-$allTypes = db()->query('SELECT * FROM experience_types ORDER BY name')->fetchAll();
+$allTypes = db()->query('SELECT * FROM experience_types ORDER BY sort_order')->fetchAll();
 
 $page_title = ($type ? $type['name'] : 'Experiential Tours') . ' - Safarisap';
 require __DIR__ . '/includes/site_header.php';
@@ -31,10 +31,10 @@ require __DIR__ . '/includes/site_header.php';
 <section class="section">
   <div class="wrap">
     <div class="experience-grid">
-      <?php foreach ($allTypes as $i => $t): ?>
+      <?php foreach ($allTypes as $t): ?>
         <a href="<?= h(url('/experiences.php?type=' . $t['slug'])) ?>" class="experience-tile">
           <div class="experience-tile__title"><?= h(str_replace(' Experience', '', $t['name'])) ?></div>
-          <div class="experience-tile__number"><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></div>
+          <div class="experience-tile__number"><?= str_pad((string) $t['sort_order'], 2, '0', STR_PAD_LEFT) ?></div>
         </a>
       <?php endforeach; ?>
     </div>

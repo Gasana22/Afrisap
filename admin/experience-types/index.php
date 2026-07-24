@@ -9,7 +9,7 @@ $page_eyebrow = 'Experiential';
 $active_nav = 'experience-types';
 $page_action_html = '<a class="btn btn--primary" href="' . h(url('/admin/experience-types/form.php')) . '">Add experience type</a>';
 
-$experienceTypes = db()->query('SELECT * FROM experience_types ORDER BY name')->fetchAll();
+$experienceTypes = db()->query('SELECT * FROM experience_types ORDER BY sort_order')->fetchAll();
 
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -28,6 +28,7 @@ require __DIR__ . '/../includes/header.php';
           <th>Photo</th>
           <th>Name</th>
           <th>Slug</th>
+          <th>Order</th>
           <th>Short description</th>
           <th></th>
         </tr>
@@ -44,6 +45,7 @@ require __DIR__ . '/../includes/header.php';
             </td>
             <td><?= h($type['name']) ?></td>
             <td class="table__meta"><?= h($type['slug']) ?></td>
+            <td class="table__meta"><?= (int) $type['sort_order'] ?></td>
             <td class="table__meta"><?= h($type['short_description'] ?? '') ?></td>
             <td>
               <div class="table__actions">

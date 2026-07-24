@@ -13,7 +13,7 @@ function slugify_experience_type(string $value): string
 }
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
-$type = ['name' => '', 'slug' => '', 'image_path' => null, 'short_description' => ''];
+$type = ['name' => '', 'slug' => '', 'sort_order' => 0, 'image_path' => null, 'short_description' => ''];
 $errors = [];
 
 if ($id) {
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $type['name'] = trim($_POST['name'] ?? '');
     $type['short_description'] = trim($_POST['short_description'] ?? '');
+    $type['sort_order'] = (int) ($_POST['sort_order'] ?? 0);
     $type['slug'] = $_POST['slug'] !== '' ? slugify_experience_type($_POST['slug']) : slugify_experience_type($type['name']);
 
     if ($type['name'] === '') {
@@ -52,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         try {
             if ($id) {
-                $stmt = db()->prepare('UPDATE experience_types SET name = ?, slug = ?, image_path = ?, short_description = ? WHERE id = ?');
-                $stmt->execute([$type['name'], $type['slug'], $type['image_path'], $type['short_description'], $id]);
+                $stmt = db()->prepare('UPDATE experience_types SET name = ?, slug = ?, sort_order = ?, image_path = ?, short_description = ? WHERE id = ?');
+                $stmt->execute([$type['name'], $type['slug'], $type['sort_order'], $type['image_path'], $type['short_description'], $id]);
             } else {
-                $stmt = db()->prepare('INSERT INTO experience_types (name, slug, image_path, short_description) VALUES (?, ?, ?, ?)');
-                $stmt->execute([$type['name'], $type['slug'], $type['image_path'], $type['short_description']]);
+                $stmt = db()->prepare('INSERT INTO experience_types (name, slug, sort_order, image_path, short_description) VALUES (?, ?, ?, ?, ?)');
+                $stmt->execute([$type['name'], $type['slug'], $type['sort_order'], $type['image_path'], $type['short_description']]);
             }
             flash_set('success', 'Experience type saved.');
             redirect('/admin/experience-types/index.php');
@@ -103,6 +104,11 @@ require __DIR__ . '/../includes/header.php';
         <div class="form-field">
           <label for="short_description">Short description</label>
           <input type="text" id="short_description" name="short_description" value="<?= h($type['short_description']) ?>" maxlength="200" placeholder="A few words for the homepage card">
+        </div>
+        <div class="form-field">
+          <label for="sort_order">Menu order</label>
+          <input type="number" id="sort_order" name="sort_order" value="<?= (int) $type['sort_order'] ?>" min="0">
+          <span class="hint">Controls the order and the number badge shown in the Experiential Tours nav dropdown.</span>
         </div>
       </div>
       <div class="form-actions">

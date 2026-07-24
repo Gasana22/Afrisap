@@ -383,6 +383,7 @@ CREATE TABLE `experience_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `slug` varchar(120) NOT NULL,
+  `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
   `image_path` varchar(255) DEFAULT NULL,
   `short_description` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -879,12 +880,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `experience_types` WRITE;
 /*!40000 ALTER TABLE `experience_types` DISABLE KEYS */;
-INSERT INTO `experience_types` (`id`, `name`, `slug`, `short_description`) VALUES
-(1,'Cultural Experience','cultural-experience',"Meet Uganda's tribes and traditions"),
-(2,'Farm Experience','farm-experience','Hands-on visits to working farms'),
-(3,'Manufactural/Factory Experience','manufactural-factory-experience','Behind the scenes on the factory floor'),
-(4,'Sports Experience','sports-experience','Local matches, pitches and players'),
-(5,'Ghetto Experience','ghetto-experience','Real neighbourhood life, guided and safe');
+INSERT INTO `experience_types` (`id`, `name`, `slug`, `sort_order`, `short_description`) VALUES
+(1,'Cultural Experience','cultural-experience',1,"Meet Uganda's tribes and traditions"),
+(2,'Farm Experience','farm-experience',2,'Hands-on visits to working farms'),
+(3,'Manufactural/Factory Experience','manufactural-factory-experience',4,'Behind the scenes on the factory floor'),
+(4,'Sports Experience','sports-experience',5,'Local matches, pitches and players'),
+(5,'Ghetto Experience','ghetto-experience',3,'Real neighbourhood life, guided and safe');
 /*!40000 ALTER TABLE `experience_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -940,7 +941,7 @@ INSERT INTO `tour_categories` VALUES
 (12,'trip','Boat Cruise Trips','boat-cruise-trips',5),
 (13,'trip','Beach Trips (Lake Victoria)','beach-trips',6),
 (14,'trip','City Trips (East Africa)','city-trips',7),
-(15,'school','School Trips','school-trips',1),
+(15,'school','School Trips','school-trips',8),
 (16,'specialised','Group Tours','group-tours',1);
 /*!40000 ALTER TABLE `tour_categories` ENABLE KEYS */;
 UNLOCK TABLES;
