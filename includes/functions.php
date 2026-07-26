@@ -11,9 +11,30 @@ function app_config(): array
     return $config;
 }
 
+/**
+ * Detects the origin (scheme://host) the current request actually arrived
+ * on, so links and asset tags work regardless of what APP_URL is set to
+ * (or not set to) in .env - important since .env is never shipped/checked
+ * in and the app is commonly unzipped and run on whatever host/port is
+ * available. Falls back to null when running outside a web request (there
+ * is no such call site in this codebase today, but CLI scripts could add one).
+ */
+function detected_base_url(): ?string
+{
+    if (empty($_SERVER['HTTP_HOST'])) {
+        return null;
+    }
+
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['SERVER_PORT'] ?? null) == 443)
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+
+    return ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+}
+
 function base_url(string $path = ''): string
 {
-    $url = app_config()['app']['url'];
+    $url = detected_base_url() ?? app_config()['app']['url'];
 
     return $path === '' ? $url : $url . '/' . ltrim($path, '/');
 }
