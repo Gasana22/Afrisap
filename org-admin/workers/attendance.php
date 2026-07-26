@@ -51,9 +51,9 @@ if (is_post() && csrf_verify()) {
     $GLOBALS['_page_errors'] = $errors;
 }
 
-$selectedWorkerId = clean_int($_GET['worker_id'] ?? 0) ?: (int) ($workers[0]['id'] ?? 0);
-$month = clean_int($_GET['month'] ?? 0) ?: (int) date('n');
-$year = clean_int($_GET['year'] ?? 0) ?: (int) date('Y');
+$selectedWorkerId = (int) clean_int($_GET['worker_id'] ?? 0) ?: (int) ($workers[0]['id'] ?? 0);
+$month = (int) clean_int($_GET['month'] ?? 0) ?: (int) date('n');
+$year = (int) clean_int($_GET['year'] ?? 0) ?: (int) date('Y');
 $month = max(1, min(12, $month));
 
 $selectedWorker = $selectedWorkerId ? tenant_find('workers', $orgId, $selectedWorkerId) : null;

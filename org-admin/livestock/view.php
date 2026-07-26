@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$animalId = clean_int($_GET['id'] ?? 0);
+$animalId = (int) clean_int($_GET['id'] ?? 0);
 $animal = tenant_find('animals', $orgId, $animalId);
 
 if (!$animal) {

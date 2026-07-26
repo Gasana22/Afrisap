@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$batchId = clean_int($_GET['id'] ?? 0);
+$batchId = (int) clean_int($_GET['id'] ?? 0);
 $batch = tenant_find('trace_batches', $orgId, $batchId);
 
 if (!$batch) {

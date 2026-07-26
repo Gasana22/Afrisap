@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../includes/bootstrap.php';
 
 $admin = require_platform_admin();
 
-$id = clean_int($_GET['id'] ?? 0);
+$id = (int) clean_int($_GET['id'] ?? 0);
 $organization = db_one('SELECT * FROM organizations WHERE id = :id', ['id' => $id]);
 
 if (!$organization) {

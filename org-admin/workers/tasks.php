@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$farmId = clean_int($_GET['farm_id'] ?? 0);
+$farmId = (int) clean_int($_GET['farm_id'] ?? 0);
 
 $extraSql = '';
 $params = [];

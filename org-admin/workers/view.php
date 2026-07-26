@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$workerId = clean_int($_GET['id'] ?? 0);
+$workerId = (int) clean_int($_GET['id'] ?? 0);
 $worker = tenant_find('workers', $orgId, $workerId);
 
 if (!$worker) {

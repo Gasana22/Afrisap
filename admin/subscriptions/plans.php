@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../includes/bootstrap.php';
 
 $admin = require_platform_admin();
 
-$editId = clean_int($_GET['edit'] ?? 0);
+$editId = (int) clean_int($_GET['edit'] ?? 0);
 $editingPlan = $editId ? db_one('SELECT * FROM subscription_plans WHERE id = :id', ['id' => $editId]) : null;
 
 $errors = [];

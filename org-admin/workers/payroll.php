@@ -84,7 +84,7 @@ if (is_post() && csrf_verify()) {
 
 $GLOBALS['_page_errors'] = $errors;
 
-$filterWorkerId = clean_int($_GET['worker_id'] ?? 0);
+$filterWorkerId = (int) clean_int($_GET['worker_id'] ?? 0);
 $filterStart = $_GET['start'] ?? '';
 $filterEnd = $_GET['end'] ?? '';
 

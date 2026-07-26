@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$itemId = clean_int($_GET['item_id'] ?? $_POST['item_id'] ?? 0);
+$itemId = (int) clean_int($_GET['item_id'] ?? $_POST['item_id'] ?? 0);
 $item = $itemId ? tenant_find('inventory_items', $orgId, $itemId) : null;
 
 $errors = [];

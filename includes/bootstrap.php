@@ -20,14 +20,51 @@ ini_set('error_log', LOGS_PATH . '/errors.log');
 set_exception_handler(function (Throwable $e): void {
     app_log_error($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
 
+    http_response_code(500);
+
+    // These two failure modes mean the app hasn't finished being set up
+    // (not a real application bug), so explain them plainly - regardless
+    // of debug mode - instead of a blank "something went wrong" that looks
+    // identical to every page being broken.
+    if ($e instanceof PDOException) {
+        render_setup_notice(
+            'Can\'t connect to the database',
+            'Copy .env.example to .env and fill in DB_HOST/DB_NAME/DB_USER/DB_PASSWORD for your MySQL/MariaDB
+             server, create the database, then run:<br><code>php database/migrate.php</code><br><code>php database/seed.php</code>
+             (optional, adds demo data). See docs/SETUP.md for the full walkthrough.'
+        );
+
+        return;
+    }
+
+    if (str_contains($e->getMessage(), 'vendor/autoload.php')) {
+        render_setup_notice(
+            'Dependencies not installed',
+            'Run <code>composer install</code> in the project root, then reload this page.'
+        );
+
+        return;
+    }
+
     if (app_config()['app']['debug']) {
-        http_response_code(500);
         echo '<pre>' . e($e->getMessage() . "\n" . $e->getTraceAsString()) . '</pre>';
     } else {
-        http_response_code(500);
         echo 'Something went wrong. Please try again later.';
     }
 });
+
+function render_setup_notice(string $title, string $instructions): void
+{
+    echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
+        . '<title>Setup required</title>'
+        . '<style>body{font-family:system-ui,sans-serif;background:#f5f7f6;color:#1f2937;display:flex;'
+        . 'min-height:100vh;align-items:center;justify-content:center;margin:0;padding:1.5rem;}'
+        . '.box{max-width:560px;background:#fff;border-radius:14px;padding:2rem;box-shadow:0 1px 4px rgba(0,0,0,.08);}'
+        . 'h1{font-size:1.25rem;margin:0 0 .75rem;color:#1a7a4c;} '
+        . 'code{background:#f1f2f4;padding:.15em .4em;border-radius:4px;display:inline-block;margin:.15em 0;}'
+        . 'p{line-height:1.6;}</style></head><body><div class="box">'
+        . '<h1>' . e($title) . '</h1><p>' . $instructions . '</p></div></body></html>';
+}
 
 require_once ROOT_PATH . '/includes/db.php';
 require_once ROOT_PATH . '/includes/session.php';

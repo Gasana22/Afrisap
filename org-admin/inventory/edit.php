@@ -7,7 +7,7 @@ $orgId = (int) $organization['id'];
 
 $categoryOptions = ['Fertilizer', 'Seeds', 'Tools', 'Pesticides', 'Feed', 'Other'];
 
-$itemId = clean_int($_GET['id'] ?? 0);
+$itemId = (int) clean_int($_GET['id'] ?? 0);
 $item = tenant_find('inventory_items', $orgId, $itemId);
 
 if (!$item) {

@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$cropCycleId = clean_int($_GET['crop_cycle_id'] ?? 0);
+$cropCycleId = (int) clean_int($_GET['crop_cycle_id'] ?? 0);
 $cycle = tenant_find('crop_cycles', $orgId, $cropCycleId);
 
 if (!$cycle) {

@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$id = clean_int($_GET['id'] ?? 0);
+$id = (int) clean_int($_GET['id'] ?? 0);
 $cycle = tenant_find('crop_cycles', $orgId, $id);
 
 if (!$cycle) {

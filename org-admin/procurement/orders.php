@@ -7,7 +7,7 @@ $orgId = (int) $organization['id'];
 
 $statusFilter = clean_string($_GET['status'] ?? '');
 $paymentStatusFilter = clean_string($_GET['payment_status'] ?? '');
-$viewId = clean_int($_GET['view'] ?? 0);
+$viewId = (int) clean_int($_GET['view'] ?? 0);
 
 $extraSql = '';
 $params = [];

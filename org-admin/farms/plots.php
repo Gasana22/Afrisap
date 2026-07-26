@@ -5,7 +5,7 @@ $currentUser = require_org_user();
 $organization = current_organization();
 $orgId = (int) $organization['id'];
 
-$blockId = clean_int($_GET['block_id'] ?? 0);
+$blockId = (int) clean_int($_GET['block_id'] ?? 0);
 $block = db_one(
     'SELECT b.*, f.name AS farm_name, f.id AS farm_id FROM blocks b
      JOIN farms f ON f.id = b.farm_id WHERE b.id = :id AND f.organization_id = :org_id',

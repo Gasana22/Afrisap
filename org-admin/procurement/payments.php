@@ -76,7 +76,7 @@ if (is_post() && csrf_verify()) {
 
 $GLOBALS['_page_errors'] = $errors;
 
-$supplierFilter = clean_int($_GET['supplier_id'] ?? 0);
+$supplierFilter = (int) clean_int($_GET['supplier_id'] ?? 0);
 $suppliers = tenant_all('suppliers', $orgId, 'ORDER BY name');
 
 $paymentExtraSql = '';
