@@ -9,7 +9,7 @@ render_public_navbar();
 <section class="hero-section py-5">
   <div class="container text-center">
     <h1 class="fw-bold">Simple, transparent pricing</h1>
-    <p class="lead">Pick the plan that fits your operation today &mdash; upgrade any time as you grow.</p>
+    <p class="lead">Pick the plan that fits your operation today. Upgrade any time as you grow.</p>
     <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
       <span class="text-white">Monthly</span>
       <div class="form-check form-switch">
@@ -50,7 +50,7 @@ render_public_navbar();
                   <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i><?= e(humanize((string) $feature)) ?></li>
                 <?php endforeach; ?>
               </ul>
-              <a href="<?= base_url('public/register.php') ?>" class="btn <?= $isFeatured ? 'btn-primary' : 'btn-outline-primary' ?> w-100">Get Started</a>
+              <a href="<?= base_url('public/register.php') ?>" class="btn <?= $isFeatured ? 'btn-primary' : 'btn-outline-primary' ?> w-100">Start Free Trial</a>
             </div>
           </div>
         <?php endforeach; ?>

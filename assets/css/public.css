@@ -67,6 +67,10 @@ a { color: var(--sfp-primary); }
     .feature-card:hover { transform: translateY(-4px); }
 }
 
+.feature-card-core {
+    border-top: 3px solid var(--sfp-primary);
+}
+
 .feature-icon {
     width: 52px;
     height: 52px;

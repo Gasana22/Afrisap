@@ -18,12 +18,12 @@ render_public_navbar();
         <h2 class="fw-bold mb-3">Our Story</h2>
         <p class="text-muted">Smart Farm Platform started with a simple observation: farm operators were running
           serious agribusinesses on paper notebooks, WhatsApp groups and disconnected spreadsheets. We set out to
-          build a single, affordable, multi-tenant platform that gives every farm &mdash; from a smallholder
-          cooperative to a multi-site commercial operation &mdash; the same tools that large agribusinesses use to
+          build a single, affordable, multi-tenant platform that gives every farm, from a smallholder
+          cooperative to a multi-site commercial operation, the same tools that large agribusinesses use to
           plan, track and prove where their produce comes from.</p>
-        <p class="text-muted">Today, farm managers across the region use our platform to manage crop cycles,
-          livestock, workers, inventory, and finances, and to give their customers full farm-to-shelf
-          traceability with a single QR code scan.</p>
+        <p class="text-muted">The platform lets a farm manager run crop cycles, livestock, workers, inventory and
+          finances from one login, and give their customers full farm-to-shelf traceability with a single QR
+          code scan.</p>
       </div>
       <div class="col-lg-6 text-center">
         <i class="bi bi-tree" style="font-size: 12rem; color: var(--sfp-primary); opacity: .25;"></i>
@@ -37,7 +37,7 @@ render_public_navbar();
     <div class="section-heading">
       <h2 class="fw-bold">Our Mission</h2>
       <p class="text-muted">To give every farm, regardless of size, the same field-to-sale record keeping that
-        large agribusinesses already rely on &mdash; so a harvest, a vaccination record, or a shipment can be traced
+        large agribusinesses already rely on, so a harvest, a vaccination record, or a shipment can be traced
         back to exactly where and when it happened.</p>
     </div>
   </div>

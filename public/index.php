@@ -1,10 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/bootstrap.php';
 
-$orgCount = (int) db_value("SELECT COUNT(*) FROM organizations WHERE subscription_status != 'suspended'");
-$farmCount = (int) db_value('SELECT COUNT(*) FROM farms');
-$batchCount = (int) db_value('SELECT COUNT(*) FROM trace_batches');
-
 $features = [
     ['icon' => 'bi-flower1', 'title' => 'Crop Management', 'text' => 'Plan seasons, track crop cycles from planting to harvest, and log every field operation with GPS-tagged records.'],
     ['icon' => 'bi-piggy-bank', 'title' => 'Livestock Tracking', 'text' => 'Register animals, monitor health events, breeding and weight history, all in one animal record.'],
@@ -22,7 +18,7 @@ render_public_navbar();
     <div class="row align-items-center">
       <div class="col-lg-7">
         <h1 class="display-4 mb-3">Run your entire farm business from one platform</h1>
-        <p class="lead mb-4">Crops, livestock, workers, inventory, finance and full farm-to-consumer traceability &mdash; built for modern agribusinesses of every size.</p>
+        <p class="lead mb-4">Crops, livestock, workers, inventory, finance and full farm-to-consumer traceability, built for modern agribusinesses of every size.</p>
         <div class="d-flex flex-wrap gap-3">
           <a href="<?= base_url('public/register.php') ?>" class="btn btn-light btn-lg text-primary fw-semibold">Start Free Trial</a>
           <a href="<?= base_url('public/demo.php') ?>" class="btn btn-outline-light btn-lg">Request a Demo</a>
@@ -39,20 +35,20 @@ render_public_navbar();
   <div class="container">
     <div class="row text-center g-4">
       <div class="col-6 col-md-3">
-        <div class="display-6 fw-bold text-primary"><?= number_format(max($farmCount, 500)) ?>+</div>
-        <div class="text-muted">Farms managed</div>
+        <div class="display-6 fw-bold text-primary">6</div>
+        <div class="text-muted">Core modules, one login</div>
       </div>
       <div class="col-6 col-md-3">
-        <div class="display-6 fw-bold text-primary"><?= number_format(max($orgCount, 120)) ?>+</div>
-        <div class="text-muted">Agribusinesses onboard</div>
+        <div class="display-6 fw-bold text-primary">100%</div>
+        <div class="text-muted">Data isolated per organization</div>
       </div>
       <div class="col-6 col-md-3">
-        <div class="display-6 fw-bold text-primary"><?= number_format(max($batchCount, 8500)) ?>+</div>
-        <div class="text-muted">Batches traced</div>
+        <div class="display-6 fw-bold text-primary">14</div>
+        <div class="text-muted">Days free, no card required</div>
       </div>
       <div class="col-6 col-md-3">
-        <div class="display-6 fw-bold text-primary">99.9%</div>
-        <div class="text-muted">Platform uptime</div>
+        <div class="display-6 fw-bold text-primary">24/7</div>
+        <div class="text-muted">Access from any device</div>
       </div>
     </div>
   </div>
@@ -88,7 +84,7 @@ render_public_navbar();
       <div class="col-md-4">
         <div class="feature-icon mx-auto"><i class="bi bi-person-plus"></i></div>
         <h3 class="h5 mt-3 fw-semibold">1. Create your account</h3>
-        <p class="text-muted">Sign up in minutes and set up your organization &mdash; no credit card required for the trial.</p>
+        <p class="text-muted">Sign up in minutes and set up your organization. No credit card required for the trial.</p>
       </div>
       <div class="col-md-4">
         <div class="feature-icon mx-auto"><i class="bi bi-diagram-3"></i></div>
@@ -109,7 +105,7 @@ render_public_navbar();
     <div class="p-5 rounded-4 text-center text-white" style="background: var(--sfp-primary);">
       <h2 class="fw-bold mb-3">Ready to modernize your farm operations?</h2>
       <p class="lead mb-4">Join hundreds of agribusinesses already growing smarter with Smart Farm Platform.</p>
-      <a href="<?= base_url('public/register.php') ?>" class="btn btn-light btn-lg text-primary fw-semibold">Start Your Free Trial</a>
+      <a href="<?= base_url('public/register.php') ?>" class="btn btn-light btn-lg text-primary fw-semibold">Start Free Trial</a>
     </div>
   </div>
 </section>

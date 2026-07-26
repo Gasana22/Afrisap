@@ -64,7 +64,7 @@ function render_public_footer_nav(): void
 
     echo '<div class="col-md-2"><p class="' . $footerLabelClass . '">Account</p><ul class="list-unstyled">'
         . '<li><a href="' . $urls['login'] . '">Log In</a></li>'
-        . '<li><a href="' . $urls['register'] . '">Register</a></li></ul></div>';
+        . '<li><a href="' . $urls['register'] . '">Start Free Trial</a></li></ul></div>';
 
     echo '</div><hr class="border-secondary">'
         . '<p class="text-muted small mb-0">&copy; ' . $year . ' Smart Farm Platform. All rights reserved.</p>'

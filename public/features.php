@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/bootstrap.php';
 
-$modules = [
+$coreModules = [
     [
         'icon' => 'bi-flower1',
         'title' => 'Crop Management',
@@ -16,10 +16,20 @@ $modules = [
             weight history, and keep a complete lifecycle record for herds of any size.',
     ],
     [
+        'icon' => 'bi-qr-code',
+        'title' => 'QR Traceability',
+        'text' => 'Assign every production batch a unique batch ID and QR code. Consumers scan the code to see the
+            full chain of custody: origin farm, production date, processing stages and every recorded event.
+            Building trust in your product.',
+    ],
+];
+
+$supportingModules = [
+    [
         'icon' => 'bi-people',
         'title' => 'Worker Management',
         'text' => 'Maintain worker profiles and employee IDs, assign daily tasks, record attendance in the field,
-            and manage payroll &mdash; all tied back to the farms and activities each worker touches.',
+            and manage payroll, all tied back to the farms and activities each worker touches.',
     ],
     [
         'icon' => 'bi-box-seam',
@@ -34,17 +44,10 @@ $modules = [
             financial reports and exports (PDF, Excel, CSV) for season-end reviews and investor updates.',
     ],
     [
-        'icon' => 'bi-qr-code',
-        'title' => 'QR Traceability',
-        'text' => 'Assign every production batch a unique batch ID and QR code. Consumers scan the code to see the
-            full chain of custody &mdash; origin farm, production date, processing stages and every recorded event
-            &mdash; building trust in your product.',
-    ],
-    [
         'icon' => 'bi-truck',
         'title' => 'Supply Chain Events',
-        'text' => 'Record every handoff a batch goes through &mdash; harvest, storage, processing, transport,
-            delivery &mdash; with timestamps, GPS location and photos, so nothing about a product\'s journey is a
+        'text' => 'Record every handoff a batch goes through: harvest, storage, processing, transport, delivery.
+            Each one timestamped with GPS location and photos, so nothing about a product\'s journey is a
             mystery.',
     ],
     [
@@ -67,19 +70,41 @@ render_public_navbar();
 <section class="hero-section py-5">
   <div class="container text-center">
     <h1 class="fw-bold">Every module your farm business needs</h1>
-    <p class="lead">One login, one dashboard, one source of truth &mdash; from the field to the ledger.</p>
+    <p class="lead">One login, one dashboard, one source of truth from the field to the ledger.</p>
   </div>
 </section>
 
 <section class="py-5">
   <div class="container">
     <div class="row g-4">
-      <?php foreach ($modules as $m): ?>
+      <?php foreach ($coreModules as $m): ?>
         <div class="col-md-6 col-lg-4">
-          <div class="feature-card">
+          <div class="feature-card feature-card-core">
             <div class="feature-icon mb-3"><i class="bi <?= e($m['icon']) ?>"></i></div>
             <h2 class="h5 fw-semibold mb-2"><?= $m['title'] ?></h2>
             <p class="text-muted mb-0"><?= $m['text'] ?></p>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="section-heading">
+      <h2 class="fw-bold">Everything else that ships with it</h2>
+      <p class="text-muted">No add-ons and no separate logins. It's all part of the same subscription.</p>
+    </div>
+    <div class="row g-4">
+      <?php foreach ($supportingModules as $i => $m): ?>
+        <div class="col-md-6">
+          <div class="d-flex gap-3 py-3<?= $i < count($supportingModules) - 2 ? ' border-bottom' : '' ?>">
+            <div class="feature-icon flex-shrink-0"><i class="bi <?= e($m['icon']) ?>"></i></div>
+            <div>
+              <h3 class="h6 fw-semibold mb-1"><?= $m['title'] ?></h3>
+              <p class="text-muted small mb-0"><?= $m['text'] ?></p>
+            </div>
           </div>
         </div>
       <?php endforeach; ?>
