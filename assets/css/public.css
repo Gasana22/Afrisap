@@ -3,6 +3,7 @@
     --sfp-primary-dark: #145c3a;
     --sfp-accent: #f2a71b;
     --sfp-dark: #0f2419;
+    --sfp-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 body.ctx-public, body.ctx-auth {
@@ -39,6 +40,9 @@ body.ctx-public, body.ctx-auth {
     border-color: var(--sfp-primary) !important;
 }
 .text-primary { color: var(--sfp-primary) !important; }
+
+.btn { transition: transform 120ms var(--sfp-ease-out); }
+.btn:active { transform: scale(0.97); }
 a { color: var(--sfp-primary); }
 
 .hero-section {
@@ -56,9 +60,12 @@ a { color: var(--sfp-primary); }
     padding: 1.75rem;
     box-shadow: 0 1px 4px rgba(0,0,0,.06);
     height: 100%;
-    transition: transform .15s ease;
+    transition: transform 200ms var(--sfp-ease-out);
 }
-.feature-card:hover { transform: translateY(-4px); }
+
+@media (hover: hover) and (pointer: fine) {
+    .feature-card:hover { transform: translateY(-4px); }
+}
 
 .feature-icon {
     width: 52px;
@@ -80,6 +87,7 @@ a { color: var(--sfp-primary); }
     box-shadow: 0 1px 4px rgba(0,0,0,.06);
     height: 100%;
     border: 2px solid transparent;
+    transition: transform 200ms var(--sfp-ease-out), border-color 200ms ease;
 }
 .pricing-card.featured {
     border-color: var(--sfp-primary);

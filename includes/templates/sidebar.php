@@ -51,4 +51,5 @@ function render_app_sidebar(string $context, string $activePath, ?array $organiz
     echo '</ul></nav>';
     echo '<div class="sidebar-footer"><a href="' . base_url('public/contact.php') . '"><i class="bi bi-life-preserver"></i><span>Help & Support</span></a></div>';
     echo '</aside>';
+    echo '<div class="sidebar-backdrop" id="sidebarBackdrop"></div>';
 }

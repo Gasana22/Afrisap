@@ -35,11 +35,22 @@ const SFP = {
     del(path) { return this.request(path, { method: 'DELETE', body: {} }); },
 };
 
-// Sidebar toggle shared by admin/org-admin/worker dashboards.
+// Sidebar toggle shared by admin/org-admin dashboards. The backdrop dims
+// the page and doubles as a tap-to-close target on mobile.
 document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('appSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+
+    const setOpen = (open) => {
+        sidebar.classList.toggle('open', open);
+        backdrop?.classList.toggle('show', open);
+    };
+
     if (toggle && sidebar) {
-        toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+        toggle.addEventListener('click', () => setOpen(!sidebar.classList.contains('open')));
+    }
+    if (backdrop) {
+        backdrop.addEventListener('click', () => setOpen(false));
     }
 });

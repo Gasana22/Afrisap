@@ -13,6 +13,8 @@
     --sfp-text-muted: #6b7280;
     --sfp-border: #e5e7eb;
     --sfp-radius: 14px;
+    --sfp-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --sfp-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
@@ -35,8 +37,23 @@ body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
     position: sticky;
     top: 0;
     height: 100vh;
-    transition: transform .2s ease;
+    transition: transform 250ms var(--sfp-ease-drawer);
     z-index: 1030;
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    opacity: 0;
+    transition: opacity 250ms ease;
+    z-index: 1025;
+}
+
+.sidebar-backdrop.show {
+    display: block;
+    opacity: 1;
 }
 
 .sidebar-brand {
@@ -69,11 +86,18 @@ body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
     text-decoration: none;
     font-size: .92rem;
     border-left: 3px solid transparent;
+    transition: background-color 150ms ease, color 150ms ease, transform 120ms var(--sfp-ease-out);
 }
 
-.sidebar-nav ul li a:hover {
-    background: rgba(255,255,255,.05);
-    color: #fff;
+@media (hover: hover) and (pointer: fine) {
+    .sidebar-nav ul li a:hover {
+        background: rgba(255,255,255,.05);
+        color: #fff;
+    }
+}
+
+.sidebar-nav ul li a:active {
+    transform: scale(0.98);
 }
 
 .sidebar-nav ul li.active a {
@@ -146,6 +170,7 @@ body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
     align-items: center;
     justify-content: center;
     color: #374151;
+    transition: transform 120ms var(--sfp-ease-out), background-color 150ms ease;
 }
 
 .notif-badge {
@@ -159,11 +184,44 @@ body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
     width: 320px;
     max-height: 360px;
     overflow-y: auto;
+    transform-origin: top right;
+}
+
+/* Bootstrap ships no entrance motion on dropdowns by default - anchor the
+   panel to its trigger instead of having it snap into existence. */
+.dropdown-menu {
+    transform-origin: top right;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 150ms var(--sfp-ease-out), opacity 150ms var(--sfp-ease-out);
+    pointer-events: none;
+}
+
+.dropdown-menu.show {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .btn-user {
     border: none;
     background: transparent;
+    transition: transform 120ms var(--sfp-ease-out);
+}
+
+.btn-icon:active, .btn-user:active {
+    transform: scale(0.94);
+}
+
+/* Generic button press feedback - covers every .btn in the dashboard
+   (save actions, nav buttons, form submits) without touching Bootstrap's
+   own hover/focus color handling. */
+.btn {
+    transition: transform 120ms var(--sfp-ease-out);
+}
+
+.btn:active {
+    transform: scale(0.97);
 }
 
 .avatar-circle {
