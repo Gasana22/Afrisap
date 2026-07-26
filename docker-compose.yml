@@ -18,7 +18,7 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: smart_farm_platform
+      MYSQL_DATABASE: farm
       MYSQL_USER: sfmtp
       MYSQL_PASSWORD: sfmtp_password
       MYSQL_ROOT_PASSWORD: root_password

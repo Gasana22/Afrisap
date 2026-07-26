@@ -18,9 +18,9 @@
 -- time, so running it twice does not error out on duplicate rows.
 -- ==========================================================
 
-DROP DATABASE IF EXISTS smart_farm_platform;
-CREATE DATABASE smart_farm_platform CHARACTER SET utf8mb4;
-USE smart_farm_platform;
+DROP DATABASE IF EXISTS farm;
+CREATE DATABASE farm CHARACTER SET utf8mb4;
+USE farm;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

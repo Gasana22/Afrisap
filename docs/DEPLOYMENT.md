@@ -40,7 +40,7 @@ docker compose exec app php database/seed.php   # only for a demo/staging enviro
 daily cron:
 
 ```bash
-0 2 * * * mysqldump -u sfmtp -p'...' smart_farm_platform | gzip > /path/to/database/backups/$(date +\%F).sql.gz
+0 2 * * * mysqldump -u sfmtp -p'...' farm | gzip > /path/to/database/backups/$(date +\%F).sql.gz
 ```
 
 ## Zero-downtime schema changes

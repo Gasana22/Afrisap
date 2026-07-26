@@ -15,7 +15,7 @@ function db(): PDO
 
     $host = env('DB_HOST', 'localhost');
     $port = env('DB_PORT', 3306);
-    $name = env('DB_NAME', 'smart_farm_platform');
+    $name = env('DB_NAME', 'farm');
     $charset = env('DB_CHARSET', 'utf8mb4');
     $user = env('DB_USER', 'root');
     $password = env('DB_PASSWORD', '');
