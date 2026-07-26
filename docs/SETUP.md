@@ -7,6 +7,22 @@
 - Composer 2.x
 - (Optional) Docker + Docker Compose for a one-command local environment
 
+## The most common setup mistake
+
+**Your web server's document root must point at the project root (the folder containing this
+`docs/` directory, `admin/`, `org-admin/`, etc.) - NOT at the `public/` subfolder.**
+
+Many PHP frameworks use `public/` as the web root by convention, so it's an easy assumption to
+carry over here - but in this project `public/` is just the marketing site (landing page, pricing,
+login), sitting *next to* `admin/`, `org-admin/`, `worker/`, not above them. If you point your
+document root at `public/`, the landing page will load (since it's literally `public/index.php`)
+but every other link on the site - login, the dashboards, everything - will 404, because e.g.
+`admin/dashboard.php` doesn't exist inside `public/`.
+
+If only the landing page works and clicking anything else 404s, this is almost certainly the
+cause: fix your document root (or vhost/`.htaccess` root, or hosting control panel's "site
+folder" setting) to point one level up, at the project root itself.
+
 ## Option A: Docker (recommended)
 
 ```bash

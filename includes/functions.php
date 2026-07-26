@@ -29,7 +29,41 @@ function detected_base_url(): ?string
         || (($_SERVER['SERVER_PORT'] ?? null) == 443)
         || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 
-    return ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+    return ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . detected_base_path();
+}
+
+/**
+ * Detects the URL path prefix the app is installed under, e.g. "/farm"
+ * when the app lives at https://example.com/farm/ rather than the domain
+ * root. Compares the currently executing script's filesystem path against
+ * ROOT_PATH to find its path relative to the app, then checks whether the
+ * request's URL path ends with that same relative path - whatever comes
+ * before it is the install prefix. Returns '' at the domain root, and ''
+ * (a safe no-op) if detection isn't possible (e.g. CLI).
+ */
+function detected_base_path(): string
+{
+    $scriptFile = $_SERVER['SCRIPT_FILENAME'] ?? '';
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+
+    if ($scriptFile === '' || $scriptName === '' || !defined('ROOT_PATH')) {
+        return '';
+    }
+
+    $scriptFile = str_replace('\\', '/', $scriptFile);
+    $root = str_replace('\\', '/', ROOT_PATH);
+
+    if (!str_starts_with($scriptFile, $root)) {
+        return '';
+    }
+
+    $relative = ltrim(substr($scriptFile, strlen($root)), '/');
+
+    if ($relative !== '' && str_ends_with($scriptName, $relative)) {
+        return rtrim(substr($scriptName, 0, -strlen($relative)), '/');
+    }
+
+    return '';
 }
 
 function base_url(string $path = ''): string
