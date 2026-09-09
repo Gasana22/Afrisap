@@ -20,6 +20,7 @@ function org_admin_sidebar_items(): array
     return [
         ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'href' => 'org-admin/index.php'],
         ['icon' => 'bi-geo-alt', 'label' => 'Farms', 'href' => 'org-admin/farms/index.php'],
+        ['icon' => 'bi-map', 'label' => 'Farm Map', 'href' => 'org-admin/farms/map.php'],
         ['icon' => 'bi-flower1', 'label' => 'Crop Management', 'href' => 'org-admin/crops/index.php'],
         ['icon' => 'bi-egg-fried', 'label' => 'Livestock', 'href' => 'org-admin/livestock/index.php'],
         ['icon' => 'bi-person-workspace', 'label' => 'Workers', 'href' => 'org-admin/workers/index.php'],
