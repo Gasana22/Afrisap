@@ -1,0 +1,42 @@
+/* Shared design tokens - single source of truth for color, type, spacing,
+   radius and motion. Loaded before every context stylesheet (public.css,
+   app-shell.css, dashboard.css, admin.css, worker.css), which reference
+   these variables instead of redeclaring their own :root blocks. */
+
+:root {
+    /* Brand palette */
+    --sfp-primary: #1a7a4c;
+    --sfp-primary-dark: #145c3a;
+    --sfp-primary-light: #e6f4ec;
+    --sfp-dark: #0f2419;
+    --sfp-accent: #f2a71b;
+    --sfp-accent-dark: #c98a10;
+    --sfp-danger: #dc3545;
+    --sfp-cream: #faf6ec;
+
+    /* Neutrals */
+    --sfp-bg: #f5f7f6;
+    --sfp-sidebar-bg: #123023;
+    --sfp-sidebar-active: #1a7a4c;
+    --sfp-text-muted: #6b7280;
+    --sfp-border: #e5e7eb;
+
+    /* Typography */
+    --font-display: 'Fraunces', 'Georgia', serif;
+    --font-body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+    /* Radius / motion */
+    --sfp-radius: 14px;
+    --sfp-radius-lg: 20px;
+    --sfp-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --sfp-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+body {
+    font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+}

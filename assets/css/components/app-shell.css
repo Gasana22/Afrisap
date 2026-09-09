@@ -1,25 +1,9 @@
 /* Shared dashboard chrome: sidebar, topbar, stat cards, badges, tables.
-   Imported by admin.css, dashboard.css and worker.css. */
-
-:root {
-    --sfp-primary: #1a7a4c;
-    --sfp-primary-dark: #145c3a;
-    --sfp-primary-light: #e6f4ec;
-    --sfp-accent: #f2a71b;
-    --sfp-danger: #dc3545;
-    --sfp-bg: #f5f7f6;
-    --sfp-sidebar-bg: #123023;
-    --sfp-sidebar-active: #1a7a4c;
-    --sfp-text-muted: #6b7280;
-    --sfp-border: #e5e7eb;
-    --sfp-radius: 14px;
-    --sfp-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-    --sfp-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-}
+   Imported by admin.css, dashboard.css and worker.css. Design tokens
+   (colors, fonts, radius) live in tokens.css, loaded before this file. */
 
 body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
     background: var(--sfp-bg);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 .app-layout {
@@ -58,6 +42,7 @@ body.ctx-admin, body.ctx-org-admin, body.ctx-worker {
 
 .sidebar-brand {
     padding: 1.25rem 1.25rem;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 1.05rem;
     border-bottom: 1px solid rgba(255,255,255,.08);
