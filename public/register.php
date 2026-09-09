@@ -79,11 +79,11 @@ render_auth_layout_start([
     ],
 ]);
 ?>
-    <h4 class="mb-1">Start your 14-day free trial</h4>
+    <h3 class="mb-1">Start your 14-day free trial</h3>
     <p class="text-muted small mb-3">No credit card required.</p>
     <?php render_alerts(); ?>
 
-    <form method="post">
+    <form method="post" data-confirm-submit>
       <?= csrf_field() ?>
       <div class="mb-3">
         <label class="form-label">Organization / Farm Name</label>

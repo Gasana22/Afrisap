@@ -90,14 +90,14 @@ render_auth_layout_start([
 ]);
 ?>
     <?php if ($isResetMode): ?>
-      <h4 class="mb-3">Set a new password</h4>
+      <h3 class="mb-3">Set a new password</h3>
       <?php render_alerts(); ?>
 
       <?php if ($resetDone): ?>
         <div class="alert alert-success">Your password has been updated. You can now log in.</div>
         <a href="<?= base_url('public/login.php') ?>" class="btn btn-primary w-100">Go to Log In</a>
       <?php else: ?>
-        <form method="post">
+        <form method="post" data-confirm-submit>
           <?= csrf_field() ?>
           <input type="hidden" name="token" value="<?= e($token) ?>">
           <div class="mb-3">
@@ -112,7 +112,7 @@ render_auth_layout_start([
         </form>
       <?php endif; ?>
     <?php else: ?>
-      <h4 class="mb-1">Forgot your password?</h4>
+      <h3 class="mb-1">Forgot your password?</h3>
       <p class="text-muted small mb-3">Enter your email and we'll send you a link to reset it.</p>
       <?php render_alerts(); ?>
 
@@ -120,7 +120,7 @@ render_auth_layout_start([
         <div class="alert alert-success">If that email exists in our system, we've sent a reset link to it. Please check your inbox.</div>
         <a href="<?= base_url('public/login.php') ?>" class="btn btn-outline-primary w-100">Back to Log In</a>
       <?php else: ?>
-        <form method="post">
+        <form method="post" data-confirm-submit>
           <?= csrf_field() ?>
           <div class="mb-3">
             <label class="form-label">Email address</label>

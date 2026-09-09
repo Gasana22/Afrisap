@@ -47,9 +47,9 @@ render_auth_layout_start([
     'brand_href' => base_url('worker/login.php'),
 ]);
 ?>
-    <h4 class="mb-3">Field Worker Login</h4>
+    <h3 class="mb-3">Field Worker Login</h3>
     <?php render_alerts(); ?>
-    <form method="post">
+    <form method="post" data-confirm-submit>
       <?= csrf_field() ?>
       <div class="mb-3">
         <label class="form-label">Email address</label>

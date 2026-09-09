@@ -40,3 +40,14 @@ h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--font-display);
     font-weight: 600;
 }
+
+/* Bootstrap's own reboot normally sets this size scale; these are the
+   same values, restated here so the heading hierarchy still holds if
+   the Bootstrap CDN link is ever slow, blocked, or unavailable - without
+   this, every heading silently collapses to the 16px browser default. */
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }

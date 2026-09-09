@@ -58,7 +58,7 @@ render_auth_layout_start([
     ],
 ]);
 ?>
-    <h4 class="mb-3">Welcome back</h4>
+    <h3 class="mb-3">Welcome back</h3>
     <?php render_alerts(); ?>
 
     <?php if (!empty($GLOBALS['_memberships_to_pick'])): ?>
