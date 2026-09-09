@@ -15,15 +15,18 @@ require_once __DIR__ . '/session.php';
 
 function auth_attempt(string $email, string $password): ?array
 {
+    if (login_rate_limited($email)) {
+        return null;
+    }
+
     $user = db_one('SELECT * FROM users WHERE email = :email', ['email' => $email]);
 
-    if (!$user || $user['status'] !== 'active') {
+    if (!$user || $user['status'] !== 'active' || !password_verify($password, $user['password_hash'])) {
+        record_failed_login($email);
         return null;
     }
 
-    if (!password_verify($password, $user['password_hash'])) {
-        return null;
-    }
+    clear_login_attempts($email);
 
     db_query(
         'UPDATE users SET last_login = NOW(), last_ip = :ip WHERE id = :id',
@@ -31,6 +34,44 @@ function auth_attempt(string $email, string $password): ?array
     );
 
     return $user;
+}
+
+/**
+ * Simple DB-backed login throttle, keyed on email: after
+ * config/auth.php's max_login_attempts failures within lockout_minutes,
+ * further attempts are rejected (as an invalid-credentials response, so
+ * lockout state is never revealed to the caller) until the window rolls
+ * off or a successful login clears the record.
+ */
+function login_rate_limited(string $email): bool
+{
+    $config = require ROOT_PATH . '/config/auth.php';
+    $minutes = (int) $config['lockout_minutes'];
+
+    // The cutoff is computed by MySQL's own NOW() rather than PHP's date(),
+    // since PHP runs in APP_TIMEZONE (e.g. Africa/Kigali) while created_at
+    // is stored in the database's own (UTC) clock - mixing the two would
+    // skew the comparison by the timezone offset. $minutes comes from our
+    // own config, not user input, so interpolating it is safe.
+    $count = (int) db_value(
+        "SELECT COUNT(*) FROM login_attempts WHERE email = :email AND created_at > (NOW() - INTERVAL $minutes MINUTE)",
+        ['email' => $email]
+    );
+
+    return $count >= $config['max_login_attempts'];
+}
+
+function record_failed_login(string $email): void
+{
+    db_insert('login_attempts', [
+        'email' => $email,
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+    ]);
+}
+
+function clear_login_attempts(string $email): void
+{
+    db_delete('login_attempts', 'email = :email', ['email' => $email]);
 }
 
 function auth_login_platform_admin(array $user): void
