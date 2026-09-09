@@ -7,10 +7,13 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config/env.php';
+require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/validation.php';
 require_once __DIR__ . '/../includes/sanitization.php';
 require_once __DIR__ . '/../includes/gps.php';
+require_once __DIR__ . '/../includes/templates/cards.php';
 
 function test_db_available(): bool
 {

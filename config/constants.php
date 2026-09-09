@@ -36,3 +36,13 @@ define('SUBSCRIPTION_PLAN_LIMITS', [
 
 define('TASK_STATUSES', ['pending', 'in_progress', 'completed', 'verified', 'canceled']);
 define('CROP_CYCLE_STATUSES', ['planning', 'procurement', 'nursery', 'field', 'monitoring', 'harvest', 'sales', 'completed']);
+
+// Suggested canonical vocabulary for product_journey.stage, used to render a
+// horizontal progress bar on the public traceability pages. Organizations
+// are free to log any stage name they like (product_journey.stage is plain
+// text) - stages that don't match this list simply aren't marked "done" in
+// the progress bar, but still appear in the detailed journey list beneath it.
+define('TRACE_JOURNEY_STAGES', [
+    'seed', 'nursery', 'field', 'harvest', 'storage',
+    'processing', 'packaging', 'distribution', 'sold',
+]);

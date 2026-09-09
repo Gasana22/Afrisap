@@ -120,6 +120,8 @@ render_header(['title' => ($batch ? humanize($batch['product_type']) . ' - ' : '
       <?php if (!$journey): ?>
         <p class="text-muted mb-5">No journey stages have been recorded for this batch yet.</p>
       <?php else: ?>
+        <?php render_journey_progress($journey); ?>
+        <h4 class="h6 fw-semibold text-muted text-uppercase small mb-3 mt-4">Journey Details</h4>
         <div class="trace-timeline mb-5">
           <?php foreach ($journey as $stage): ?>
             <div class="trace-step">

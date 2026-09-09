@@ -37,3 +37,43 @@ function render_status_badge(string $status): void
 {
     echo '<span class="badge ' . status_badge_class($status) . '">' . e(humanize($status)) . '</span>';
 }
+
+/**
+ * Horizontal stage-progress bar for the public traceability pages, driven
+ * by TRACE_JOURNEY_STAGES (config/constants.php). Each recorded
+ * product_journey row is matched against the canonical list by a
+ * case-insensitive, trimmed comparison of its "stage" value; canonical
+ * stages with no match are shown as upcoming (numbered, not filled).
+ */
+function render_journey_progress(array $journey): void
+{
+    $byStage = [];
+    foreach ($journey as $row) {
+        $key = strtolower(trim((string) $row['stage']));
+        if (!isset($byStage[$key])) {
+            $byStage[$key] = $row;
+        }
+    }
+
+    $stages = TRACE_JOURNEY_STAGES;
+    $last = count($stages) - 1;
+
+    echo '<div class="stage-progress">';
+    foreach ($stages as $i => $stage) {
+        $match = $byStage[$stage] ?? null;
+        $done = $match !== null;
+
+        echo '<div class="stage-step' . ($done ? ' done' : '') . '">';
+        echo '<div class="stage-dot">' . ($done ? '<i class="bi bi-check-lg"></i>' : (string) ($i + 1)) . '</div>';
+        echo '<div class="stage-label">' . e(humanize($stage)) . '</div>';
+        if ($done && !empty($match['start_date'])) {
+            echo '<div class="small text-muted">' . e(format_date($match['start_date'])) . '</div>';
+        }
+        echo '</div>';
+
+        if ($i < $last) {
+            echo '<div class="stage-line' . ($done ? ' done' : '') . '"></div>';
+        }
+    }
+    echo '</div>';
+}

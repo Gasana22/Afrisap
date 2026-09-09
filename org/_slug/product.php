@@ -71,6 +71,8 @@ render_header(['title' => ($batch ? humanize($batch['product_type']) . ' - ' : '
       <?php if (!$journey): ?>
         <?php render_empty_state('No journey stages have been recorded for this batch yet.', 'bi-signpost'); ?>
       <?php else: ?>
+        <?php render_journey_progress($journey); ?>
+        <h6 class="fw-semibold text-muted text-uppercase small mb-3 mt-4">Journey Details</h6>
         <div class="trace-timeline mb-4">
           <?php foreach ($journey as $stage): ?>
             <div class="trace-step">
