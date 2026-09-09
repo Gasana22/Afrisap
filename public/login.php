@@ -48,12 +48,16 @@ if (is_post() && csrf_verify()) {
 $GLOBALS['_page_errors'] = $errors;
 
 render_header(['title' => 'Log In', 'context' => 'auth']);
+render_auth_layout_start([
+    'headline' => 'Welcome back to your farm.',
+    'subtitle' => "Sign in to check today's tasks, log activities, and see how your season is shaping up.",
+    'features' => [
+        'Track every crop cycle from seed to sale',
+        'Keep livestock and worker records up to date',
+        'See income, expenses and profit instantly',
+    ],
+]);
 ?>
-<div class="container">
-  <div class="auth-card">
-    <div class="text-center mb-4">
-      <a href="<?= base_url('public/index.php') ?>" class="navbar-brand fw-bold text-primary"><i class="bi bi-flower1"></i> Smart Farm Platform</a>
-    </div>
     <h4 class="mb-3">Welcome back</h4>
     <?php render_alerts(); ?>
 
@@ -89,6 +93,7 @@ render_header(['title' => 'Log In', 'context' => 'auth']);
       <p class="text-center mt-3 small text-muted">Don't have an account? <a href="<?= base_url('public/register.php') ?>">Start your free trial</a></p>
       <p class="text-center mt-2 small text-muted">Demo: owner@greenvalley.test / Password123!</p>
     <?php endif; ?>
-  </div>
-</div>
-<?php render_footer(['context' => 'auth']); ?>
+<?php
+render_auth_layout_end();
+render_footer(['context' => 'auth']);
+?>

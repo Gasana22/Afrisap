@@ -34,12 +34,19 @@ if (is_post() && csrf_verify()) {
 $GLOBALS['_page_errors'] = $errors;
 
 render_header(['title' => 'Worker Login', 'context' => 'auth']);
+render_auth_layout_start([
+    'headline' => 'Your day, in one place.',
+    'subtitle' => "Log your tasks, attendance, and field activity from wherever you're working.",
+    'features' => [
+        'Clock in with GPS-verified attendance',
+        'See your assigned tasks for today',
+        'Works offline in the field',
+    ],
+    'brand_label' => 'Worker Portal',
+    'brand_icon' => 'bi-person-workspace',
+    'brand_href' => base_url('worker/login.php'),
+]);
 ?>
-<div class="container">
-  <div class="auth-card">
-    <div class="text-center mb-4">
-      <span class="navbar-brand fw-bold text-primary"><i class="bi bi-person-workspace"></i> Worker Portal</span>
-    </div>
     <h4 class="mb-3">Field Worker Login</h4>
     <?php render_alerts(); ?>
     <form method="post">
@@ -56,6 +63,7 @@ render_header(['title' => 'Worker Login', 'context' => 'auth']);
     </form>
     <p class="text-center mt-3 small text-muted">Farm manager? <a href="<?= base_url('public/login.php') ?>">Log in here</a></p>
     <p class="text-center mt-2 small text-muted">Demo: worker@greenvalley.test / Password123!</p>
-  </div>
-</div>
-<?php render_footer(['context' => 'auth']); ?>
+<?php
+render_auth_layout_end();
+render_footer(['context' => 'auth']);
+?>

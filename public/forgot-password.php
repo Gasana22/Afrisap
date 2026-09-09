@@ -80,13 +80,15 @@ if ($isResetMode) {
 $GLOBALS['_page_errors'] = $errors;
 
 render_header(['title' => 'Reset Password', 'context' => 'auth']);
+render_auth_layout_start([
+    'headline' => 'Get back into your account.',
+    'subtitle' => "We'll help you set a new password so you're never locked out of your farm's records for long.",
+    'features' => [
+        'Reset links expire after 1 hour, for your security',
+        'Your farm data is safe while you regain access',
+    ],
+]);
 ?>
-<div class="container">
-  <div class="auth-card">
-    <div class="text-center mb-4">
-      <a href="<?= base_url('public/index.php') ?>" class="navbar-brand fw-bold text-primary"><i class="bi bi-flower1"></i> Smart Farm Platform</a>
-    </div>
-
     <?php if ($isResetMode): ?>
       <h4 class="mb-3">Set a new password</h4>
       <?php render_alerts(); ?>
@@ -129,6 +131,7 @@ render_header(['title' => 'Reset Password', 'context' => 'auth']);
         <p class="text-center mt-3 small text-muted"><a href="<?= base_url('public/login.php') ?>">Back to Log In</a></p>
       <?php endif; ?>
     <?php endif; ?>
-  </div>
-</div>
-<?php render_footer(['context' => 'auth']); ?>
+<?php
+render_auth_layout_end();
+render_footer(['context' => 'auth']);
+?>

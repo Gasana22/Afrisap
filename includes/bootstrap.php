@@ -80,6 +80,7 @@ require_once ROOT_PATH . '/includes/audit.php';
 
 require_once ROOT_PATH . '/includes/templates/header.php';
 require_once ROOT_PATH . '/includes/templates/footer.php';
+require_once ROOT_PATH . '/includes/templates/auth-layout.php';
 require_once ROOT_PATH . '/includes/templates/navigation.php';
 require_once ROOT_PATH . '/includes/templates/sidebar.php';
 require_once ROOT_PATH . '/includes/templates/alerts.php';

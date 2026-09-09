@@ -69,12 +69,16 @@ if (is_post() && csrf_verify()) {
 $GLOBALS['_page_errors'] = $errors;
 
 render_header(['title' => 'Start Your Free Trial', 'context' => 'auth']);
+render_auth_layout_start([
+    'headline' => "It's free to get started.",
+    'subtitle' => 'Set up your organization in under a minute and start tracking your farm from day one.',
+    'features' => [
+        'No credit card required for the 14-day trial',
+        'Invite your team once you\'re in',
+        'Cancel anytime, keep your data',
+    ],
+]);
 ?>
-<div class="container">
-  <div class="auth-card">
-    <div class="text-center mb-4">
-      <a href="<?= base_url('public/index.php') ?>" class="navbar-brand fw-bold text-primary"><i class="bi bi-flower1"></i> Smart Farm Platform</a>
-    </div>
     <h4 class="mb-1">Start your 14-day free trial</h4>
     <p class="text-muted small mb-3">No credit card required.</p>
     <?php render_alerts(); ?>
@@ -100,6 +104,7 @@ render_header(['title' => 'Start Your Free Trial', 'context' => 'auth']);
       <button type="submit" class="btn btn-primary w-100">Create My Account</button>
     </form>
     <p class="text-center mt-3 small text-muted">Already have an account? <a href="<?= base_url('public/login.php') ?>">Log in</a></p>
-  </div>
-</div>
-<?php render_footer(['context' => 'auth']); ?>
+<?php
+render_auth_layout_end();
+render_footer(['context' => 'auth']);
+?>
